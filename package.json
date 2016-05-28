@@ -1,8 +1,9 @@
 {
   "name": "mora-scripts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Some scripts for my own use",
   "scripts": {},
+  "files": ['hooks/*'],
   "keywords": [],
   "author": "",
   "license": "ISC"
