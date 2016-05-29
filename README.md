@@ -6,12 +6,14 @@
 Use hooks with [`ghooks`](https://github.com/gtramontina/ghooks)
 
 
-### install
+### post-merge
+
+#### install
 ```
 npm install ghooks mora-scripts --save-dev
 ```
 
-### config
+#### config
 
 package.json
 
@@ -24,3 +26,10 @@ package.json
 }
 ...
 ```
+
+## js
+
+### promise-extra
+
+Add `Promise.prototype.finally` and `Promise.try` functions.
+
