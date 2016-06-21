@@ -9,6 +9,8 @@ var path = require('path');
 var util = require('util');
 var spawn = require('cross-spawn');
 
+var findup = require('../libs/findup');
+
 // fixup! and squash! are part of Git, commits tagged with them are not intended to be merged, cf. https://git-scm.com/docs/git-commit
 var PATTERN = /^((fixup! |squash! )?(\w+)(?:\(([^\)\s]+)\))?: (.+))(?:\n|$)/;
 var MERGE_COMMIT_PATTERN = /^Merge /;
@@ -16,40 +18,38 @@ var IGNORED_PATTERN = new RegExp(util.format('(^WIP)|(^%s$)', require('semver-re
 
 var isPackageFileExists = false;
 var config = {
-  file: __filename,
+  command: __filename,
   warnOnFail: false,
   showHelp: true,
-  maxSubjectLength: 100,
+  maxSubjectLength: 80,
   subjectPattern: '.+',
   types: ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'chore', 'revert']
 };
 
 // istanbul ignore next
 if (module.parent === null) {
-  var rev = spawn('git', ['rev-parse',  '--show-toplevel'], { stdio: ['ignore', 'pipe', 2] });
-  rev.stdout.on('data', function (dir) {
-    dir = dir.toString().trim();
+  // spawn('git', ['rev-parse',  '--show-toplevel'], { stdio: ['ignore', 'pipe', 2] });
+  var dir = findup.git();
 
-    // 读取 package.json 文件（如果有的话），修改默认配置
-    try {
-      var pkg = require(path.join(dir, 'package.json'));
-      var pkgConfig = pkg.config && pkg.config.hooks && pkg.config.hooks['commit-msg'];
-      if (typeof pkgConfig === 'object') Object.assign(config, pkgConfig);
-      isPackageFileExists = true;
-    } catch (e) {}
+  try {
+    var pkg = require(findup.pkg());
+    var pkgConfig = pkg.config && pkg.config.hooks && pkg.config.hooks['commit-msg'];
+    if (typeof pkgConfig === 'object') for (var k in pkgConfig) config[k] = pkgConfig[k];
+    isPackageFileExists = true;
+  }  catch (e) {}
 
-    var commitMsgFile = process.argv[2] || path.join(dir, '.git', 'COMMIT_EDITMSG');
-    var commitErrFile = commitMsgFile.replace('COMMIT_EDITMSG', 'ERROR_COMMIT_EDITMSG');
+  var commitMsgFile = process.argv[2] || path.join(dir, 'COMMIT_EDITMSG');
+  var commitErrFile = commitMsgFile.replace('COMMIT_EDITMSG', 'ERROR_COMMIT_EDITMSG');
 
-    var msg = fs.readFileSync(commitMsgFile).toString();
-    if (validate(msg)) {
-      process.exit(0);
-    } else {
-      outputHelp();
-      fs.appendFileSync(commitErrFile, msg + '\n');
-      process.exit(1);
-    }
-  });
+  var msg = fs.readFileSync(commitMsgFile).toString();
+
+  if (validate(msg)) {
+    process.exit(0);
+  } else {
+    outputHelp();
+    fs.appendFileSync(commitErrFile, msg + '\n');
+    process.exit(1);
+  }
 }
 
 function validate(raw) {
@@ -91,7 +91,7 @@ function validate(raw) {
     var SUBJECT_PATTERN = new RegExp(config.subjectPattern);
 
     if (firstLine.length > config.maxSubjectLength && !squashing) {
-      error('is longer than %d characters !', MAX_LENGTH);
+      error('is longer than %d characters !', config.maxSubjectLength);
       isValid = false;
     }
 
@@ -122,12 +122,42 @@ function validate(raw) {
 function outputHelp() {
   if (!config.showHelp) return ;
 
-  console.log('\nCurrent commit-msg hook config:');
-  console.log(JSON.stringify(config, null, 4).replace(/^|\n/g, '\n    '));
+  console.log('\x1b[90m\nCurrent commit-msg hook config:');
+  console.log(JSON.stringify(formatObject(config), null, 4).replace(/^|\n/g, '\n    '));
   if (isPackageFileExists) {
     console.log('\nYou can overwrite the config use `config.hooks.commit-msg` in package.json');
   }
+
+  console.log('\n============================================================================\n')
+  console.log(
+    'Git Commit Message Guides: \n' +
+    '  https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit\n' +
+    '  http://chris.beams.io/posts/git-commit/'
+  )
+  console.log('\nChangelog keywrods: Added, Changed, Breaks, Deprecated, Removed, Fixed, Security')
+  console.log('\nExample:\n')
+  console.log(
+    '  fix($compile): couple of unit tests for IE9\n' +
+    '  \n' +
+    '  Older IEs serialize html uppercased, but IE9 does not...\n' +
+    '  Would be better to expect case insensitive, unfortunately jasmine does\n' +
+    '  not allow to user regexps for throw expectations.\n' +
+    '  \n' +
+    '  Closes #392, #400\n' +
+    '  Breaks foo.bar api, foo.baz should be used instead'
+  )
+  console.log('\x1b[0m');
 }
+
+function formatObject(obj) {
+  obj = JSON.parse(JSON.stringify(obj));
+  for (var key in obj) {
+    if (Array.isArray(obj[key])) obj[key] = '[ ' + obj[key].join(', ') + ' ]';
+    else if (typeof obj[key] === 'object') obj[key] = formatObject(obj[key]);
+  }
+  return obj;
+}
+
 
 function error() {
   // gitx does not display it
