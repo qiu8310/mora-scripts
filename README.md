@@ -6,6 +6,8 @@
 
 以 `pkg.` 开头的变量会递归的循环解析成对应的 package.json 中的值
 
+在 `run` 后面使用 `--prefix=xxx` 可以修改默认的 `pkg` 前缀
+
 ```json
 //...
 "scripts": {
