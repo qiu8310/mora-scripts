@@ -1,13 +1,42 @@
 # mora-scripts
 
+## cli
+
+### run.js 
+
+以 `pkg.` 开头的变量会递归的循环解析成对应的 package.json 中的值
+
+```json
+//...
+"scripts": {
+  "build": "run NODE_ENV=development webpack -p",
+  "release": "run git commit -am pkg.version && run git tag pkg.version"
+}
+//...
+```
+
+主要参考了下面这些组件的功能
+
+- [better-npm-run](https://github.com/benoror/better-npm-run)
+- [cross-env](https://github.com/kentcdodds/cross-env)
+- [argv-set-env](https://github.com/kentcdodds/argv-set-env)
+- [with-package](https://github.com/bahmutov/with-package)
+
+
 
 ## hooks
 
 * post-merge 可以在每次从远端拉取代码时自动根据 package.json 文件是否有更新而执行 `npm install`
 * commit-msg 检查提交的信息是否符合规范，规范：`<type>(<scope>): <subject>`
 
+主要参考了下面这些组件的功能
+
+- [`ghooks`](https://github.com/gtramontina/ghooks)
+- [`validate-commit-msg`](https://github.com/kentcdodds/validate-commit-msg)
+
 
 #### install
+
 ```
 npm install mora-scripts --save-dev
 ```
@@ -43,6 +72,7 @@ or
 }
 ```
 
+
 ## js
 
 ### promise-extra
@@ -50,7 +80,3 @@ or
 Add `Promise.prototype.finally` and `Promise.try` functions.
 
 
-## Reference
-
-* [`ghooks`](https://github.com/gtramontina/ghooks)
-* [`validate-commit-msg`](https://github.com/kentcdodds/validate-commit-msg)

@@ -4,10 +4,16 @@
   "description": "Some scripts for my own use",
   "scripts": {
     "postinstall": "node hooks/scripts/install",
-    "postuninstall": "node hooks/scripts/install --reverse"
+    "postuninstall": "node hooks/scripts/install --reverse",
+    "test": "cli/run.js ENV='run test' node test/test-cli-run.js -v pkg.version --bar pkg.args.bar"
+  },
+  "args": {
+    "foo": "I am foo",
+    "bar": "args.foo: pkg.args.foo"
   },
   "bin": {
-    "hooks": "hooks/scripts/install.js"
+    "hooks": "hooks/scripts/install.js",
+    "run": "cli/run.js"
   },
   "keywords": [],
   "author": "Mora <qiuzhongleiabc@126.com>",
