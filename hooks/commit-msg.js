@@ -57,7 +57,7 @@ function validate(raw) {
     return str.indexOf('#') !== 0;
   }).join('\n');
 
-  var message = messageWithBody.split('\n').shift();
+  var message = messageWithBody.split('\n').shift().trim();
 
   if (message === '') {
     console.log('Aborting commit due to empty commit message.');
@@ -86,7 +86,9 @@ function validate(raw) {
     var squashing = !!match[2];
     var type = match[3];
     var scope = match[4];
-    var subject = match[5];
+    var subject = match[5].trim();
+    var firstLetter = subject[0];
+    var lastLetter = subject[subject.length - 1];
 
     var SUBJECT_PATTERN = new RegExp(config.subjectPattern);
 
@@ -101,7 +103,17 @@ function validate(raw) {
     }
 
     if (!SUBJECT_PATTERN.exec(subject)) {
-      error('subject does not match subject pattern!');
+      error('subject does not match subject pattern !');
+      isValid = false;
+    }
+
+    if (firstLetter.toLowerCase() !== firstLetter) {
+      error('don\'t capitalize first letter !');
+      isValid = false;
+    }
+
+    if (/[\.\,\!\;]/.test(lastLetter)) {
+      error('no punctuation mark at the end !');
       isValid = false;
     }
   }
