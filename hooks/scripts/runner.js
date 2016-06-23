@@ -2,6 +2,7 @@ var path = require('path');
 var findup = require('../../libs/findup');
 var addEnvPath = require('../../libs/addEnvPath');
 var shell = require('../../libs/shell');
+var assign = require('../../libs/assign');
 
 var root, pkgFile, pkg;
 
@@ -15,7 +16,7 @@ module.exports = function (dir, alias) {
   if (typeof cmd === 'object') cmd = cmd.command || cmd.cmd;
   if (cmd) {
     cmd = replaceCommandArgv(cmd);
-    env = clone(process.env);
+    env = assign({}, process.env);
     addEnvPath(env, path.join(root, 'node_modules', '.bin'));
     shell(cmd, {stdio: 'inherit', env: env}).on('exit', process.exit);
   }
@@ -33,10 +34,3 @@ function replaceCommandArgv(cmd) {
       });
 }
 
-function clone(obj) {
-  var k, r = {};
-  for (k in obj) {
-    r[k] = obj[k];
-  }
-  return r;
-}
