@@ -12,7 +12,7 @@
 //...
 "scripts": {
   "build": "run NODE_ENV=development webpack -p",
-  "release": "run git commit -am pkg.version && run git tag pkg.version"
+  "release": "run --prefix % git commit -am 'release %.version' && run git tag %.version"
 }
 //...
 ```
