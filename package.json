@@ -5,7 +5,9 @@
   "scripts": {
     "postinstall": "node hooks/scripts/install",
     "postuninstall": "node hooks/scripts/install --reverse",
-
+    "release": "cli/run.js npm version minor -m 'chore: bump minor version to pkg.version'",
+    "preversion": "npm test",
+    "postversion": "git push --tags",
     "test": "npm run test:run:base && npm run test:run:prefix",
     "test:run:base": "cli/run.js ENV='run test' node test/test-cli-run-base -v pkg.version --bar pkg.args.bar",
     "test:run:prefix": "cli/run.js --prefix % node test/test-cli-run-prefix -v %.version --foo '** %.args.foo **'"
