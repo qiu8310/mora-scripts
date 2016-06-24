@@ -5,14 +5,14 @@
   "scripts": {
     "postinstall": "node hooks/scripts/install",
     "postuninstall": "node hooks/scripts/install --reverse",
-    "release": "cli/run.js npm version minor -m 'chore: bump minor version to pkg.version'",
+    "release": "cli/run npm version minor -m 'chore: bump minor version to pkg.version'",
     "preversion": "npm test",
     "version": "echo '%cyou can run build and add build file to git in here' cyan",
-    "postversion": "git push --follow-tags && npm publish && cli/run.js cnpm sync pkg.name",
+    "postversion": "git push --follow-tags && npm publish && cli/run cnpm sync pkg.name",
     "test": "npm run test:run:base && npm run test:run:prefix && npm run test:libs:color",
-    "test:libs:color": "cli/run.js node test/test-libs-color",
-    "test:run:base": "cli/run.js ENV='run test' node test/test-cli-run-base -v pkg.version --bar pkg.args.bar",
-    "test:run:prefix": "cli/run.js --prefix % node test/test-cli-run-prefix -v %.version --foo '** %.args.foo **'"
+    "test:libs:color": "cli/run node test/test-libs-color",
+    "test:run:base": "cli/run ENV='run test' node test/test-cli-run-base -v pkg.version --bar pkg.args.bar",
+    "test:run:prefix": "cli/run --prefix % node test/test-cli-run-prefix -v %.version --foo '** %.args.foo **'"
   },
   "args": {
     "foo": "I am foo",
@@ -20,7 +20,7 @@
   },
   "bin": {
     "hooks": "hooks/scripts/install.js",
-    "run": "cli/run.js"
+    "run": "cli/run"
   },
   "keywords": [],
   "author": "Mora <qiuzhongleiabc@126.com>",
