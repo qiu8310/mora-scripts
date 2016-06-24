@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+
+var format = require('../libs/color')
+
+console.log(format.apply(null, process.argv.slice(2)));
