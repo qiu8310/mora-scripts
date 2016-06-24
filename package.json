@@ -24,8 +24,12 @@
     "puts": "cli/pubs",
     "commit-msg-help": "cli/commit-msg-help"
   },
-  "keywords": [],
+  "keywords": ["mora", "collection"],
   "author": "Mora <qiuzhongleiabc@126.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qiu8310/mora-scripts"
+  },
   "license": "MIT",
   "dependencies": {
     "cross-spawn": "^4.0.0",
