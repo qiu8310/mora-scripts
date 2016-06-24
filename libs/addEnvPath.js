@@ -5,7 +5,10 @@ var separator = isWin ? ';' : ':';
 
 module.exports = function (env, paths) {
   var pathKey = getPathKey(env);
-  paths = (env[pathKey] || '').split(separator).concat(paths);
+  var oldPath = env[pathKey];
+
+  if (!Array.isArray(paths)) paths = [paths];
+  if (oldPath) paths = paths.concat(oldPath); // 不要修改用户传过来的数组
   env[pathKey] = paths.join(separator);
 }
 

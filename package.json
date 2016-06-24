@@ -7,7 +7,7 @@
     "postuninstall": "node hooks/scripts/install --reverse",
     "release": "cli/run npm version minor -m 'chore: bump minor version to pkg.version'",
     "preversion": "npm test",
-    "version": "cli/pubs '%cyou can run build and add build file to git in here' cyan",
+    "version": "cli/puts '%cyou can run build and add build file to git in here' cyan",
     "postversion": "git push --follow-tags && npm publish && cli/run cnpm sync pkg.name",
     "test": "npm run test:run:base && npm run test:run:prefix && npm run test:libs:color",
     "test:libs:color": "cli/run node test/test-libs-color",
