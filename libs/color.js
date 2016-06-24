@@ -78,7 +78,7 @@ function compile(res, isLast) {
         return raw;
       }
     }) + (isLast && format.autoReset ? RESET : '');
-  }
+  } // TODO：如果不是 string，如何在最后加上 RESET 好呢？
   args.unshift(str);
   return args;
 }
