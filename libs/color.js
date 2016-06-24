@@ -21,8 +21,11 @@ var PREFIX = '\x1b[', SUFFIX = 'm',
 
 var re = /%([sdjc%])/g;
 
-module.exports = format;
+module.exports = function () {
+  console.log(format.apply(null, arguments))
+}
 module.exports.autoReset = true;
+module.exports.format = format
 
 
 // util.format 支持 %s %d %j %% 四个参数
@@ -77,7 +80,7 @@ function compile(res, isLast) {
         args.push(val);
         return raw;
       }
-    }) + (isLast && format.autoReset ? RESET : '');
+    }) + (isLast && module.exports.autoReset ? RESET : '');
   } // TODO：如果不是 string，如何在最后加上 RESET 好呢？
   args.unshift(str);
   return args;

@@ -4,7 +4,7 @@ var format = require('util').format;
 var stripAnsi = require('../libs/stripAnsi');
 var color = require('../libs/color');
 var nocolor = function () {
-  return stripAnsi(color.apply(null, arguments));
+  return stripAnsi(color.format.apply(null, arguments));
 }
 
 
@@ -40,5 +40,5 @@ assert.equal(nocolor('%%c'), '%%c');
 assert.equal(nocolor('%%c', 'b'), '%c b');
 
 
-console.log(color('%cTest libs/color OK', 'c.green.bold'));
+color('%cTest libs/color OK', 'c.green.bold');
 

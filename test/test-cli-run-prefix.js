@@ -9,4 +9,4 @@ assert.equal(args[1], pkg.version);
 assert.equal(args[2], '--foo');
 assert.equal(args[3], '** I am foo **');
 
-console.log(color('%cTest cli/run:prefix OK', 'c.green.bold'));
+color('%cTest cli/run:prefix OK', 'c.green.bold');
