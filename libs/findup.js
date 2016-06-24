@@ -1,18 +1,6 @@
 var fs = require('fs'),
-  path = require('path');
-
-function exists(filepath, types) {
-  if (!types) types = 'File';
-
-  try {
-    var stats = fs.statSync(filepath);
-    return [].concat(types).some(function (type) {
-      return stats['is' + type] && stats['is' + type]();
-    });
-  } catch (e) {
-    return false;
-  }
-}
+  path = require('path'),
+  exists = require('./exists');
 
 function findup(dir, iteratorSync, options) {
   options = options || {};

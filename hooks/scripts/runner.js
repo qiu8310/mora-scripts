@@ -3,6 +3,7 @@ var findup = require('../../libs/findup');
 var addEnvPath = require('../../libs/addEnvPath');
 var shell = require('../../libs/shell');
 var assign = require('../../libs/assign');
+var exists = require('../../libs/exists');
 
 var root, pkgFile, pkg;
 
@@ -12,9 +13,16 @@ module.exports = function (dir, alias) {
   root = path.dirname(pkgFile);
 
   var hooks = pkg.config && pkg.config.hooks;
-  var cmd = hooks[alias], env;
+  var cmd = hooks && hooks[alias], env;
   if (typeof cmd === 'object') cmd = cmd.command || cmd.cmd;
   if (cmd) {
+    if (cmd === true) {
+      cmd = path.resolve(__dirname, '..', alias + '.js')
+      if (!exists(cmd)) {
+        throw new Error('File ' + cmd + ' not exists, can not set config.hooks.' + alias + ' to true');
+      }
+    }
+
     cmd = replaceCommandArgv(cmd);
     env = assign({}, process.env);
     addEnvPath(env, path.join(root, 'node_modules', '.bin'));

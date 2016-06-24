@@ -30,7 +30,7 @@ function internalRequire() {
 function warnAboutGHooks() {
   console.warn(
     '\x1b[33m' +
-    'ghooks not found!\n' +
+    'mora-scripts not found!\n' +
     'Make sure you have it installed on your "node_modules".\n' +
     'Skipping git hooks.\x1b[0m'
   );

@@ -2,7 +2,7 @@ var util = require('util');
 
 var PREFIX = '\x1b[', SUFFIX = 'm',
   RESET = PREFIX + '0' + SUFFIX,
-  MODIFIERS = {
+  MODIFIERS = {   // reset
     bold: 1,      // 21  // 21 isn't widely supported and 22 does the same thing
     faint: 2,     // 22
     italic: 3,    // 23

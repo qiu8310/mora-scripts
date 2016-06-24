@@ -62,6 +62,17 @@ or
 ```json
 "config": {
   "hooks": {
+    "commit-msg": true,
+    "post-merge": true
+  }
+}
+```
+
+or
+
+```json
+"config": {
+  "hooks": {
     "commit-msg": {
       "command": "node ~/mora-scripts/hooks/commit-msg.js",
       "warnOnFail": false,
