@@ -20,7 +20,9 @@
   },
   "bin": {
     "hooks": "hooks/scripts/install.js",
-    "run": "cli/run"
+    "run": "cli/run",
+    "puts": "cli/pubs",
+    "commit-msg-help": "cli/commit-msg-help"
   },
   "keywords": [],
   "author": "Mora <qiuzhongleiabc@126.com>",

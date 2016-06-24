@@ -179,6 +179,6 @@ function error() {
 }
 
 module.exports = validate;
-
+module.exports.help = outputHelp;
 
 
