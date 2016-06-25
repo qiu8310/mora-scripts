@@ -1,5 +1,38 @@
 #!/usr/bin/env node
 
-var format = require('../libs/color')
+var os = require('os')
+var cli = require('../libs/cli')
+var format = require('../libs/color').format
 
-console.log(format.apply(null, process.argv.slice(2)));
+// 支持参数(参考 Linux 下的 echo)
+// -e 转义字符串中的 \n \t 等字符
+// -n 结尾不要输出换行符
+
+cli.ignoreInvalidOpt = true
+cli({
+  usage: 'puts [options] <string>, ...',
+  e: '<boolean> enable escape',
+  n: '<boolean> not output linefeed in the end',
+  version: '1.0.0',
+  epilog: 'Copyright Mora'
+}, function(res) {
+
+  var escape = res.e,
+    linefeed = !res.n;
+
+  if (escape) {
+    res._ = res._.map(function (arg) {
+      return arg.replace(/(.)\\(.)/g, function (raw, prefix, char) {
+        if (prefix === '\\') return '\\' + char
+        if (char === 't') return prefix + '\t'
+        if (char === 'n') return prefix + '\n'
+        return prefix + char
+      })
+    })
+  }
+
+  var result = format.apply(null, res._)
+
+  process.stdout.write(result)
+  if (linefeed) process.stdout.write(os.EOL)
+})
