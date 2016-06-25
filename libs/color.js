@@ -32,6 +32,10 @@ module.exports.format = format
 // util.format 支持 %s %d %j %% 四个参数
 // 此函数比 util.format 多个 %c 参数
 //
+// 之前还不想考虑 %% 的情况，因为它不需要处理
+// 后来发现，如果不处理 %%，那么处理 %%c 情况
+// 时就会出错，所以还必须在正则里处理 %% 转义
+//
 // format('Are %cyou%c ok', 'color.red.bg.yellow', 'color.reset');
 function format() {
   var i, current, group = [];
