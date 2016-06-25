@@ -5,6 +5,7 @@ var PREFIX = '\x1b[', SUFFIX = 'm',
   MODIFIERS = {   // reset
     bold: 1,      // 21  // 21 isn't widely supported and 22 does the same thing
     faint: 2,     // 22
+    gray: 2,      // 22
     italic: 3,    // 23
     underline: 4, // 24
     reverse: 7    // 27
