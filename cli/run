@@ -10,6 +10,10 @@ var escapeRegExp = require('../libs/escapeRegExp');
 var warn = require('../libs/warn');
 var info = require('../libs/info');
 
+// 支持参数 -e extend
+// 支持参数 -s serial
+// 支持参数 -p parallel
+
 var pkgFile = findup.pkg();
 var rootDir = path.dirname(pkgFile);
 
@@ -53,7 +57,7 @@ console.log(
   'Running %s %s',
   info.format('%s %s', cmd, args.map(quoteShellArg).join(' ')),
   addedEnvs.length ? 'with env: ' + addedEnvs.join(', ') : ''
-);
+)
 if (cmd) spawn(cmd, args, {stdio: 'inherit', env: env})
 else warn('No command to run with !')
 

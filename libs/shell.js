@@ -12,6 +12,8 @@ module.exports = function (command, options) {
     file = 'cmd.exe'
     args = ['/s', '/c', '"' + command + '"']
     options = assign({}, options)
+
+    // Tell node's spawn that the arguments are already escaped
     options.windowsVerbatimArguments = true
   } else {
     file = '/bin/sh'

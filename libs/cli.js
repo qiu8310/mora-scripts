@@ -7,24 +7,19 @@ var specialKeys = ['help', 'version', 'usage', 'description', 'example', 'epilog
 
 var typeConfig = {
   bool: {
-    needArgs: 0,
-    currentArgs: 0
+    needArgs: 0
   },
   str: {
-    needArgs: 1,
-    currentArgs: 0
+    needArgs: 1
   },
   num: {
-    needArgs: 1,
-    currentArgs: 0
+    needArgs: 1
   },
   arr: {
-    needArgs: Infinity,
-    currentArgs: 0
+    needArgs: Infinity
   },
   count: {
-    needArgs: 0,
-    currentArgs: 0
+    needArgs: 0
   }
 }
 
@@ -53,12 +48,12 @@ var typeConfig = {
       所有命令行都会默认带上 help 和 version，如果你不想要它们，
       可以在 opts 中将它们的值设置成 false
 
-    - 支持子命令，即将 key 对应的 value 设置成字符串即可，
+    - 支持子命令，即将 key 对应的 value 设置 function 或者 {desc: String, comand: Function} 的形式，
       另外 key 也支持 str1:str2... 这样的别名形式
 
   配置项：
-    - hideHelpOnError:    解析参数失败时不显示帮助信息
-    - ignoreInvalidOpt:   遇到无法解析的 option 不要报错（即会把它当作 _ 中的值）
+    - showHelpOnError:    解析参数失败时不显示帮助信息
+    - strict:             遇到无法解析的 option 是否要报错
 
   其它：https://github.com/yargs/yargs#parsing-tricks
     - 解析到 "--" 就停止解析
@@ -80,8 +75,8 @@ function Cli(opts, args, main) {
     args = process.argv.slice(2)
   }
 
-  this.hideHelpOnError = Cli.hideHelpOnError
-  this.ignoreInvalidOpt = Cli.ignoreInvalidOpt
+  this.showHelpOnError = Cli.showHelpOnError
+  this.strict = Cli.strict
   this._ = []
 
   // version epilog usage example description
@@ -99,7 +94,7 @@ function Cli(opts, args, main) {
     }
   }
 
-  var res = {}, opts = this.options
+  var res = this.res = {}, opts = this.options
   Object.keys(opts).forEach(function (k) {
     opts[k].alias.forEach(function (alias) {
       res[alias] = opts[k].value
@@ -109,15 +104,15 @@ function Cli(opts, args, main) {
   res.rawArgs = args
 
   var _ = this._
-  var command = _[0] && this.commands[_[0]]
+  var commander = _[0] && this.commands[_[0]]
 
   if (res.help) {
     this.help()
   } else if (res.version) {
     console.log(this.version)
-  } else if (command) {
+  } else if (commander) {
     res._ = _.slice(1)
-    command.call(this, res)
+    commander.command.call(null, res, this)
   } else if (main) {
     res._ = _
     main.call(this, res)
@@ -138,10 +133,15 @@ p.getOptConfig = function (key) {
   if (key) return this.options[key]
 }
 
+p.isOptKeyValid = function (key) {
+  key = this.aliasMap[key]
+  return key in this.options
+}
+
 // 输出错误
 p.error = function (msg) {
   clog('\n%c%s\n', 'red', msg)
-  if (!this.hideHelpOnError) this.help()
+  if (this.showHelpOnError) this.help()
 }
 
 // 输出 help
@@ -159,18 +159,36 @@ p.help = function () {
     clog()
   }
 
-  // options
-  var opts = this.options, rows = []
+  // Commands
+  var commands = this.commands, cmdRows = []
+  var cmd, cmdKeys = Object.keys(commands), cmdCache = []
+  if (cmdKeys.length) {
+    clog('%cCommands:\n', 'white.bold')
+    cmdKeys.forEach(function (k) {
+      cmd = commands[k]
+      if (cmdCache.indexOf(cmd) >= 0) return ;
+      cmdCache.push(cmd)
+      var row = []
+      row.push(clog.format('  %c%s    ', 'green',   cmd.alias.sort().join(', ')))
+      row.push(clog.format('%c%s',       'default', cmd.desc))
+      cmdRows.push(row)
+    })
+    console.log(table(cmdRows))
+    clog()
+  }
+
+  // Commands
+  var opts = this.options, optRows = []
   Object.keys(opts).forEach(function (k) {
     var row = []
     row.push(clog.format('  %c%s', 'green',   opts[k].alias.join(', ')))
     row.push(clog.format('  %c%s  ', 'cyan',    '<' + opts[k].type + '>'))
     row.push(clog.format('%c%s', 'default', opts[k].desc))
-    rows.push(row)
+    optRows.push(row)
   })
-  if (rows.length) {
+  if (optRows.length) {
     clog('%cOptions:\n', 'white.bold')
-    console.log(table(rows))
+    console.log(table(optRows))
     clog()
   }
 
@@ -182,10 +200,10 @@ function init(opts) {
   var options = {}, commands = {}, aliasMap = {}
 
   if (opts.help !== false)
-    opts['help:h'] = '<bool> ' + (typeof opts.help === 'string' ? opts.help : 'show help')
+    opts['help | h'] = '<bool> ' + (typeof opts.help === 'string' ? opts.help : 'show help')
   if (opts.version !== false) {
     this.version = opts.version
-    opts['version:v'] = '<bool> ' + 'show version'
+    opts['version | v'] = '<bool> ' + 'show version'
   }
   if (opts.usage) this.usage = opts.usage
   if (opts.description) this.description = [].concat(opts.description)
@@ -197,7 +215,7 @@ function init(opts) {
   Object.keys(opts).forEach(function (k) {
     var key, type, value, desc, alias, conf
 
-    alias = k.split(':').sort()
+    alias = k.split(/\s*\|\s*/).sort()
     key = alias[0]
     value = opts[k]
 
@@ -211,8 +229,13 @@ function init(opts) {
         aliasMap[k] = key
       })
       options[key] = conf
-    } else if (typeof value === 'function') {
-      alias.forEach(function (k) { commands[k] = value })
+    } else if (value && (typeof value === 'function' || typeof value.command === 'function')) {
+      if (typeof value === 'function') value = {desc: '', command: value}
+      value.alias = alias
+      alias.forEach(function (k) {
+        if (k in aliasMap || k in commands) throw new Error('Comand key "' + k + '" is dumplicated.')
+        commands[k] = value
+      })
     } else {
       throw new Error('Option ' + k + ' value "' + value + '" is invalid.')
     }
@@ -227,34 +250,47 @@ function init(opts) {
 function parse(args) {
   var _ = this._
   var opts = this.options
-  var i, arg, stopped
+  var i, arg, rawArg, stopped
   var ck = consumeKey.bind(this)
   var cv = consumeVal.bind(this)
 
   for (i = 0; i < args.length; i++) {
-    arg = args[i]
+    rawArg = arg = args[i]
     if (stopped) {
+      _.push(arg)
+    } else if (_.length === 0 && arg in this.commands) { // 运行子命令剩下的参数给子命令去解析
+      stopped = true
       _.push(arg)
     } else if (arg === '--') {
       stopped = true
     } else if (arg.slice(0, 2) === '--') { // 长参数
-      ck(arg.slice(2))
+      if (arg.length === 3) { // --a 类的参数不是 option，需要当作 value
+        cv(arg)
+      } else {
+        ck(arg.slice(2))
+      }
     } else if (arg[0] === '-' && arg.length === 2) { // 单个短参数
       ck(arg[1])
     } else if (arg[0] === '-') { // 多个短参数，或单个数字短参数
       arg = arg.slice(1)
 
+      // 这里的参数被打散处理了，所以 consuem 前要先 check 整体参数是否 valid
       if (/^\w(\d+)$/.test(arg)) {
-        ck(arg[0])
-        cv(arg.slice(1))
+        if (checkOpt.call(this, arg[0], rawArg)) {
+          ck(arg[0])
+          cv(arg.slice(1))
+        }
       } else {
-        arg.split('').forEach(function (k, i, ref) {
-          if (ref.length - 1 === i) {
-            ck(k)    // 最好一个 option 可以接任意个参数
-          } else {
-            ck(k, 'noNeedArgs') // 后面不能接参数
-          }
-        }.bind(this))
+        arg = arg.split('')
+        if (checkOpt.call(this, arg, rawArg)) {
+          arg.forEach(function (k, i, ref) {
+            if (ref.length - 1 === i) {
+              ck(k)    // 最好一个 option 可以接任意个参数
+            } else {
+              ck(k, 'noNeedArgs') // 后面不能接参数
+            }
+          }.bind(this))
+        }
       }
     } else {
       // 处理非 option
@@ -268,19 +304,26 @@ function parse(args) {
   }
 }
 
-function invalidOpt(arg) {
-  arg = this.formatOptKey(arg)
-
-  if (this.ignoreInvalidOpt) {
-    consumeVal.call(this, arg) // TODO 如果之前是通过 -cccc 这种组合短参数时，如果 c 不存在，则不好恢复原有的格式！
+function checkOpt(opts, rawArg) {
+  var optsArr = [].concat(opts)
+  if (optsArr.every(this.isOptKeyValid.bind(this))) {
+    return true
   } else {
-    throw new Error('Error: invalid option ' + arg)
+    invalidOpt.call(this, rawArg)
+  }
+}
+
+function invalidOpt(rawArg) {
+  if (this.strict) {
+    throw new Error('Error: invalid option ' + rawArg)
+  } else {
+    consumeVal.call(this, rawArg)
   }
 }
 
 function consumeKey(key, noNeedArgs) {
   var conf = this.getOptConfig(key)
-  if (!conf) return invalidOpt.call(this, key)
+  if (!conf) return invalidOpt.call(this, this.formatOptKey(key))
 
   if (noNeedArgs && conf.needArgs > 0)
     throw new Error('Error: ' + conf.type + ' option '
@@ -299,6 +342,7 @@ function consumeKey(key, noNeedArgs) {
       break;
   }
 
+  conf.currentArgs = 0
   assign(conf, typeConfig[conf.type])
 
   this.conf = conf

@@ -36,7 +36,7 @@ puts '%cAre you ok' 'red'
 更多详情参考文件 [libs/color.js](libs/color.js)
 
 #### 另外还要三个用于输出颜色的命令没有放在 cli 目录下，也没放到 package.json 中的 bin 中，
-主要是因为在命令行上使用只是它的次要功能
+主要是因为在命令行上使用只是它们的次要功能
 
 * [libs/info.js](libs/info.js) 输出的文字是 cyan 的颜色
 * [libs/warn.js](libs/warn.js) 输出的文字是 yellow 的颜色
@@ -94,7 +94,7 @@ or
       "warnOnFail": false,
       "showHelp": true,
       "maxSubjectLength": 100,
-      "subjectPattern": '.+',
+      "subjectPattern": ".+",
       "types": ["feat", "fix", "docs", "style", "refactor", "perf", "test", "chore", "revert"]
     }
   }
