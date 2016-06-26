@@ -1,7 +1,7 @@
 var os = require('os')
-var clog = require('./color')
+var clog = require('./../sys/color')
 var table = require('./table')
-var assign = require('./assign')
+var assign = require('./../lang/assign')
 var re = /^\s*<(bool|str|num|arr|count)[a-z]*>\s*(.*)$/
 var specialKeys = ['help', 'version', 'usage', 'description', 'example', 'epilog']
 

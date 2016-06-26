@@ -2,13 +2,13 @@
 
 var path = require('path');
 var spawn = require('cross-spawn');
-var assign = require('../libs/assign');
-var findup = require('../libs/findup');
-var dotProp = require('../libs/dotProp');
-var addEnvPath = require('../libs/addEnvPath');
-var escapeRegExp = require('../libs/escapeRegExp');
-var warn = require('../libs/warn');
-var info = require('../libs/info');
+var assign = require('../libs/lang/assign');
+var findup = require('../libs/fs/findup');
+var dotProp = require('../libs/lang/dotProp');
+var addEnvPath = require('../libs/sys/addEnvPath');
+var escapeRegExp = require('../libs/lang/escapeRegexp');
+var warn = require('../libs/sys/warn');
+var info = require('../libs/sys/info');
 
 // 支持参数 -e extend
 // 支持参数 -s serial

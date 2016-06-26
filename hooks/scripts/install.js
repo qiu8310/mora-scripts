@@ -2,8 +2,8 @@
 
 var fs = require('fs');
 var resolve = require('path').resolve;
-var findup = require('../../libs/findup');
-var warn = require('../../libs/warn');
+var findup = require('../../libs/fs/findup');
+var warn = require('../../libs/sys/warn');
 
 var config = require('./config');
 var template = fs.readFileSync(resolve(__dirname, 'template.js'));

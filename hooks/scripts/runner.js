@@ -1,9 +1,9 @@
 var path = require('path');
-var findup = require('../../libs/findup');
-var addEnvPath = require('../../libs/addEnvPath');
-var shell = require('../../libs/shell');
-var assign = require('../../libs/assign');
-var exists = require('../../libs/exists');
+var findup = require('../../libs/fs/findup');
+var addEnvPath = require('../../libs/sys/addEnvPath');
+var shell = require('../../libs/tty/shell');
+var assign = require('../../libs/lang/assign');
+var exists = require('../../libs/fs/exists');
 
 var root, pkgFile, pkg;
 

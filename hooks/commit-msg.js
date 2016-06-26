@@ -9,7 +9,7 @@ var path = require('path');
 var util = require('util');
 var spawn = require('cross-spawn');
 
-var findup = require('../libs/findup');
+var findup = require('../libs/fs/findup');
 
 // fixup! and squash! are part of Git, commits tagged with them are not intended to be merged, cf. https://git-scm.com/docs/git-commit
 var PATTERN = /^((fixup! |squash! )?(\w+)(?:\(([^\)\s]+)\))?: (.+))(?:\n|$)/;

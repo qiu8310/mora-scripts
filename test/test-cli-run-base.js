@@ -1,4 +1,4 @@
-var color = require('../libs/color');
+var color = require('../libs/sys/color');
 var assert = require('assert');
 
 var pkg = require('../package');

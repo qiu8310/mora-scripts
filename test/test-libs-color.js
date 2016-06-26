@@ -1,8 +1,8 @@
 var assert = require('assert');
 var format = require('util').format;
 
-var stripAnsi = require('../libs/stripAnsi');
-var color = require('../libs/color');
+var stripAnsi = require('../libs/tty/stripAnsi');
+var color = require('../libs/sys/color');
 var nocolor = function () {
   return stripAnsi(color.format.apply(null, arguments));
 }
@@ -35,8 +35,11 @@ testColorArgsGroup.forEach(function (args) {
 })
 
 
-// 如果没有第二个参数，则 %% 不会转义成单个 %
-assert.equal(nocolor('%%c'), '%%c');
+/*
+  node v0.x.x 中，console.log('%%') 会得到 '%'
+  node v6.x.x 中，console.log('%%') 会得到 '%%'
+ */
+assert.equal(nocolor('%%c'), format('%%c'));
 assert.equal(nocolor('%%c', 'b'), '%c b');
 
 

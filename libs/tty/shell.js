@@ -2,7 +2,7 @@
 
 var util = require('util');
 var spawn = require('child_process').spawn;
-var assign = require('./assign');
+var assign = require('./../lang/assign');
 
 module.exports = function (command, options) {
   options = options || {};

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 var os = require('os')
-var cli = require('../libs/cli')
-var format = require('../libs/color').format
+var cli = require('../libs/tty/cli')
+var format = require('../libs/sys/color').format
 
 // 支持参数(参考 Linux 下的 echo)
 // -e 转义字符串中的 \n \t 等字符
