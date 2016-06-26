@@ -6,7 +6,7 @@ var assign = require('../libs/lang/assign');
 var findup = require('../libs/fs/findup');
 var dotProp = require('../libs/lang/dotProp');
 var addEnvPath = require('../libs/sys/addEnvPath');
-var escapeRegExp = require('../libs/lang/escapeRE');
+var escapeRegExp = require('../libs/lang/escapeRegExp');
 var warn = require('../libs/sys/warn');
 var info = require('../libs/sys/info');
 
