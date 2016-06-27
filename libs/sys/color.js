@@ -15,6 +15,9 @@ var PREFIX = '\x1b[', SUFFIX = 'm',
 
   // 30-37 color;                   40-47 background
   // 90-97 high intensity color;  100-107 high intensity background
+  //
+  // 注意： windows 下 high intensity black + dim 会导致文字不显示 （ high intensity black 和 dim 都是灰色 ）
+  // SEE： https://github.com/chalk/chalk/issues/58
   NAMES = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'];
 
   // 其它
