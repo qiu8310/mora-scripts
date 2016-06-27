@@ -1,8 +1,9 @@
 var util = require('util')
 var hasAnsiColorRegExp = require('../tty/stripAnsi').gre
 
-var bgRE = /^(?:bg|background)(\w+)$/
-var resetModifRE = /^(?:r|reset)(\w+)$/
+var bgRE = /^(?:bg|background)(\w+)$/       // match:  bgRed, bgYellow ...
+var resetModifRE = /^(?:r|reset)(\w+)$/     // match:  resetDim, resetItalic ...
+var hexRE = /^[0-9a-f]{3}(?:[0-9a-f]{3})?$/ // match:  ff00ff, f0f ...
 
 var PREFIX = '\x1b[', SUFFIX = 'm',
   RESET = PREFIX + '0' + SUFFIX,
@@ -14,6 +15,23 @@ var PREFIX = '\x1b[', SUFFIX = 'm',
     italic: 3,    // 23
     underline: 4, // 24
     reverse: 7    // 27
+  },
+
+  NAMED_COLORS = {
+    brown: 'A52A2A',
+    chocolate: 'D2691E',
+    ghostwhite: 'F8F8FF',
+    gold: 'FFD700',
+    navy: '000080',
+    olive: '808000',
+    orange: 'FFA500',
+    orangered: 'FF4500',
+    pink: 'FFC0CB',
+    purple: '800080',
+    seagreen: '2E8B57',
+    silver: 'C0C0C0',
+    skyblue: '87CEEB',
+    yellowgreen: '9ACD32'
   },
 
   // 30-37 color;                   40-47 background
@@ -76,13 +94,16 @@ clog.autoResetAtEnd = true
 // 如果将下面的 bool 设置成 true，则上面每个模板替换完之后都会 reset 一下
 clog.autoResetAtFormated = true
 
+// 暴露给外面，使第三方可以修改它
+clog.NAMED_COLORS = NAMED_COLORS
+
 clog.format = format
 clog.colorMatcher = colorMatcher // 提供给 xlog.js 使用
 clog.parseColor = parseColor
 
 
-// console.log(format('%caaaa %s cccc', 'red', '\x1b[35mbbbbb', 'dddd'))
-// console.log('eeee')
+// clog('%caaaa %s cccc', 'red', '\x1b[35mbbbbb', 'dddd')
+// clog('eeee')
 
 module.exports = clog
 
@@ -106,7 +127,7 @@ function parseColor(color) {
   }
 
   return color
-    .split(/[\{\}\.,:;\s]+/)
+    .split(/[\{\}#\.,:;\s]+/)
     .map(function (raw) {
       var k = raw.toLowerCase();
 
@@ -129,6 +150,10 @@ function parseColor(color) {
       else if (resetModifRE.test(k) && RegExp.$1 in MODIFIERS)  return 20 + MODIFIERS[RegExp.$1]; // reset modifier 兼容性不好，少用
       else if (bgRE.test(k) && NAMES.indexOf(RegExp.$1) >= 0)   return getNamedColorValue(RegExp.$1, true);
 
+      // hex 颜色
+      else if (k in NAMED_COLORS) return getHexColor(NAMED_COLORS[k], bg);
+      else if (hexRE.test(k)) return getHexColor(k, bg);
+
       // 其它
       else return raw; // 用户可以自己直接写 ASCII 编码
     })
@@ -136,4 +161,25 @@ function parseColor(color) {
       return n == null || n === '' ? '' : PREFIX + n + SUFFIX
     })
     .join('');
+}
+
+function getHexColor(hex, bg) {
+  return (bg ? '48;5;' : '38;5;') + hexToRGB5(hex)
+}
+function hexToRGB5(hex) {
+  var rgb, gap;
+  gap = hex.length === 3 ? 1 : 2;
+  rgb = [
+    hex.substring(0, gap),
+    hex.substring(gap, gap * 2),
+    hex.substring(gap * 2, gap * 3)
+  ].map(mapHexToInt5)
+
+  return 16 + rgb[0] * 36 + rgb[1] * 6 + rgb[2];
+}
+function mapHexToInt5(hex) {
+  return hexToInt5(hex.length === 1 ? hex + hex : hex)
+}
+function hexToInt5(hex) {
+  return Math.round((parseInt(hex, 16) || 0) * 5 / 255)
 }
