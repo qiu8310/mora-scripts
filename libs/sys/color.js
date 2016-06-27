@@ -1,4 +1,5 @@
-var util = require('util');
+var util = require('util')
+var hasAnsiColorRegExp = require('../tty/stripAnsi').gre
 
 var PREFIX = '\x1b[', SUFFIX = 'm',
   RESET = PREFIX + '0' + SUFFIX,
@@ -21,24 +22,69 @@ var PREFIX = '\x1b[', SUFFIX = 'm',
   // 49 => default background;
   // 0  => reset
 
-
-var _format = require('./extendFormat')(/%c/, parseColor)
+var ansiStack = []
+var reset = function () { ansiStack.length = 0; return RESET }
+var colorMatcher = {
+  match: /%c/,
+  handle: function (color) {
+    var ansi = parseColor(color)
+    var i = ansi.indexOf(RESET)
+    if (i >= 0) {
+      reset()
+      ansi = ansi.substr(i)
+    }
+    ansiStack.push(ansi)
+    return ansi
+  },
+  onEnd: function () {
+    return module.exports.autoResetAtEnd ? reset() : ''
+  },
+  onFormatEnd: function () {
+    return module.exports.autoResetAtFormated ? reset() : ''
+  },
+  onEachFormatEnd: function (arg) {
+    if (this !== arg.matcher) {
+      var value = arg.value
+      if (typeof value === 'string' && hasAnsiColorRegExp.test(value) && ansiStack.length) {
+        return RESET + ansiStack.join('')
+      }
+    }
+  }
+}
 
 // util.format 支持 %s %d %j %% 四个参数
 // 此函数比 util.format 多个 %c 参数
 //
 // format('Are %cyou%c ok', 'color.red.bg.yellow', 'color.reset');
-function format() {
-  return _format.apply(null, arguments) + (module.exports.autoReset ? RESET : '')
-}
-
+var format = require('./extendFormat')(colorMatcher)
 
 
 module.exports = function () {
   console.log(format.apply(null, arguments))
 }
-module.exports.autoReset = true;
+
+// 是否在 console.log 的结尾重置颜色
+module.exports.autoResetAtEnd = true
+
+// 是否在每将 format 完一轮之后就重置颜色
+//
+// 这里解释一下，拿语句 console.log('Are %s ok', 'you', 'I am %s', 'ok') 来说
+// 上面是有两个模板的：
+//    - Are %s ok
+//    - I am %s
+// 如果将下面的 bool 设置成 true，则上面每个模板替换完之后都会 reset 一下
+module.exports.autoResetAtFormated = true
+
 module.exports.format = format
+module.exports.colorMatcher = colorMatcher
+module.exports.parseColor = parseColor // 提供给 xlog.js 使用
+
+
+
+// console.log(format('%caaaa %s cccc', 'red', '\x1b[35mbbbbb', 'dddd'))
+// console.log('eeee')
+
+
 
 
 // c. 或者 color. 表示设置前景色
