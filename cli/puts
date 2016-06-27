@@ -8,6 +8,8 @@ var format = require('../libs/sys/color').format
 // -e 转义字符串中的 \n \t 等字符
 // -n 结尾不要输出换行符
 
+cli.stopParseOnFirstNoOption = true
+
 cli({
   usage: 'puts [options] <string>, ...',
   e: '<boolean> enable escape',

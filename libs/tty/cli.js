@@ -48,22 +48,26 @@ var typeConfig = {
       所有命令行都会默认带上 help 和 version，如果你不想要它们，
       可以在 opts 中将它们的值设置成 false
 
-    - 支持子命令，即将 key 对应的 value 设置 function 或者 {desc: String, comand: Function} 的形式，
+    - 支持子命令，value 可以是
+      * comandFunction
+      * {desc: String, comand: Function}
+
       另外 key 也支持 str1:str2... 这样的别名形式
 
   配置项：
-    - showHelpOnError:    解析参数失败时不显示帮助信息
-    - strict:             遇到无法解析的 option 是否要报错
+    - showHelpOnError:            解析参数失败时不显示帮助信息
+    - stopParseOnFirstNoOption:   在遇到第一个非 option 参数时就停止解析（很适用于运行子程序）
+    - strict:                     遇到无法解析的 option 是否要报错
 
   其它：https://github.com/yargs/yargs#parsing-tricks
     - 解析到 "--" 就停止解析
-    - array 类型的参数支持重复设置，其它类型的参数会被覆盖
+    - array 类型的参数支持重复设置，其它类型的参数会被覆盖，array 形式的 option 如果不加参数会返回空数组
     - 支持短标签加数字的快捷方式，如 "-n100"，前提是 "-n" 需要是 number 类型
 
 
   有 help 的话默认会加上 h 的别名
   有 version 的话默认会加上 v 的别名
-  help 和 version 在 help option 的最后显示
+  help 和 version 在 help option 的最后显示（依赖于 Object.keys 的结果）
   默认显示短名称在最前面（直接使用数组的字符串排序）
  */
 
@@ -75,6 +79,7 @@ function Cli(opts, args, main) {
     args = process.argv.slice(2)
   }
 
+  this.stopParseOnFirstNoOption = Cli.stopParseOnFirstNoOption
   this.showHelpOnError = Cli.showHelpOnError
   this.strict = Cli.strict
   this._ = []
@@ -296,6 +301,8 @@ function parse(args) {
       // 处理非 option
       cv(arg)
     }
+
+    if (_.length && this.stopParseOnFirstNoOption) stopped = true
   }
 
   var conf = this.conf
