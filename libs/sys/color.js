@@ -43,10 +43,10 @@ var colorMatcher = {
     return ansi
   },
   onEnd: function () {
-    return module.exports.autoResetAtEnd ? reset() : ''
+    return clog.autoResetAtEnd ? reset() : ''
   },
   onFormatEnd: function () {
-    return module.exports.autoResetAtFormated ? reset() : ''
+    return clog.autoResetAtFormated ? reset() : ''
   },
   onEachFormatEnd: function (arg) {
     if (this !== arg.matcher) {
@@ -64,13 +64,8 @@ var colorMatcher = {
 // format('Are %cyou%c ok', 'color.red.bg.yellow', 'color.reset');
 var format = require('./extendFormat')(colorMatcher)
 
-
-module.exports = function () {
-  console.log(format.apply(null, arguments))
-}
-
 // 是否在 console.log 的结尾重置颜色
-module.exports.autoResetAtEnd = true
+clog.autoResetAtEnd = true
 
 // 是否在每将 format 完一轮之后就重置颜色
 //
@@ -79,16 +74,21 @@ module.exports.autoResetAtEnd = true
 //    - Are %s ok
 //    - I am %s
 // 如果将下面的 bool 设置成 true，则上面每个模板替换完之后都会 reset 一下
-module.exports.autoResetAtFormated = true
+clog.autoResetAtFormated = true
 
-module.exports.format = format
-module.exports.colorMatcher = colorMatcher
-module.exports.parseColor = parseColor // 提供给 xlog.js 使用
+clog.format = format
+clog.colorMatcher = colorMatcher // 提供给 xlog.js 使用
+clog.parseColor = parseColor
 
 
 // console.log(format('%caaaa %s cccc', 'red', '\x1b[35mbbbbb', 'dddd'))
 // console.log('eeee')
 
+module.exports = clog
+
+function clog() {
+  console.log(format.apply(null, arguments))
+}
 
 // c. 或者 color. 表示设置前景色
 // b. bg. 或者 background. 表示设置背景色
@@ -106,7 +106,7 @@ function parseColor(color) {
   }
 
   return color
-    .split(/[\.,;\s]+/)
+    .split(/[\{\}\.,:;\s]+/)
     .map(function (raw) {
       var k = raw.toLowerCase();
 
