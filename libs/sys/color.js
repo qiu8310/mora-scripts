@@ -1,6 +1,9 @@
 var util = require('util')
 var hasAnsiColorRegExp = require('../tty/stripAnsi').gre
 
+var bgRE = /^(?:bg|background)(\w+)$/
+var resetModifRE = /^(?:r|reset)(\w+)$/
+
 var PREFIX = '\x1b[', SUFFIX = 'm',
   RESET = PREFIX + '0' + SUFFIX,
   MODIFIERS = {   // reset
@@ -83,11 +86,8 @@ module.exports.colorMatcher = colorMatcher
 module.exports.parseColor = parseColor // 提供给 xlog.js 使用
 
 
-
 // console.log(format('%caaaa %s cccc', 'red', '\x1b[35mbbbbb', 'dddd'))
 // console.log('eeee')
-
-
 
 
 // c. 或者 color. 表示设置前景色
@@ -95,32 +95,42 @@ module.exports.parseColor = parseColor // 提供给 xlog.js 使用
 // h. l. 或者 high. low. 可以设置成使用 high intensity 相关的颜色
 // 每次切换 color 或者 background 都会自动将 high 设置成 false (high intensity color 兼容性不好)
 // 而 MODIFIERS 可以随便加，不加前缀时默认使用 color.
+
 function parseColor(color) {
   color = String(color)
 
   var bg = false;
   var high = false;
+  var getNamedColorValue = function (key, forceBG) {
+    return (high ? 60 : 0) + (bg || forceBG ? 40 : 30) + NAMES.indexOf(key)
+  }
 
   return color
     .split(/[\.,;\s]+/)
     .map(function (raw) {
       var k = raw.toLowerCase();
 
+      // 空字符串
+      if (!k) return ;
+
       // 重置
-      if (k === 'reset' || k === 'end') return 0;
+      else if (k === 'reset' || k === 'end') return 0;
 
       // 修改状态
-      else if (k === 'c' || k === 'color') { bg = false; high = false; }
-      else if (k === 'b' || k === 'bg' || k === 'background') { bg = true; high = false; }
-      else if (k === 'h' || k === 'high') high = true;
-      else if (k === 'l' || k === 'low') high = false;
+      else if (k === 'h' || k === 'high')                       { high = true;  }
+      else if (k === 'l' || k === 'low')                        { high = false; }
+      else if (k === 'c' || k === 'color')                      { high = false; bg = false; }
+      else if (k === 'b' || k === 'bg' || k === 'background')   { high = false; bg = true;  }
 
       // 修改颜色
-      else if (k in MODIFIERS) return MODIFIERS[k];
-      else if (k[0] === 'r' && k.substr(1) in MODIFIERS) return 20 + MODIFIERS[k.substr(1)]; // reset modifier 兼容性不好，少用
-      else if (k === 'default') return bg ? 49 : 39;
-      else if (NAMES.indexOf(k) >= 0) return (high ? 60 : 0) + (bg ? 40 : 30) + NAMES.indexOf(k);
-      else if (raw) return raw; // 用户可以自己直接写 ASCII 编码
+      else if (k in MODIFIERS)                                  return MODIFIERS[k];
+      else if (k === 'default')                                 return bg ? 49 : 39;
+      else if (NAMES.indexOf(k) >= 0)                           return getNamedColorValue(k);
+      else if (resetModifRE.test(k) && RegExp.$1 in MODIFIERS)  return 20 + MODIFIERS[RegExp.$1]; // reset modifier 兼容性不好，少用
+      else if (bgRE.test(k) && NAMES.indexOf(RegExp.$1) >= 0)   return getNamedColorValue(RegExp.$1, true);
+
+      // 其它
+      else return raw; // 用户可以自己直接写 ASCII 编码
     })
     .map(function (n) {
       return n == null || n === '' ? '' : PREFIX + n + SUFFIX
