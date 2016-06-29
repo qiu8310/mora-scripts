@@ -19,38 +19,59 @@ var rootDir = path.dirname(pkgFile);
 
 var pkg = require(pkgFile);
 var reEnvArg = /^(\w+)=(?:'(.+)'|"(.+)"|(.+))$/;
+var reOptArg = /^(?:-(\w)|--(\w+))$/;
 var rePkgArgs, pkgPrefixLength, addedEnvs = [];
 
-var env = assign({}, process.env), cmd, args = [];
+var env = assign({}, process.env), cmd, args = [], bins = {};
 
 addEnvPath(env, path.join(rootDir, 'node_modules', '.bin'))
 addEnvPath(env, path.join(rootDir, 'bin'))
 buildPkgRe('pkg')
 
-var ignoreNext;
-process.argv.slice(2).map(function (arg, i, all) {
-  if (ignoreNext) {
-    ignoreNext = false;
-    return ;
-  }
+if (pkg.bin) {
+  if (typeof pkg.bin === 'string') bins[pkg.name] = pkg.bin
+  else if (typeof pkg.bin === 'object') bins = pkg.bin
+}
 
-  if (reEnvArg.test(arg)) {
-    var envKey = RegExp.$1;
-    var envVal = RegExp.$2 || RegExp.$3 || RegExp.$4;
-    env[envKey] = envVal;
-    addedEnvs.push(info.format(envKey + '=' + quoteShellArg(envVal)));
-  } else if (arg[0] !== '-' && !cmd) {
-    cmd = arg
-  } else {
-    // 这个参数只是给 cli/run.js 用的，所以要放在 cmd 前端
-    if (['--prefix', '-p'].indexOf(arg) >= 0 && !cmd && all[i + 1]) {
-      ignoreNext = true
-      buildPkgRe(all[i + 1])
+var consumer, consumerArgs;
+var consumers = {
+  // 可以指定 --prefix 或者 -p 选项
+  prefix: { expectArgs: 1, handle: buildPkgRe }
+}
+
+// consumer alias
+consumers.p = consumers.prefix
+
+var all = process.argv.slice(2), i, arg, envKey, envVal
+
+for (i = 0; i < all.length; i++) {
+  arg = all[i]
+  if (!cmd) {
+    if (reEnvArg.test(arg)) {
+      envKey = RegExp.$1
+      envVal = RegExp.$2 || RegExp.$3 || RegExp.$4
+      env[envKey] = envVal
+      addedEnvs.push(info.format(envKey + '=' + quoteShellArg(envVal)))
+    } else if (reOptArg.test(arg)) {
+      consumer = consumers[RegExp.$1 || RegExp.$2]
+      if (consumer && all[i + consumer.expectArgs]) {
+        consumerArgs = []
+        while (consumerArgs.length !== consumer.expectArgs) {
+          consumerArgs.push(all[++i])
+        }
+        consumer.handle.apply(consumer, consumerArgs)
+      } else {
+        warn('Illegal option ' + arg)
+        process.exit(1)
+      }
     } else {
-      args.push(arg[0] === '-' ? arg : recursiveRepalcePkgArgs(arg))
+      cmd = arg in bins ? bins[arg] : arg
     }
+  } else {
+    args.push(arg[0] === '-' ? arg : recursiveRepalcePkgArgs(arg))
   }
-})
+}
+
 
 // 输出当前运行的命令
 console.log(
