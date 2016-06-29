@@ -1,6 +1,7 @@
 # mora-scripts
 
 [![Build Status](https://img.shields.io/travis/qiu8310/mora-scripts/master.svg)](https://travis-ci.org/qiu8310/mora-scripts)
+[![Build Status](https://img.shields.io/appveyor/ci/qiu8310/mora-scripts/master.svg)](https://ci.appveyor.com/project/qiu8310/mora-scripts)
 [![Coverage Status](https://img.shields.io/codecov/c/github/qiu8310/mora-scripts/master.svg)](https://codecov.io/gh/qiu8310/mora-scripts)
 
 ## TODO
