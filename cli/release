@@ -1,0 +1,27 @@
+#!/usr/bin/env node
+
+// https://github.com/conventional-changelog/standard-version
+// https://github.com/semantic-release/semantic-release
+
+
+/*
+
+when you land commits on your master branch, select the Squash and Merge option.
+add a title and body that follows the conventional-changelog-standard conventions.
+
+when you're ready to release to npm:
+  git checkout master; git pull origin master
+  run npm test
+  run standard-version
+  git push --follow-tags origin master; npm publish
+
+*/
+
+/*
+standard-version does the following:
+
+  bumps the version in package.json (based on your commit history)
+  uses conventional-changelog to update CHANGELOG.md
+  commits package.json and CHANGELOG.md
+  tags a new release
+*/

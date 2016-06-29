@@ -1,0 +1,15 @@
+language: node_js
+env: CI=true
+sudo: false
+
+node_js:
+  - "6.0"
+  - "5.3"
+  - "4.2"
+  - "0.12"
+after_script:
+  - npm run coverage
+notifications:
+  email:
+    - qiuzhongleiabc@126.com
+

@@ -9,7 +9,9 @@
     "preversion": "npm test",
     "version": "cli/puts '%cyou can run build and add build file to git in here' cyan",
     "postversion": "git push --follow-tags && npm publish && cli/run cnpm sync pkg.name",
-    "test": "npm run test:run:env && npm run test:run:base && npm run test:run:prefix && npm run test:libs:color && cli/puts -e '%c\\nAll OK!' green.bold",
+    "test": "nyc mocha **/__*.js",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
+
     "test:libs:color": "cli/run node test/test-libs-color",
     "test:run:env": "cli/run a=a b='b b' c='* .' node test/test-cli-run-env",
     "test:run:base": "cli/run ENV='run test' node test/test-cli-run-base -v pkg.version --bar pkg.args.bar",
@@ -25,7 +27,10 @@
     "puts": "cli/pubs",
     "commit-msg-help": "cli/commit-msg-help"
   },
-  "keywords": ["mora", "collection"],
+  "keywords": [
+    "mora",
+    "collection"
+  ],
   "author": "Mora <qiuzhongleiabc@126.com>",
   "repository": {
     "type": "git",
@@ -44,5 +49,19 @@
       },
       "post-merge": "hooks/post-merge.js"
     }
+  },
+  "nyc": {
+    "check-coverage": true,
+    "lines": 100,
+    "functions": 100,
+    "branches": 100,
+    "exclude": [
+      "**/__*.js"
+    ]
+  },
+  "devDependencies": {
+    "codecov": "1.0.1",
+    "mocha": "2.5.3",
+    "nyc": "6.6.1"
   }
 }

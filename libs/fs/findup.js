@@ -24,7 +24,7 @@ function findup(dir, iteratorSync, options) {
     dir = path.join(dir, '..');
   }
   throw new Error('not found');
-};
+}
 
 function _find(root, file, type) {
   if (file == null) {

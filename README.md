@@ -1,5 +1,11 @@
 # mora-scripts
 
+## TODO
+
+* 写测试
+* 写文档（文档写在源代码里，通过工具生成 markdown）
+* 生成单独的 package，以 ms- 开头，如 ms-fs-exists
+
 ## cli
 
 ### run

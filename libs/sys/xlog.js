@@ -1,4 +1,4 @@
-
+var util = require('util')
 var extend = require('./extendFormat')
 var clog = require('./color')
 var cliTextSize = require('../tty/cliTextSize')
@@ -8,23 +8,29 @@ var format = xlog.format = extend([
   {
     match: /%\d+\.?(?:\d+)?s/,
     handle: alignString
-  }
-])
-
-
-Object.defineProperties(xlog, {
-  autoResetAtEnd: {
-    enumerable: true,
-    configurable: true,
-    set: function (val) { clog.autoResetAtEnd = !!val },
-    get: function () { return clog.autoResetAtEnd }
   },
-  autoResetAtFormated: {
+  {
+    match: /%o/,
+    handle: function (val) {
+      return util.format('%j', val)
+    }
+  },
+  {
+    match: /%f/,
+    handle: function (val) {
+      return util.format('%d', val)
+    }
+  }
+]);
+
+
+['autoResetAtEnd', 'autoResetAtFormated', 'NAMED_COLORS'].forEach(function (k) {
+  Object.defineProperty(xlog, k, {
     enumerable: true,
     configurable: true,
-    set: function (val) { clog.autoResetAtFormated = !!val },
-    get: function () { return clog.autoResetAtFormated }
-  }
+    set: function (val) { clog[k] = val },
+    get: function () { return clog[k] }
+  })
 })
 
 
