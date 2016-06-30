@@ -9,9 +9,11 @@
     "preversion": "npm test",
     "version": "cli/puts '%cyou can run build and add build file to git in here' cyan",
     "postversion": "git push --follow-tags && npm publish && cli/run cnpm sync pkg.name",
-    "test": "nyc mocha **/__*.js",
+    "lint": "standard libs/fs/*.js libs/fs/**/*.js",
+    "test": "nyc _mocha **/test/__*.js",
+    "report": "nyc report --reporter=html",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-
+    "docs": "jsdoc -c ./jsdoc.json libs/fs/**",
     "test:libs:color": "cli/run node test/test-libs-color",
     "test:run:env": "cli/run a=a b='b b' c='* .' node test/test-cli-run-env",
     "test:run:base": "cli/run ENV='run test' node test/test-cli-run-base -v pkg.version --bar pkg.args.bar",
@@ -41,6 +43,12 @@
     "cross-spawn": "^4.0.0",
     "semver-regex": "1.0.0"
   },
+  "devDependencies": {
+    "codecov": "1.0.1",
+    "docdash": "web-build-hub/docdash",
+    "mocha": "2.5.3",
+    "nyc": "6.6.1"
+  },
   "config": {
     "hooks": {
       "commit-msg": {
@@ -51,17 +59,33 @@
     }
   },
   "nyc": {
-    "check-coverage": true,
+    "check-coverage": false,
     "lines": 100,
     "functions": 100,
     "branches": 100,
+    "report-dir": "externals/coverage",
+    "include": [
+      "cli/*",
+      "libs/**/*.js",
+      "js/**"
+    ],
     "exclude": [
-      "**/__*.js"
+      "**/__*.js",
+      "test/**/*.*"
     ]
   },
-  "devDependencies": {
-    "codecov": "1.0.1",
-    "mocha": "2.5.3",
-    "nyc": "6.6.1"
+  "standard": {
+    "ignore": [
+      "/externals/**",
+      ".*"
+    ],
+    "globals": [
+      "it",
+      "describe",
+      "context",
+      "xit",
+      "xdescribe",
+      "xcontext"
+    ]
   }
 }

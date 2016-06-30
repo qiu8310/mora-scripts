@@ -1,0 +1,10 @@
+# If you want to include something that is excluded by your .gitignore file,
+# you can create an empty .npmignore file to override it.
+# Like git, npm looks for .npmignore and .gitignore files in all
+# subdirectories of your package, not only the root directory.
+
+# ignore everything
+*
+
+# except this file
+!.gitignore

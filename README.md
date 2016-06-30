@@ -1,14 +1,17 @@
 # mora-scripts
 
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 [![Build Status](https://img.shields.io/travis/qiu8310/mora-scripts/master.svg)](https://travis-ci.org/qiu8310/mora-scripts)
-[![Build Status](https://img.shields.io/appveyor/ci/qiu8310/mora-scripts/master.svg)](https://ci.appveyor.com/project/qiu8310/mora-scripts)
+[![Build status](https://ci.appveyor.com/api/projects/status/90txwxbg4mo3hlc1/branch/master?svg=true)](https://ci.appveyor.com/project/qiu8310/mora-scripts/branch/master)
 [![Coverage Status](https://img.shields.io/codecov/c/github/qiu8310/mora-scripts/master.svg)](https://codecov.io/gh/qiu8310/mora-scripts)
 
 ## TODO
 
+* lint
 * 写测试
 * 写文档（文档写在源代码里，通过工具生成 markdown）
 * 生成单独的 package，以 ms- 开头，如 ms-fs-exists
+* test 需要使用其它资源的话统一放 test 下的 fixtures 文件夹下
 
 ## cli
 

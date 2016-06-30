@@ -1,13 +1,10 @@
 var assert = require('assert')
 var path = require('path')
-var fs = require('fs')
 var exists = require('../exists')
 
-
 describe('libs/fs/exists', function () {
-
   context('without type argument', function () {
-    var file;
+    var file
 
     it('should return true if file exists', function () {
       file = __filename
@@ -21,15 +18,12 @@ describe('libs/fs/exists', function () {
       file = path.join(__dirname, Math.random().toString())
       assert.equal(exists(file), false, 'expect file ' + file + ' not exists')
 
-      file = __filename + 'xx'
+      file = path.join(__filename, 'not_exists')
       assert.equal(exists(file), false, 'expect file ' + file + ' not exists')
     })
   })
 
   context('with one type argument', function () {
-
-    var file, dir;
-
     it('should return exactly the same if `type` is "file" or null', function () {
       assert.equal(exists(__filename, 'file'), exists(__filename, null))
     })
@@ -40,7 +34,7 @@ describe('libs/fs/exists', function () {
 
     it('should return directory exists', function () {
       assert.equal(exists(__dirname, 'directory'), true)
-      assert.equal(exists(__dirname + 'xx', 'directory'), false)
+      assert.equal(exists(path.join(__dirname, 'not_exists'), 'directory'), false)
     })
   })
 
