@@ -1,5 +1,5 @@
 var os = require('os')
-var clog = require('./../sys/color')
+var clog = require('./../sys/clog')
 var table = require('./table')
 var assign = require('./../lang/assign')
 var re = /^\s*<(bool|str|num|arr|count)[a-z]*>\s*(.*)$/

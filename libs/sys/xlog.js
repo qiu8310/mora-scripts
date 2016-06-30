@@ -1,6 +1,6 @@
 var util = require('util')
 var extend = require('./extendFormat')
-var clog = require('./color')
+var clog = require('./clog')
 var cliTextSize = require('../tty/cliTextSize')
 
 var format = xlog.format = extend([
