@@ -47,7 +47,8 @@
   "config": {
     "hooks": {
       "commit-msg": true,
-      "post-merge": true
+      "post-merge": true,
+      "pre-push": true
     }
   },
   "nyc": {
