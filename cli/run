@@ -4,7 +4,7 @@ var path = require('path');
 var spawn = require('cross-spawn');
 var assign = require('../libs/lang/assign');
 var findup = require('../libs/fs/findup');
-var dotProp = require('../libs/lang/dotProp');
+var dotPropGet = require('../libs/lang/DotPropx').get;
 var addEnvPath = require('../libs/sys/addEnvPath');
 var escapeRegExp = require('../libs/lang/escapeRegExp');
 var warn = require('../libs/sys/warn');
@@ -85,7 +85,7 @@ else warn('No command to run with !')
 function recursiveRepalcePkgArgs(str) {
   if (!str) return '';
   return str.replace(rePkgArgs, function (raw, prefix, path) {
-    return prefix + recursiveRepalcePkgArgs(dotProp(pkg, path.substr(pkgPrefixLength)));
+    return prefix + recursiveRepalcePkgArgs(dotPropGet(pkg, path.substr(pkgPrefixLength)));
   });
 }
 

@@ -7,7 +7,7 @@
   参考： https://github.com/sindresorhus/dot-prop
  */
 
-module.exports = function (obj, path) {
+exports.get = function (obj, path) {
   if (!isObj(obj) || typeof path !== 'string') {
     return obj
   }
