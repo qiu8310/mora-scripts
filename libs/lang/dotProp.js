@@ -4,18 +4,20 @@
 
 module.exports = function (obj, path) {
   if (!isObj(obj) || typeof path !== 'string') {
-    return obj;
+    return obj
   }
 
-  var pathArr = getPathSegments(path);
+  var pathArr = getPathSegments(path)
 
   for (var i = 0; i < pathArr.length; i++) {
-    var descriptor = Object.getOwnPropertyDescriptor(obj, pathArr[i]) || Object.getOwnPropertyDescriptor(Object.prototype, pathArr[i]);
+    var descriptor = Object.getOwnPropertyDescriptor(obj, pathArr[i]) ||
+                     Object.getOwnPropertyDescriptor(Object.prototype, pathArr[i])
+
     if (descriptor && !descriptor.enumerable) {
-      return;
+      return
     }
 
-    obj = obj[pathArr[i]];
+    obj = obj[pathArr[i]]
 
     if (obj === undefined || obj === null) {
       // `obj` is either `undefined` or `null` so we want to stop the loop, and
@@ -24,35 +26,36 @@ module.exports = function (obj, path) {
       // it would return `null` if `obj` is `null`
       // but we want `get({foo: null}, 'foo.bar')` to equal `undefined` not `null`
       if (i !== pathArr.length - 1) {
-        return undefined;
+        return
       }
 
-      break;
+      break
     }
   }
 
-  return obj;
+  return obj
 }
 
-function isObj(x) {
-  var type = typeof x;
-  return x !== null && (type === 'object' || type === 'function');
+function isObj (x) {
+  var type = typeof x
+  return x !== null && (type === 'object' || type === 'function')
 }
 
-function getPathSegments(path) {
-  var pathArr = path.split('.');
-  var p, parts = [];
+function getPathSegments (path) {
+  var p
+  var parts = []
+  var pathArr = path.split('.')
 
   for (var i = 0; i < pathArr.length; i++) {
-    p = pathArr[i];
+    p = pathArr[i]
 
     while (p[p.length - 1] === '\\' && pathArr[i + 1] !== undefined) {
-      p = p.slice(0, -1) + '.';
-      p += pathArr[++i];
+      p = p.slice(0, -1) + '.'
+      p += pathArr[++i]
     }
 
-    parts.push(p);
+    parts.push(p)
   }
 
-  return parts;
+  return parts
 }

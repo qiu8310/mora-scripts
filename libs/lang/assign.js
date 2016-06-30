@@ -6,16 +6,17 @@
   我这版本比较简单
  */
 
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+var hasOwnProperty = Object.prototype.hasOwnProperty
+var propIsEnumerable = Object.prototype.propertyIsEnumerable
 
 module.exports = Object.assign || function (target) {
   if (target == null) throw new TypeError('Object.assign cannot be called with null or undefined')
 
-  var i, j, k, from, to = Object(target)
+  var i, j, k, from, symbols
+  var to = Object(target)
 
   for (i = 1; i < arguments.length; i++) {
-    from = Object(arguments[i]);
+    from = Object(arguments[i])
 
     for (k in from) {
       if (hasOwnProperty.call(from, k)) to[k] = from[k]
@@ -29,6 +30,6 @@ module.exports = Object.assign || function (target) {
     }
   }
 
-  return to;
+  return to
 }
 
