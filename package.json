@@ -11,14 +11,15 @@
     "postversion": "git push --follow-tags && npm publish && cli/run cnpm sync pkg.name",
     "lint": "standard libs/lang/*.js",
     "test": "nyc _mocha **/test/__*.js",
-    "report": "nyc report --reporter=html",
+    "test:watch": "mocha --watch **/test/__*.js",
+    "report:html": "nyc report --reporter=html",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "docs": "jsdoc -c ./jsdoc.json libs/fs/** libs/lang/**"
   },
   "bin": {
-    "hooks": "hooks/scripts/install.js",
     "run": "cli/run",
-    "puts": "cli/pubs",
+    "puts": "cli/puts",
+    "hooks": "hooks/scripts/install.js",
     "commit-msg-help": "cli/commit-msg-help"
   },
   "keywords": [
@@ -61,14 +62,14 @@
       "js/**"
     ],
     "exclude": [
+      "externals/**",
       "**/__*.js",
       "test/**/*.*"
     ]
   },
   "standard": {
     "ignore": [
-      "/externals/**",
-      ".*"
+      "externals/**"
     ],
     "globals": [
       "it",

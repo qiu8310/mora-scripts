@@ -10,7 +10,7 @@
  * @return  {String}
  *
  * @author  Zhonglei Qiu
- * @since   1.5.0
+ * @since   2.0.0
  */
 module.exports = function (any) {
   return Object.prototype.toString.call(any)

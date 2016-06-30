@@ -1,4 +1,4 @@
 node_modules/
 .nyc_output/
 externals/docs/
-externals/coverage
+externals/coverage/
