@@ -151,7 +151,7 @@ function parseColor(color) {
       else if (bgRE.test(k) && NAMES.indexOf(RegExp.$1) >= 0)   return getNamedColorValue(RegExp.$1, true);
 
       // hex 颜色
-      else if (k in NAMED_COLORS) return getHexColor(NAMED_COLORS[k], bg);
+      else if (k in clog.NAMED_COLORS) return getHexColor(clog.NAMED_COLORS[k], bg);
       else if (hexRE.test(k)) return getHexColor(k, bg);
 
       // 其它

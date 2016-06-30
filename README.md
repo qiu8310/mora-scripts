@@ -8,6 +8,7 @@
 ## TODO
 
 * 生成单独的 package，以 ms- 开头，如 ms-fs-exists
+* 统一 new Error 中的字符串参数首字母要大写，且最后不要带标点符号
 
 
 ## cli
