@@ -3,7 +3,8 @@ var path = require('path')
 var exists = require('./exists')
 
 /**
- * @module libs/fs/findup
+ * @module      libs/fs/findup
+ * @createdAt   2016-06-30
  */
 
 /**
@@ -22,7 +23,7 @@ var exists = require('./exists')
  * @return {String}           查找到的满足条件的文件夹路径
  *
  * @author    Zhongle Qiu
- * @since     1.5.0
+ * @since     2.0.0
  *
  */
 module.exports = function (dir, iteratorSync, options) {

@@ -1,7 +1,7 @@
 {
   "name": "mora-scripts",
   "version": "1.5.0",
-  "description": "Some scripts for my own use",
+  "description": "Some collection scripts by myself",
   "scripts": {
     "postinstall": "node hooks/scripts/install",
     "postuninstall": "node hooks/scripts/install --reverse",
@@ -13,15 +13,7 @@
     "test": "nyc _mocha **/test/__*.js",
     "report": "nyc report --reporter=html",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-    "docs": "jsdoc -c ./jsdoc.json libs/fs/**",
-    "test:libs:color": "cli/run node test/test-libs-color",
-    "test:run:env": "cli/run a=a b='b b' c='* .' node test/test-cli-run-env",
-    "test:run:base": "cli/run ENV='run test' node test/test-cli-run-base -v pkg.version --bar pkg.args.bar",
-    "test:run:prefix": "cli/run --prefix % node test/test-cli-run-prefix -v %.version --foo '** %.args.foo **'"
-  },
-  "args": {
-    "foo": "I am foo",
-    "bar": "args.foo: pkg.args.foo"
+    "docs": "jsdoc -c ./jsdoc.json libs/fs/** libs/lang/**"
   },
   "bin": {
     "hooks": "hooks/scripts/install.js",
@@ -31,6 +23,7 @@
   },
   "keywords": [
     "mora",
+    "scripts",
     "collection"
   ],
   "author": "Mora <qiuzhongleiabc@126.com>",
@@ -47,15 +40,13 @@
     "codecov": "1.0.1",
     "docdash": "web-build-hub/docdash",
     "mocha": "2.5.3",
-    "nyc": "6.6.1"
+    "nyc": "6.6.1",
+    "standard": "7.1.2"
   },
   "config": {
     "hooks": {
-      "commit-msg": {
-        "command": "hooks/commit-msg.js",
-        "showHelp": false
-      },
-      "post-merge": "hooks/post-merge.js"
+      "commit-msg": true,
+      "post-merge": true
     }
   },
   "nyc": {

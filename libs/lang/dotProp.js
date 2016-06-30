@@ -1,3 +1,8 @@
+/**
+ * @module      libs/lang/dotProp
+ * @createdAt   2016-06-30
+ */
+
 /*
   参考： https://github.com/sindresorhus/dot-prop
  */

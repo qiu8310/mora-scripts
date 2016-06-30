@@ -66,11 +66,11 @@ function warnAboutGit() {
   warn(
     '\nThis does not seem to be a git project.\n' +
     '===========================================================\n\n' +
-    'Although ghooks was installed, the actual git hooks have not.\n' +
+    'Although mora-scripts was installed, the actual hooks have not.\n' +
     'Please run the following command manually:\n\n' +
     '\tgit init\n' +
     '\tnpm explore mora-scripts -- npm run postinstall\n\n' +
-    'Please ignore this message if you are not using ghooks directly.\n'
+    'Please ignore this message if you are not using mora-scripts/hooks directly.\n'
   )
 }
 

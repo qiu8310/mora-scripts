@@ -1,7 +1,8 @@
 var fs = require('fs')
 
 /**
- * @module libs/fs/exists
+ * @module      libs/fs/exists
+ * @createdAt   2016-06-30
  */
 
 /**
@@ -33,7 +34,7 @@ var fs = require('fs')
  *
  *
  * @author    Zhongle Qiu
- * @since     1.5.0
+ * @since     2.0.0
  *
  */
 module.exports = function (filepath, allowTypes) {
