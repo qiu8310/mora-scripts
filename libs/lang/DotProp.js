@@ -1,5 +1,5 @@
 /**
- * @module      libs/lang/dotProp
+ * @module      libs/lang/DotProp
  * @createdAt   2016-06-30
  */
 

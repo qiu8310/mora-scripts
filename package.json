@@ -14,7 +14,7 @@
     "test:watch": "mocha --watch **/test/__*.js",
     "report:html": "nyc report --reporter=html",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-    "docs": "jsdoc -c ./jsdoc.json libs/fs/** libs/lang/**"
+    "docs": "jsdoc -c ./jsdoc.json"
   },
   "bin": {
     "run": "cli/run",

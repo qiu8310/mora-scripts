@@ -1,14 +1,37 @@
 {
+  "tags": {
+    "allowUnknownTags": true
+  },
   "opts": {
     "encoding": "utf8",
     "destination": "externals/docs/",
     "template": "node_modules/docdash",
-    "recurse": true
+    "recurse": true,
+    "verbose": true
+  },
+  "source": {
+    "include": [
+      "libs/lang/",
+      "libs/fs/"
+    ],
+    "excludePattern": "(node_modules/|external/|test/)"
   },
   "plugins": [
     "plugins/markdown"
   ],
   "markdown": {
     "idInHeadings": true
+  },
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false,
+    "default": {
+      "outputSourceFiles": true,
+      "includeDate": true
+    }
+  },
+  "docdash": {
+    "static": true,
+    "sort": false
   }
 }
