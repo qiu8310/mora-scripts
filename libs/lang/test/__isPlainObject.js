@@ -3,7 +3,7 @@ var isPlainObject = require('../isPlainObject')
 
 /* eslint-env mocha */
 
-describe('libs/lang/isObject', function () {
+describe('libs/lang/isPlainObject', function () {
   it('should returns true on plain object', function () {
     assert.equal(isPlainObject({}),       true, 'empty object is plain object')
     assert.equal(isPlainObject({a: 11}),  true, 'no empty object is also plain object')

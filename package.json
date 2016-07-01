@@ -72,7 +72,6 @@
     "ignore": [
       "externals/**"
     ],
-    "globals": [
-    ]
+    "globals": []
   }
 }
