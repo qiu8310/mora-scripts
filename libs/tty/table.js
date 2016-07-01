@@ -16,7 +16,7 @@ if (stream.getWindowSize) SCREEN_WIDTH = stream.getWindowSize()[0]
   n 列宽度如果大于 SCREEN_WIDTH，则最宽的一列自动适应
  */
 module.exports = function (rows) {
-  if (!rows || !rows.length || !rows[0].length) return '';
+  if (!rows || !rows.length || !rows[0].length) return ''
 
   var maxCellHeights = new Array(rows.length)  // 同一行中， cell 占位最多的高度
 
@@ -44,7 +44,8 @@ module.exports = function (rows) {
 
   // 保证每个 cell 的宽度和高度一致
   each(rows, function (val, opt) {
-    var i, l = val.length
+    var i
+    var l = val.length
 
     // 统一高度
     for (i = 0; i < maxCellHeights[opt.r] - l; i++) {
@@ -61,7 +62,8 @@ module.exports = function (rows) {
   })
 
   // 组装
-  var r, c, j, result = [], row
+  var r, c, j, row
+  var result = []
 
   for (r = 0; r < rows.length; r++) {
     for (j = 0; j < maxCellHeights[r]; j++) {
@@ -73,13 +75,12 @@ module.exports = function (rows) {
     }
   }
 
-  return result.join(os.EOL);
+  return result.join(os.EOL)
 }
 
-
 // 限制 cell 的宽度，过长就将它裁断
-function wrapCell(cell, size) {
-  if (size <= 0) return cell;
+function wrapCell (cell, size) {
+  if (size <= 0) return cell
 
   var res = []
   cell.forEach(function (str) {
@@ -93,8 +94,9 @@ function wrapCell(cell, size) {
 }
 
 // 限制 string 的宽度，过长就将它裁断
-function wrapStr(str, size) {
-  var rows = [], ansis = []
+function wrapStr (str, size) {
+  var rows = []
+  var ansis = []
 
   // str 中可能包含 ansi 控制字符
   // 要先备份其位置
@@ -103,7 +105,8 @@ function wrapStr(str, size) {
     return ''
   })
 
-  var data = [], cps = decode(str);
+  var data = []
+  var cps = decode(str)
 
   cps.forEach(function (cp, i) {
     var char = encode([cp])
@@ -113,8 +116,15 @@ function wrapStr(str, size) {
     })
   })
 
-  var i, str = '', len = 0, ansi, ai;
-  var fetchAnsi = function () { var t = ansis.shift(); ai = t && t[0]; ansi = t && t[1]; }
+  var i, ansi, ai
+  var len = 0
+  var fetchAnsi = function () {
+    var t = ansis.shift()
+    ai = t && t[0]
+    ansi = t && t[1]
+  }
+
+  str = ''
   fetchAnsi()
   for (i = 0; i < data.length; i++) {
     if (len + data[i].size > size) {
@@ -126,7 +136,7 @@ function wrapStr(str, size) {
       str += ansi
       fetchAnsi()
     }
-    str +=  data[i].char
+    str += data[i].char
     len += data[i].size
   }
 
@@ -136,11 +146,12 @@ function wrapStr(str, size) {
 }
 
 // 保证 cli 上的颜色不要互相污染
-function wrapColor(cell) {
+function wrapColor (cell) {
   var stack = ''
   var res = []
   cell.forEach(function (str) {
-    var hasAnsi, lastStack = stack
+    var hasAnsi
+    var lastStack = stack
     str.replace(greAnsi, function (ansi) {
       hasAnsi = true
       stack += ansi
@@ -151,11 +162,10 @@ function wrapColor(cell) {
   return res
 }
 
-
-function each(data, fn) {
-  var r, c;
-  var rowSize = data.length;
-  var colSize = data[0].length;
+function each (data, fn) {
+  var r, c
+  var rowSize = data.length
+  var colSize = data[0].length
 
   for (r = 0; r < rowSize; r++) {
     for (c = 0; c < colSize; c++) {
@@ -165,7 +175,7 @@ function each(data, fn) {
 }
 
 // 获取每列中宽度最大的值
-function getMaxWidthsOfEachColumn(rows) {
+function getMaxWidthsOfEachColumn (rows) {
   var result = new Array(rows[0].length)
   each(rows, function (cell, opt) {
     result[opt.c] = Math.max(result[opt.c] || 0, getCellWidth(cell))
@@ -173,23 +183,25 @@ function getMaxWidthsOfEachColumn(rows) {
   return result
 }
 
-function getCellWidth(cell) {
+function getCellWidth (cell) {
   return Math.max.apply(Math, cell.map(cliTextSize))
 }
 
-function space(n) {
+function space (n) {
   if (n < 1) return ''
   return new Array(n + 1).join(' ')
 }
 
-function sum(arr) {
+function sum (arr) {
   return arr.reduce(function (s, i) {
     return s + i
   }, 0)
 }
 
-function maxNumberIndex(arr) {
-  var i, max = 0, res = -1
+function maxNumberIndex (arr) {
+  var i
+  var max = 0
+  var res = -1
   for (i = 0; i < arr.length; i++) {
     if (arr[i] >= max) { // 优先取最后的最大值
       max = arr[i]

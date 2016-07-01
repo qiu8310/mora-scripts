@@ -2,7 +2,7 @@ var assert = require('assert')
 var DotProp = require('../DotProp')
 
 
-describe('DotProp', function () {
+describe('libs/lang/DotProp', function () {
 
   describe('static method', function () {
     var obj

@@ -44,7 +44,6 @@ var isPlainObject = require('../lang/isPlainObject')
     ])
  */
 
-
 // 之前还不想考虑 %% 的情况，因为它不需要处理
 // 后来发现，如果不处理 %%，那么处理 %%c 情况
 // 时就会出错，所以还必须在正则里处理 %% 转义
@@ -55,7 +54,7 @@ var baseMatchers = [
   {match: /%j/}
 ]
 
-function extend(regexp, fn) {
+function extend (regexp, fn) {
   var matchers = regexp
 
   if (isPlainObject(regexp)) {
@@ -68,38 +67,39 @@ function extend(regexp, fn) {
 
   regexp = buildRegExp(matchers.map(function (it) { return it.match }))
 
-  return function format() {
-    var i, parsed, group = [];
+  return function format () {
+    var i, parsed
+    var group = []
     for (i = 0; i < arguments.length; i++) {
       if (!parsed || parsed.argNum === parsed.expectArgNum) {
         if (parsed) {
-          group.push(parsed);
+          group.push(parsed)
         }
-        parsed = parse(matchers, regexp, arguments[i]);
+        parsed = parse(matchers, regexp, arguments[i])
       } else {
-        parsed.templateArgs[parsed.argNum++].value = arguments[i];
+        parsed.templateArgs[parsed.argNum++].value = arguments[i]
       }
     }
-    if (parsed && group.indexOf(parsed) < 0) group.push(parsed);
+    if (parsed && group.indexOf(parsed) < 0) group.push(parsed)
 
-    return hook(matchers, 'onStart', -1, [group])
-          + util.format.apply(util, group.reduce(function (args, parsed, i) {
-              args.push.apply(args, compile(matchers, regexp, parsed));
-              return args;
-            }, []))
-          + hook(matchers, 'onEnd', 1, [group])
+    return hook(matchers, 'onStart', -1, [group]) +
+          util.format.apply(util, group.reduce(function (args, parsed, i) {
+            args.push.apply(args, compile(matchers, regexp, parsed))
+            return args
+          }, [])) +
+          hook(matchers, 'onEnd', 1, [group])
   }
 }
 
-function parse(matchers, regexp, template) {
-  var parsed = {template: template, templateArgs: [], expectArgNum: 0, argNum: 0};
+function parse (matchers, regexp, template) {
+  var parsed = {template: template, templateArgs: [], expectArgNum: 0, argNum: 0}
   if (typeof template === 'string') {
     template.replace(regexp, function (format) {
       var i, matcher
       for (i = 0; i < matchers.length; i++) {
         if (format === arguments[i + 1]) {
           matcher = matchers[i]
-          break;
+          break
         }
       }
 
@@ -110,13 +110,13 @@ function parse(matchers, regexp, template) {
       })
 
       parsed.expectArgNum += 'expectArgNum' in matcher ? matcher.expectArgNum : 1
-    });
+    })
   }
 
   return parsed
 }
 
-function compile(matchers, regexp, parsed) {
+function compile (matchers, regexp, parsed) {
   var result = []
   var template = parsed.template
   var templateArgs = parsed.templateArgs
@@ -132,21 +132,21 @@ function compile(matchers, regexp, parsed) {
         parsed.argNum--
 
         var templateArg = templateArgs.shift()
-          matcher = templateArg.matcher
-          format = templateArg.format
-          value = templateArg.value
+        var matcher = templateArg.matcher
+        var format = templateArg.format
+        var value = templateArg.value
 
         if (matcher.handle) {
-          //注意： 用户 handle 返回的数据不一定都是字符串，但这里的 template 一定是字符串
-          //      所以强制转化成字符串
+          // 注意： 用户 handle 返回的数据不一定都是字符串，但这里的 template 一定是字符串
+          //       所以强制转化成字符串
           raw = String(matcher.handle(value, format))
         } else {
           result.push(value) // 没有 handle 则表示是原生支持的，给原生处理
         }
 
-        return hook(matchers, 'onEachFormatStart', -1, [templateArg, parsed])
-             + raw
-             + hook(matchers, 'onEachFormatEnd',    1, [templateArg, parsed])
+        return hook(matchers, 'onEachFormatStart', -1, [templateArg, parsed]) +
+               raw +
+               hook(matchers, 'onEachFormatEnd', 1, [templateArg, parsed])
       }
     })
 
@@ -154,12 +154,15 @@ function compile(matchers, regexp, parsed) {
     template = prefix + template + suffix
   }
 
-  result.unshift(template);
-  return result;
+  result.unshift(template)
+  return result
 }
 
-function hook(matchers, fn, order, args) {
-  var l = matchers.length, i = l, result = []
+function hook (matchers, fn, order, args) {
+  var l = matchers.length
+  var i = l
+  var result = []
+
   if (order > 0) {
     while (i--) {
       _add(result, _callFn(matchers[i][fn], matchers[i], args))
@@ -172,28 +175,26 @@ function hook(matchers, fn, order, args) {
   return result.join('')
 }
 
-function _add(arr, item) {
+function _add (arr, item) {
   if (item !== undefined) arr.push(String(item))
 }
 
-function _callFn(fn, binder, args) {
+function _callFn (fn, binder, args) {
   if (typeof fn === 'function') return fn.apply(binder, args)
 }
 
-
 // 根据需要 extend 的参数重新生成 正则
-function buildRegExp(regexps) {
+function buildRegExp (regexps) {
   return new RegExp(regexps.map(stringifyRegExp).join('|'), 'g')
 }
 
 // 将用户提供的正则转化成字符串，并去掉首尾以提供给新的正则使用
-function stringifyRegExp(regexp) {
+function stringifyRegExp (regexp) {
   return '(' + regexp.toString().replace(/^\/|\/\w*$/g, '') + ')'
 }
 
-function matcherSort(a, b) {
-  return ('order' in a ? a.order : 100 ) - ('order' in b ? b.order : 100)
+function matcherSort (a, b) {
+  return ('order' in a ? a.order : 100) - ('order' in b ? b.order : 100)
 }
-
 
 module.exports = extend

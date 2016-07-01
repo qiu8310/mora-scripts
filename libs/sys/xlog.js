@@ -23,7 +23,6 @@ var format = xlog.format = extend([
   }
 ]);
 
-
 ['autoResetAtEnd', 'autoResetAtFormated', 'NAMED_COLORS'].forEach(function (k) {
   Object.defineProperty(xlog, k, {
     enumerable: true,
@@ -33,15 +32,17 @@ var format = xlog.format = extend([
   })
 })
 
-
 // %3s    =>  至少有3个字符，没有的话在左边补空格
 // %.3s   =>  至少3个字符，没有的话在右边补空格
 // %1.2s  =>  至少3个字符，不足的话左右两边填充，先填左，再填右，再填右
-function alignString(val, format) {
-  var left, right, diff, space = ' ', flag = true, i
+function alignString (val, format) {
+  var left, right, diff, i
+  var space = ' '
+  var flag = true
+
   format = format.slice(1, -1).split('.')
 
-  left =  parseInt(format[0] || '0', 10)
+  left = parseInt(format[0] || '0', 10)
   right = parseInt(format[1] || '0', 10)
 
   if (left === 0 && right === 0) return val
@@ -64,9 +65,8 @@ function alignString(val, format) {
   return val
 }
 
-
 module.exports = xlog
 
-function xlog() {
+function xlog () {
   console.log(format.apply(null, arguments))
 }

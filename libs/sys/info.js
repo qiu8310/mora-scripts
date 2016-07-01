@@ -1,6 +1,6 @@
 var util = require('util')
 
-function format() {
+function format () {
   return '\x1b[36m' + util.format.apply(util, arguments) + '\x1b[0m'
 }
 

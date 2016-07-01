@@ -1,4 +1,3 @@
-var os = require('os')
 var clog = require('./../sys/clog')
 var table = require('./table')
 var assign = require('./../lang/assign')
@@ -64,14 +63,13 @@ var typeConfig = {
     - array 类型的参数支持重复设置，其它类型的参数会被覆盖，array 形式的 option 如果不加参数会返回空数组
     - 支持短标签加数字的快捷方式，如 "-n100"，前提是 "-n" 需要是 number 类型
 
-
   有 help 的话默认会加上 h 的别名
   有 version 的话默认会加上 v 的别名
   help 和 version 在 help option 的最后显示（依赖于 Object.keys 的结果）
   默认显示短名称在最前面（直接使用数组的字符串排序）
  */
 
-function Cli(opts, args, main) {
+function Cli (opts, args, main) {
   if (!(this instanceof Cli)) return new Cli(opts, args, main)
 
   if (typeof args === 'function') {
@@ -87,6 +85,7 @@ function Cli(opts, args, main) {
   // version epilog usage example description
   // options commands aliasMap
   init.call(this, assign({}, opts))
+  opts = this.options
 
   try {
     parse.call(this, args)
@@ -99,7 +98,7 @@ function Cli(opts, args, main) {
     }
   }
 
-  var res = this.res = {}, opts = this.options
+  var res = this.res = {}
   Object.keys(opts).forEach(function (k) {
     opts[k].alias.forEach(function (alias) {
       res[alias] = opts[k].value
@@ -124,9 +123,7 @@ function Cli(opts, args, main) {
   }
 }
 
-
-var p = Cli.prototype;
-
+var p = Cli.prototype
 
 // 格式化 option 的 key
 p.formatOptKey = function (key) {
@@ -165,17 +162,21 @@ p.help = function () {
   }
 
   // Commands
-  var commands = this.commands, cmdRows = []
-  var cmd, cmdKeys = Object.keys(commands), cmdCache = []
+  var commands = this.commands
+  var cmdRows = []
+  var cmd
+  var cmdKeys = Object.keys(commands)
+  var cmdCache = []
+
   if (cmdKeys.length) {
     clog('%cCommands:\n', 'white.bold')
     cmdKeys.forEach(function (k) {
       cmd = commands[k]
-      if (cmdCache.indexOf(cmd) >= 0) return ;
+      if (cmdCache.indexOf(cmd) >= 0) return
       cmdCache.push(cmd)
       var row = []
-      row.push(clog.format('  %c%s    ', 'green',   cmd.alias.sort().join(', ')))
-      row.push(clog.format('%c%s',       'default', cmd.desc))
+      row.push(clog.format('  %c%s    ', 'green', cmd.alias.sort().join(', ')))
+      row.push(clog.format('%c%s', 'default', cmd.desc))
       cmdRows.push(row)
     })
     console.log(table(cmdRows))
@@ -183,11 +184,13 @@ p.help = function () {
   }
 
   // Commands
-  var opts = this.options, optRows = []
+  var opts = this.options
+  var optRows = []
+
   Object.keys(opts).forEach(function (k) {
     var row = []
-    row.push(clog.format('  %c%s', 'green',   opts[k].alias.join(', ')))
-    row.push(clog.format('  %c%s  ', 'cyan',    '<' + opts[k].type + '>'))
+    row.push(clog.format('  %c%s', 'green', opts[k].alias.join(', ')))
+    row.push(clog.format('  %c%s  ', 'cyan', '<' + opts[k].type + '>'))
     row.push(clog.format('%c%s', 'default', opts[k].desc))
     optRows.push(row)
   })
@@ -200,12 +203,14 @@ p.help = function () {
   if (this.epilog) clog('  %s\n', this.epilog)
 }
 
+function init (opts) {
+  var options = {}
+  var commands = {}
+  var aliasMap = {}
 
-function init(opts) {
-  var options = {}, commands = {}, aliasMap = {}
-
-  if (opts.help !== false)
+  if (opts.help !== false) {
     opts['help | h'] = '<bool> ' + (typeof opts.help === 'string' ? opts.help : 'show help')
+  }
   if (opts.version !== false) {
     this.version = opts.version
     opts['version | v'] = '<bool> ' + 'show version'
@@ -251,10 +256,8 @@ function init(opts) {
   this.aliasMap = aliasMap
 }
 
-
-function parse(args) {
+function parse (args) {
   var _ = this._
-  var opts = this.options
   var i, arg, rawArg, stopped
   var ck = consumeKey.bind(this)
   var cv = consumeVal.bind(this)
@@ -294,7 +297,7 @@ function parse(args) {
             } else {
               ck(k, 'noNeedArgs') // 后面不能接参数
             }
-          }.bind(this))
+          })
         }
       }
     } else {
@@ -311,7 +314,7 @@ function parse(args) {
   }
 }
 
-function checkOpt(opts, rawArg) {
+function checkOpt (opts, rawArg) {
   var optsArr = [].concat(opts)
   if (optsArr.every(this.isOptKeyValid.bind(this))) {
     return true
@@ -320,7 +323,7 @@ function checkOpt(opts, rawArg) {
   }
 }
 
-function invalidOpt(rawArg) {
+function invalidOpt (rawArg) {
   if (this.strict) {
     throw new Error('Error: invalid option ' + rawArg)
   } else {
@@ -328,25 +331,26 @@ function invalidOpt(rawArg) {
   }
 }
 
-function consumeKey(key, noNeedArgs) {
+function consumeKey (key, noNeedArgs) {
   var conf = this.getOptConfig(key)
   if (!conf) return invalidOpt.call(this, this.formatOptKey(key))
 
-  if (noNeedArgs && conf.needArgs > 0)
-    throw new Error('Error: ' + conf.type + ' option '
-      + this.formatOptKey(key) + ' need argument')
+  if (noNeedArgs && conf.needArgs > 0) {
+    throw new Error('Error: ' + conf.type + ' option ' +
+      this.formatOptKey(key) + ' need argument')
+  }
 
   switch (conf.type) {
     case 'bool':
-      conf.value = true;
-      break;
+      conf.value = true
+      break
     case 'count':
       if ('value' in conf) conf.value++
       else conf.value = 1
-      break;
+      break
     case 'arr':
       conf.value = []
-      break;
+      break
   }
 
   conf.currentArgs = 0
@@ -356,49 +360,44 @@ function consumeKey(key, noNeedArgs) {
   conf.consumedKey = key
 }
 
-function consumeVal(val) {
+function consumeVal (val) {
   var conf = this.conf
   if (!conf || conf.needArgs === conf.currentArgs) {
     this._.push(val)
   } else if (conf.needArgs > conf.currentArgs) {
-
     var consumedKey = this.formatOptKey(conf.consumedKey)
 
     switch (conf.type) {
       case 'arr':
         conf.value.push(val)
         conf.currentArgs++
-        break;
+        break
       case 'str':
         conf.value = val
         conf.currentArgs++
-        break;
+        break
       case 'num':
         conf.value = parseNumber(val)
         conf.currentArgs++
         if (isNaN(conf.value)) {
-          throw new Error('Error: invalid number value "'
-            + val + '" for option "'
-            + consumedKey + '"')
+          throw new Error('Error: invalid number value "' +
+            val + '" for option "' +
+            consumedKey + '"')
         }
-        break;
+        break
       default:
-        throw new Error('Error: ' + conf.type + ' option '
-          + consumedKey + ' do not need argument')
+        throw new Error('Error: ' + conf.type + ' option ' +
+          consumedKey + ' do not need argument')
     }
   } else {
     throw new SyntaxError('Parse error.')
   }
 }
 
-
-function parseNumber(val, ctx) {
+function parseNumber (val, ctx) {
   if (/\./.test(val)) val = parseFloat(val)
   else val = parseInt(val, 10)
-  return val;
+  return val
 }
 
 module.exports = Cli
-
-
-
