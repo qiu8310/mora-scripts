@@ -26,7 +26,7 @@
     "hooks": {
       "commit-msg": true,
       "post-merge": true,
-      "pre-push": true
+      "pre-push": "npm run lint && npm test -- --check-coverage"
     }
   },
   "keywords": [

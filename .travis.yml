@@ -5,12 +5,22 @@ env:
 sudo: false
 
 node_js:
-  - "6.0"
-  - "5.3"
-  - "4.2"
+  - "node"  # latest stable Node.js release
+  - "iojs"  # latest stable io.js release
+  - "6"     # latest 6.x release
+  - "5"
+  - "4"
   - "0.12"
+
+before_script:
+  - node --version
+  - npm --version
+script:
+  - npm run lint
+  - npm test -- --check-coverage
 after_script:
   - npm run coverage
+
 notifications:
   email:
     - qiuzhongleiabc@126.com
