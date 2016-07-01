@@ -40,6 +40,7 @@ module.exports = function (target, source) {
       if (hasOwnProperty.call(from, k)) to[k] = from[k]
     }
 
+    /* istanbul ignore else */
     if (Object.getOwnPropertySymbols) {
       symbols = Object.getOwnPropertySymbols(from)
       for (j = 0; j < symbols.length; j++) {

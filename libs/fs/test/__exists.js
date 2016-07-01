@@ -2,6 +2,8 @@ var assert = require('assert')
 var path = require('path')
 var exists = require('../exists')
 
+/* eslint-env mocha */
+
 describe('libs/fs/exists', function () {
   context('without type argument', function () {
     var file

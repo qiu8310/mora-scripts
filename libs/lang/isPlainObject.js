@@ -1,7 +1,7 @@
 var toString = require('./toString')
 
 /**
- * @module      libs/lang/isObject
+ * @module      libs/lang/isPlainObject
  * @createdAt   2016-06-30
  */
 

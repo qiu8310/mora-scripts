@@ -1,5 +1,5 @@
 var util = require('util')
-var isObject = require('../lang/isObject')
+var isPlainObject = require('../lang/isPlainObject')
 
 /*
   默认的 util.format 只支持 %s %d %j %% 四个参数
@@ -58,7 +58,7 @@ var baseMatchers = [
 function extend(regexp, fn) {
   var matchers = regexp
 
-  if (isObject(regexp)) {
+  if (isPlainObject(regexp)) {
     matchers = [regexp]
   } else if (!Array.isArray(regexp)) {
     matchers = [{ match: regexp, handle: fn }]

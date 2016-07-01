@@ -4,6 +4,8 @@ var fs = require('fs')
 var findup = require('../findup')
 var resolve = path.resolve
 
+/* eslint-env mocha */
+
 var fsDir = resolve(path.dirname(__dirname))
 var currentDir = process.cwd()
 var fixturesDir = resolve(__dirname, './fixtures')
