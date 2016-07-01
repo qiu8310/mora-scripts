@@ -1,7 +1,6 @@
 language: node_js
 env:
-  - CI=true
-  - CI_ENGINE=travis
+  - CI=true CI_ENGINE=travis # 写成多行会触发 matrix 的功能
 sudo: false
 
 node_js:
