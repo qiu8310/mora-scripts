@@ -6,7 +6,7 @@
     "postinstall": "node hooks/scripts/install",
     "postuninstall": "node hooks/scripts/install --reverse",
     "release": "cli/run npm version minor -m 'chore: bump minor version to pkg.version'",
-    "preversion": "npm test",
+    "preversion": "npm run lint && npm test",
     "version": "cli/puts '%cyou can run build and add build file to git in here' cyan",
     "postversion": "git push --follow-tags && npm publish && cli/run cnpm sync pkg.name",
     "lint": "standard libs/lang/*.js",
@@ -21,6 +21,13 @@
     "puts": "cli/puts",
     "hooks": "hooks/scripts/install.js",
     "commit-msg-help": "cli/commit-msg-help"
+  },
+  "config": {
+    "hooks": {
+      "commit-msg": true,
+      "post-merge": true,
+      "pre-push": true
+    }
   },
   "keywords": [
     "mora",
@@ -43,13 +50,6 @@
     "mocha": "2.5.3",
     "nyc": "6.6.1",
     "standard": "7.1.2"
-  },
-  "config": {
-    "hooks": {
-      "commit-msg": true,
-      "post-merge": true,
-      "pre-push": true
-    }
   },
   "nyc": {
     "check-coverage": false,

@@ -57,6 +57,7 @@ puts '%cAre you ok' 'red'
 
 * post-merge 可以在每次从远端拉取代码时自动根据 package.json 文件是否有更新而执行 `npm install`
 * commit-msg 检查提交的信息是否符合规范，规范：`<type>(<scope>): <subject>`
+* pre-push   提交前检查脚本中是否有 lint 和 test 命令，有的话便执行它
 
 主要参考了下面这些组件的功能
 

@@ -9,6 +9,7 @@ environment:
 install:
   - ps: Install-Product node $env:nodejs_version
   - set CI=true
+  - set CI_ENGINE=appveyor
   - npm config set progress=false
   - set PATH=%APPDATA%\npm;%PATH%
   - npm install
@@ -27,5 +28,5 @@ notifications:
     to:
       - qiuzhongleiabc@126.com
     # on_build_success: false
-    on_build_failure: true
+    # on_build_failure: true
     on_build_status_changed: true

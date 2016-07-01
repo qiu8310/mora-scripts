@@ -1,5 +1,7 @@
 language: node_js
-env: CI=true
+env:
+  - CI=true
+  - CI_ENGINE=travis
 sudo: false
 
 node_js:
