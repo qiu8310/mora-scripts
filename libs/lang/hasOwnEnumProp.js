@@ -8,7 +8,7 @@
 var isObject = require('./isObject')
 
 /**
- * 判断 obj 对象是否含有某个 key，key 需要 enumerable （ 利用 getOwnPropertyDescriptor ）
+ * 判断 obj 对象是否含有某个 key，且 key 需要 enumerable （ 利用 getOwnPropertyDescriptor ）
  *
  * 另外也可以使用 Object.prototype.propertyIsEnumerable
  *

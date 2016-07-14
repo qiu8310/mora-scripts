@@ -61,7 +61,9 @@ var gre = /(?:yyyy|yy|mm|m|MM|M|dd|d|DD|Do|D|HH|H|hh|h|A|a|ii|i|ss|s|X|x)/g
  * @example
  *
  * formatDate('yyyy-mm-dd HH:ii:ss')
- * formatDate(new Date(), 'yyyy-mm-dd HH:ii:ss')
+ * // 2016-07-08 15:03:02
+ * formatDate(new Date(), 'h:ii A')
+ * // 8:30 AM
  *
  * @author Zhonglei Qiu
  * @since 2.0.0
