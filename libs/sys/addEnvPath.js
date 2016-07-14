@@ -1,23 +1,41 @@
-// 参考 npm package: manage-path
+/**
+ * @module      libs/sys/addEnvPath
+ * @createdAt   2016-07-14
+ *
+ * Copyright (c) 2016 Zhonglei Qiu
+ * Licensed under the MIT license.
+ */
 
-var isWin = process.platform === 'win32'
-var separator = isWin ? ';' : ':'
+var isWin = require('./isWin')
+var rePath = /^path$/i
 
+/**
+ * 添加指定的路径到 PATH 环境变量中
+ *
+ * 新添加的路径都会放在最前面，方便系统最先解析它
+ *
+ * @param  {Object}               env     process.env 对象
+ * @param  {Array<String>|String} paths   要添加的路径
+ * @return {Object}               传入的 env 对象
+ *
+ * @see {@link https://github.com/kentcdodds/node-manage-path/tree/v2.0.0}
+ * @author Zhonglei Qiu
+ * @since 2.0.0
+ */
 module.exports = function (env, paths) {
   var pathKey = getPathKey(env)
   var oldPath = env[pathKey]
-
   if (!Array.isArray(paths)) paths = [paths]
   if (oldPath) paths = paths.concat(oldPath) // 不要修改用户传过来的数组
-  env[pathKey] = paths.join(separator)
+  env[pathKey] = paths.join(isWin ? ';' : ':') // 放函数里面来得到 separator 是为了方便测试
+  return env
 }
 
 function getPathKey (env) {
-  var re = /^path$/i
   if (isWin) {
     var keys = Object.keys(env)
     for (var i = 0; i < keys.length; i++) {
-      if (re.test(keys[i])) return keys[i]
+      if (rePath.test(keys[i])) return keys[i]
     }
   }
   return 'PATH'

@@ -113,7 +113,7 @@ function Cli (opts, args, main) {
   if (res.help) {
     this.help()
   } else if (res.version) {
-    console.log(this.version)
+    console.log(this.version || '0.0.0')
   } else if (commander) {
     res._ = _.slice(1)
     commander.command.call(null, res, this)
@@ -141,8 +141,8 @@ p.isOptKeyValid = function (key) {
 }
 
 // 输出错误
-p.error = function (msg) {
-  clog('\n%c%s\n', 'red', msg)
+p.error = function () {
+  clog('\n%c%s\n', 'red', clog.format.apply(clog, arguments))
   if (this.showHelpOnError) this.help()
 }
 
@@ -390,7 +390,7 @@ function consumeVal (val) {
           consumedKey + ' do not need argument')
     }
   } else {
-    throw new SyntaxError('Parse error.')
+    throw new SyntaxError('Parse error')
   }
 }
 

@@ -1,6 +1,9 @@
 /**
  * @module      libs/lang/hasOwnEnumProp
  * @createdAt   2016-07-01
+ *
+ * Copyright (c) 2016 Zhonglei Qiu
+ * Licensed under the MIT license.
  */
 var isObject = require('./isObject')
 

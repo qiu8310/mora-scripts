@@ -12,7 +12,8 @@
   "source": {
     "include": [
       "libs/lang/",
-      "libs/fs/"
+      "libs/fs/",
+      "libs/sys"
     ],
     "excludePattern": "(node_modules/|external/|test/)"
   },

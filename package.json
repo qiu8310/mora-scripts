@@ -49,6 +49,8 @@
     "docdash": "web-build-hub/docdash",
     "mocha": "2.5.3",
     "nyc": "7.0.0",
+    "rewire": "2.5.2",
+    "sinon": "1.17.4",
     "standard": "7.1.2"
   },
   "nyc": {

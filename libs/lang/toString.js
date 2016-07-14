@@ -1,6 +1,9 @@
 /**
  * @module      libs/lang/toString
  * @createdAt   2016-06-30
+ *
+ * Copyright (c) 2016 Zhonglei Qiu
+ * Licensed under the MIT license.
  */
 
 /**

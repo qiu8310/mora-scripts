@@ -1,14 +1,13 @@
 /**
  * @module      libs/lang/DotProp
  * @createdAt   2016-07-01
+ *
+ * Copyright (c) 2016 Zhonglei Qiu
+ * Licensed under the MIT license.
  */
 
 var hasOwnEnumProp = require('./hasOwnEnumProp')
 var isObject = require('./isObject')
-
-/*
-  参考： https://github.com/sindresorhus/dot-prop
- */
 
 /**
  * 创建一个对象，使你可以通过 get/set/has/del 的方法来对其值
