@@ -63,10 +63,10 @@ var colorMatcher = {
   onEnd: function () {
     return clog.autoResetAtEnd ? reset() : ''
   },
-  onFormatEnd: function () {
+  onGroupEnd: function () {
     return clog.autoResetAtFormated ? reset() : ''
   },
-  onEachFormatEnd: function (arg) {
+  onFormatEnd: function (arg) {
     if (this !== arg.matcher) {
       var value = arg.value
       if (typeof value === 'string' && hasAnsiColorRegExp.test(value) && ansiStack.length) {
