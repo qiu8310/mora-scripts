@@ -13,7 +13,8 @@
     "include": [
       "libs/lang/",
       "libs/fs/",
-      "libs/sys"
+      "libs/sys",
+      "libs/tty"
     ],
     "excludePattern": "(node_modules/|external/|test/)"
   },

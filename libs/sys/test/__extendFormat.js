@@ -10,6 +10,7 @@ var defaultHandle = function (v) { return v }
 describe('libs/sys/extendFormat', function () {
   it('should not handle when no format string', function () {
     var format = extendFormat(/%a/, defaultHandle)
+    assert.equal(format(), util.format())
     assert.equal(format('aa'), 'aa')
     assert.equal(format('aa', 'bb'), 'aa bb')
   })

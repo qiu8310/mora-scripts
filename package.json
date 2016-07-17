@@ -10,9 +10,11 @@
     "version": "cli/puts '%cyou can run build and add build file to git in here' cyan",
     "postversion": "git push --follow-tags && npm publish && cli/run cnpm sync pkg.name",
     "lint": "standard libs/**/*.js",
-    "test": "nyc _mocha **/test/__*.js",
     "test:watch": "mocha --watch **/test/__*.js",
-    "report:html": "nyc report --reporter=html",
+    "test": "nyc _mocha **/test/__*.js",
+    "report": "nyc report --reporter=html",
+    "test:istanbul": "istanbul cover --report html --dir externals/coverage _mocha **/test/__*.js",
+    "test:report": "npm run test && npm run report",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "docs": "jsdoc -c ./jsdoc.json"
   },

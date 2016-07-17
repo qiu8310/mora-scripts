@@ -111,7 +111,7 @@ module.exports = function (date, format) {
       case 's': return second
       case 'x': return Math.round(date.getTime() / 1000)
       case 'X': return date.getTime()
-      /* istanbul ignore next */
+      /* istanbul ignore next 正则是精确匹配，不可能出现下面情况 */
       default: return key
     }
   })

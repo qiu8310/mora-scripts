@@ -14,7 +14,7 @@
  * @param   {*}      any   任何的 JS 类型
  * @return  Boolean
  *
- * @see     {@link https://github.com/sindresorhus/is-obj/tree/v1.0.1}
+ * @see     [is-obj@1.0.1]{@link https://github.com/sindresorhus/is-obj/tree/v1.0.1}
  * @author  Zhonglei Qiu
  * @since   2.0.0
  */

@@ -25,7 +25,7 @@ var isObject = require('./isObject')
  * dp.data           // {x: 'x'}
  *
  *
- * @see {@link https://github.com/sindresorhus/dot-prop/tree/v3.0.0}
+ * @see [dot-prop@3.0.0]{@link https://github.com/sindresorhus/dot-prop/tree/v3.0.0}
  * @author Zhonglei Qiu
  * @since 2.0.0
  */

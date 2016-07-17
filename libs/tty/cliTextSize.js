@@ -1,4 +1,11 @@
-// 参考了我自己写的 tty-text-size，是它的一个精简版
+/**
+ * @module      libs/tty/cliTextSize
+ * @createdAt   2016-07-17
+ *
+ * Copyright (c) 2016 Zhonglei Qiu
+ * Licensed under the MIT license.
+ */
+
 var punycode = require('punycode')
 var stripAnsi = require('./stripAnsi')
 var isWin = require('../sys/isWin')
@@ -13,6 +20,22 @@ var cp936Ranges = [[0,127],[164],[167,168],[176,177],[183],[215],[224,225],[232,
 
 var sizes = Object.keys(sizeRangesMap).map(function (s) { return parseInt(s, 10) })
 
+/**
+ * 计算 Unicode 字符串在终端上的长度
+ *
+ * @param  {String} str 将会显示在终端上的字符串
+ * @return {Number}
+ *
+ * @example
+ * cliTextSize('中国')  // => 4
+ * cliTextSize('ab')    // => 2
+ *
+ * @see    [tty-text-size@1.0.0]{@link https://github.com/qiu8310/tty-text-size/tree/1.0.0}
+ * @throws {Error} 当包含 \t, \r, \v, \f, \n 这些无法计算长度的字符时
+ *
+ * @since 2.0.0
+ * @author Zhonglei Qiu
+ */
 module.exports = function (str) {
   str = stripAnsi(str)
   return punycode.ucs2.decode(str).reduce(function (size, cp) {
@@ -34,6 +57,7 @@ function getCodePointCliSize (cp) {
   if (inRanges(cp, ambRanges)) return isWin ? 2 : 1
 
   for (var i = 0; i < sizes.length; i++) {
+    // console.log(cp, sizeRangesMap[sizes[i]], inRanges(cp, sizeRangesMap[sizes[i]]))
     if (inRanges(cp, sizeRangesMap[sizes[i]])) {
       // window 不会超过 2 个字符
       return isWin ? Math.min(2, sizes[i]) : sizes[i]
@@ -45,7 +69,7 @@ function getCodePointCliSize (cp) {
 
 function inRanges (cp, ranges) {
   return ranges.some(function (range) {
-    if (range.length === 1) return cp === range
+    if (range.length === 1) return cp === range[0]
     return cp >= range[0] && cp <= range[1]
   })
 }

@@ -18,7 +18,7 @@ var baseMatchers = [
   {match: /%d/},
   {match: /%j/}
 ]
-var reIllegalMatch = /(^|[^\\])\((?!\?[:=\!])/
+var reIllegalMatch = /(^|[^\\])\((?!\?[:=!])/
 
 /**
  * 扩展系统的 util.format 函数，使其支持其它格式
@@ -46,10 +46,10 @@ var reIllegalMatch = /(^|[^\\])\((?!\?[:=\!])/
  * var format = extendFormat([
  *   {
  *     match: /%\dd/,
- *     expectArgNum: 1,      // 期望的参数个数（默认为1），如果参数不足，则 handle 不会被调用
+ *     expectArgNum: 2,      // 期望的参数个数（默认为1），如果参数不足，则 handle 不会被调用
  *     order: 100,           // 用来决定调用 format 的顺序，默认为100，越小优先级越高
  *
- *     handle(values, format) {},
+ *     handle(val1, val2, format) {},
  *
  *     // 下面六个 hook 需要返回字符串，或 undefined
  *     onStart(parsedTemplateArray) {},   // 返回的字段会出现在输出的最前面
@@ -68,6 +68,8 @@ var reIllegalMatch = /(^|[^\\])\((?!\?[:=\!])/
  *   }
  * ])
  *
+ * @author Zhonglei Qiu
+ * @since 2.0.0
  */
 module.exports = function (regexp, fn) {
   var matchers = regexp
@@ -106,7 +108,7 @@ module.exports = function (regexp, fn) {
       }
     }
 
-    groups.push(group)
+    if (group && groups.indexOf(group) < 0) groups.push(group)
 
     return hook(matchers, 'onStart', -1, [groups]) +
           util.format.apply(util, groups.reduce(function (newArgs, group, i) {

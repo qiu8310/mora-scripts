@@ -19,14 +19,14 @@ var propIsEnumerable = Object.prototype.propertyIsEnumerable
  * 版本相对简单点
  *
  * @param     {Object} target     要赋值到的对象
- * @param     {Object} source  源对象，可以有多个
+ * @param     {...Object} source  源对象，可以有多个
  * @throws    {TypeError}         如果第一个参数是 null 或者 undefined
  * @return    {Object}
  *
  * @example
  * assign({}, {a: '1', b: 2}, null, true, {a: 1})
  *
- * @see       {@link https://github.com/sindresorhus/object-assign/tree/v4.1.0}
+ * @see       [object-assign@4.1.0]{@link https://github.com/sindresorhus/object-assign/tree/v4.1.0}
  * @author    Zhongle Qiu
  * @since     2.0.0
  */

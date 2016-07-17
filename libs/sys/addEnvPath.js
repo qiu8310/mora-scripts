@@ -18,7 +18,11 @@ var rePath = /^path$/i
  * @param  {Array<String>|String} paths   要添加的路径
  * @return {Object}               传入的 env 对象
  *
- * @see {@link https://github.com/kentcdodds/node-manage-path/tree/v2.0.0}
+ * @example
+ * var env = addEnvPath(process.env, ['/you/path/need/to/add'])
+ * console.log(env === process.env) // true: 意味着返回的是修改过的原对象，而不是一个新对象
+ *
+ * @see [manage-path@2.0.0]{@link https://github.com/kentcdodds/node-manage-path/tree/v2.0.0}
  * @author Zhonglei Qiu
  * @since 2.0.0
  */
