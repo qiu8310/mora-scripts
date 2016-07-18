@@ -1,13 +1,37 @@
-// 参考 npm package: spawn-command@0.0.2  execa@0.4.0
+/**
+ * @module      libs/tty/shell
+ * @createdAt   2016-07-18
+ *
+ * Copyright (c) 2016 Zhonglei Qiu
+ * Licensed under the MIT license.
+ */
 
-var spawn = require('child_process').spawn
-var assign = require('./../lang/assign')
+var cp = require('child_process')
+var assign = require('../lang/assign')
+var isWin = require('../sys/isWin')
 
+/**
+ * 运行指定的命令
+ *
+ * @param  {String} command 要运行的命令
+ * @param  {Object} [options] 配置选项，支持所有 child_process.spawn 的选项
+ * @return {ChildProcess}
+ *
+ * @see    [spawn-command@0.0.2]{@link https://github.com/mmalecki/spawn-command/tree/v0.0.2}
+ * @see    [execa@0.4.0]{@link https://github.com/sindresorhus/execa/tree/v0.4.0}
+ *
+ * @example
+ * shell('ls some_dir')
+ * shell('ps aux')
+ *
+ * @since 2.0.0
+ * @author Zhonglei Qiu
+ */
 module.exports = function (command, options) {
   options = options || {}
 
   var file, args
-  if (process.platform === 'win32') {
+  if (isWin) {
     file = 'cmd.exe'
     args = ['/s', '/c', '"' + command + '"']
     options = assign({}, options)
@@ -19,5 +43,5 @@ module.exports = function (command, options) {
     args = ['-c', command]
   }
 
-  return spawn(file, args, options)
+  return cp.spawn(file, args, options)
 }

@@ -10,12 +10,12 @@
  */
 if (!Promise.prototype.finally) {
   Promise.prototype.finally = function (callback) {
-    var P = this.constructor;
+    var P = this.constructor
     return this.then(
       function (value) { return P.resolve(callback()).then(function () { return value; })},
       function (reason) { return P.resolve(callback()).then(function () { throw reason; })}
-    );
-  };
+    )
+  }
 }
 
 
@@ -28,7 +28,7 @@ if (!Promise.prototype.finally) {
 if (!Promise.try) {
   Promise.try = function (fn) {
     return new Promise(function (resolve) {
-      resolve(fn());
-    });
-  };
+      resolve(fn())
+    })
+  }
 }

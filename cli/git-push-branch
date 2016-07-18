@@ -1,0 +1,3 @@
+#!/usr/bin/env node
+
+// 将指定的文件夹发布到 gh-pages 分支上

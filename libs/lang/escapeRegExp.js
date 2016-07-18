@@ -1,6 +1,3 @@
-var gre = /[-.*+?^${}()|[\]\/\\]/g
-var re = /[-.*+?^${}()|[\]\/\\]/
-
 /**
  * @module      libs/lang/escapeRegExp
  * @createdAt   2016-06-30
@@ -8,6 +5,9 @@ var re = /[-.*+?^${}()|[\]\/\\]/
  * Copyright (c) 2016 Zhonglei Qiu
  * Licensed under the MIT license.
  */
+
+var gre = /[-.*+?^${}()|[\]\/\\]/g
+var re = /[-.*+?^${}()|[\]\/\\]/
 
 /**
  * 对字符串中的字符进行转义

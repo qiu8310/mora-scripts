@@ -115,7 +115,7 @@ module.exports = function (regexp, fn) {
             newArgs.push.apply(newArgs, compileToNewArgs(matchers, regexp, group))
             return newArgs
           }, [])) +
-          hook(matchers, 'onEnd', 1, [groups])
+          hook(matchers, 'onEnd', 1, [groups]) + '' // make it to string
   }
 }
 

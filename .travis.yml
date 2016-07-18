@@ -17,10 +17,15 @@ before_script:
 script:
   - npm run lint
   - npm test -- --check-coverage
+after_success:
+  - npm run docs # then release it to gh-pages
 after_script:
   - npm run coverage
 
 notifications:
   email:
-    - qiuzhongleiabc@126.com
+    recipients:
+      - qiuzhongleiabc@126.com
+    on_success: change
+    on_failure: always
 

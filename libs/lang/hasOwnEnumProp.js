@@ -5,6 +5,7 @@
  * Copyright (c) 2016 Zhonglei Qiu
  * Licensed under the MIT license.
  */
+
 var isObject = require('./isObject')
 
 /**

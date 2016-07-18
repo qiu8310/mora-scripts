@@ -109,10 +109,10 @@ exports.format = extend([
     }
   },
   {
-    match: /%(?:\d+)?\.?(?:\d+)?s/,
+    match: /%(?:\d+)?\.?(?:\d+)?(?::.\.?.?)?s/,
     order: 1,
     handle: function (val, format) {
-      return exports.align(val, format.substr(1, -1))
+      return exports.align(String(val), format.slice(1, -1))
     }
   },
   {
@@ -126,7 +126,7 @@ exports.format = extend([
     match: /%\d*f/,
     order: 2,
     handle: function (val, format) {
-      var fixed = parseInt(format, 10)
+      var fixed = parseInt(format.substr(1), 10)
       val = parseFloat(val)
       return fixed ? val.toFixed(fixed) : val.toString()
     }
