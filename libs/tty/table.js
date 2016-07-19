@@ -1,4 +1,11 @@
-// tty-wrap 的一个精简版
+/**
+ * @module      libs/tty/table
+ * @createdAt   2016-07-19
+ *
+ * Copyright (c) 2016 Zhonglei Qiu
+ * Licensed under the MIT license.
+ */
+
 var punycode = require('punycode')
 var os = require('os')
 var cliTextSize = require('./cliTextSize')
@@ -9,14 +16,39 @@ var decode = punycode.ucs2.decode
 
 // 获取当前屏幕的宽度
 var stream = process.stdout
+var MIN_OVERFLOW_CELL_WIDTH = 10
 var SCREEN_WIDTH = 120
+
+/* istanbul ignore else */
 if (stream.getWindowSize) SCREEN_WIDTH = stream.getWindowSize()[0]
 
-/*
-  n 列宽度如果大于 SCREEN_WIDTH，则最宽的一列自动适应
+/**
+ * 将一个二维的字符串数组，转化成一个 table 格式的字符串，方便在终端上显示，主要特点有：
+ *
+ * 1. 精确计算字符的宽度，自动换行：很多老外写的类似的库都采用 str.length 来得到字符串在终端上的显示长度，
+ *    但是，中文在终端上一般占用两个字符，而且不同系统上字符长度也会不一样
+ * 2. 自动重置颜色：当一个 cell 中有颜色时，如果不重置色值，它是会影响后面 cell 的
+ * 3. 判断是否超出屏幕大小：如果超出，自动截断最宽的一行
+ *
+ * @param  {Array<Array<String>>} rows  table 中每个 cell 中的字符串，是个二维的字符串数组
+ * @return {String}               table 化的字符串
+ *
+ * @example
+ *
+ * table([
+ *   ['a', 'b', 'c'],
+ *   ['d', 'ee', 'f']
+ * ])
+ *
+ * // ab c
+ * // deef
+ *
+ * @see [tty-wrap@0.1.0]{@link https://github.com/qiu8310/tty-wrap/tree/0.1.0}
+ * @since  2.0.0
+ * @author Zhonglei Qiu
  */
 module.exports = function (rows) {
-  if (!rows || !rows.length || !rows[0].length) return ''
+  if (!Array.isArray(rows) || !Array.isArray(rows[0]) || !rows[0].length) return ''
 
   var maxCellHeights = new Array(rows.length)  // 同一行中， cell 占位最多的高度
 
@@ -32,7 +64,7 @@ module.exports = function (rows) {
   // 处理宽度最宽的一列的宽度（不能超过屏幕）
   if (sumwidth > SCREEN_WIDTH) {
     var maxindex = maxNumberIndex(maxColumnWidths)
-    var limit = Math.max(10, SCREEN_WIDTH - (sumwidth - maxColumnWidths[maxindex])) // 保证不要小于 0
+    var limit = Math.max(MIN_OVERFLOW_CELL_WIDTH, SCREEN_WIDTH - (sumwidth - maxColumnWidths[maxindex])) // 保证不要小于 0
     maxColumnWidths[maxindex] = limit
     each(rows, function (val, opt) {
       if (opt.c === maxindex) {
@@ -80,8 +112,6 @@ module.exports = function (rows) {
 
 // 限制 cell 的宽度，过长就将它裁断
 function wrapCell (cell, size) {
-  if (size <= 0) return cell
-
   var res = []
   cell.forEach(function (str) {
     if (cliTextSize(str) > size) {
@@ -140,6 +170,7 @@ function wrapStr (str, size) {
     len += data[i].size
   }
 
+  /* istanbul ignore else */
   if (str) rows.push(str)
   if (ansi) rows[rows.length - 1] += ansi
   return rows
@@ -147,17 +178,17 @@ function wrapStr (str, size) {
 
 // 保证 cli 上的颜色不要互相污染
 function wrapColor (cell) {
+  var hasAnsi
   var stack = ''
   var res = []
   cell.forEach(function (str) {
-    var hasAnsi
-    var lastStack = stack
+    var prevStack = stack
     str.replace(greAnsi, function (ansi) {
       hasAnsi = true
       stack += ansi
     })
     if (hasAnsi) str += '\x1b[0m'
-    res.push(lastStack + str)
+    res.push(prevStack + str)
   })
   return res
 }
