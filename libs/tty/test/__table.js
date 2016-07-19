@@ -4,6 +4,13 @@ var table = require('rewire')('../table')
 /* eslint-env mocha */
 
 describe('libs/tty/table', function () {
+  before(function () {
+    table.__set__('os.EOL', '\n')
+  })
+  after(function () {
+    table.__set__('os.EOL', require('os').EOL)
+  })
+
   it('should return empty string when there is no array items', function () {
     assert.equal(table(false), '')
     assert.equal(table(null), '')
