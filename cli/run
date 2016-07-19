@@ -72,6 +72,11 @@ for (i = 0; i < all.length; i++) {
   }
 }
 
+// 支持运行 package.json 中的 scripts 脚本
+if (cmd && !args.length && pkg.scripts && cmd in pkg.scripts) {
+  args = ['run', cmd]
+  cmd = 'npm'
+}
 
 // 输出当前运行的命令
 console.log(
