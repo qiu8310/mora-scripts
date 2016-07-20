@@ -8,18 +8,20 @@ var exists = require('../libs/fs/exists')
 var formatDate = require('../libs/lang/formatDate')
 var cli = require('../libs/tty/cli')
 
-cli.strict = true
-
 var libsDir = resolve(__dirname, '../libs')
 var libs = fs.readdirSync(libsDir)
 
 cli({
+  strict: true,
   usage: 'createscript { ' + libs.join(', ') + ' }/filename',
-  t: '<boolean> create test script only',
-  s: '<boolean> create source script only',
   version: '1.0.0',
   epilog: 'Copyright Mora'
-}, function (res) {
+})
+.options({
+  t: '<boolean> create test script only',
+  s: '<boolean> create source script only'
+})
+.parse(function (res) {
   if (!res._.length) return this.error('Error: need at lease one file path')
 
   res._.forEach(make, this)

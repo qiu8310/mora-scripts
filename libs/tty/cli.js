@@ -1,8 +1,19 @@
-var clog = require('./../sys/clog')
+/**
+ * @module      libs/sys/cli
+ * @createdAt   2016-07-15
+ *
+ * Copyright (c) 2016 Zhonglei Qiu
+ * Licensed under the MIT license.
+ */
+
+var format = require('../sys/clog').format
 var table = require('./table')
-var assign = require('./../lang/assign')
-var re = /^\s*<(bool|str|num|arr|count)[a-z]*>\s*(.*)$/
-var specialKeys = ['help', 'version', 'usage', 'description', 'example', 'epilog']
+var assign = require('../lang/assign')
+var isPlainObject = require('../lang/isPlainObject')
+var reOptionType = /^(bool|str|num|arr|count)[a-z]*$/
+var reOption = /^\s*<(bool|str|num|arr|count)[a-z]*>\s*(.*)$/
+var undef = void 0
+var DEFAULT_GROUP_NAME = '__default__:)'
 
 var typeConfig = {
   bool: {
@@ -22,238 +33,253 @@ var typeConfig = {
   }
 }
 
-/*
-  一个简单的 cli 参数处理程序
-
-  opts 是 key-value 对象，支持下面几种类型的配置
-    - str1:str2... => <type> desc
-      str1 是一个 option，":" 后面的 str2 等等表示 str1 的别名；
-      desc 表示 option 的描述；
-      type 表示 option 的类型，支持的类型有
-        * boolean   bool
-        * string    str   不能为空
-        * number    num   不能为空
-        * array     arr   可以为空
-        * count
-
-    - 支持几个特殊的 key
-      * help        后面接的字符都是 help option 的描述字段
-      * version     后面需要接当前命令行的版本号，默认值是 "0.0.0"
-      * usage       使用说明（默认不存在）
-      * description 描述，应该是个数组（默认不存在）
-      * example     使用样例，可以是字符串数组，表示多个 example（默认不存在）
-      * epilog      放在 help 结尾的一段话，一般用来声明版权，或者显示查看更多的链接（默认不存在）
-
-      所有命令行都会默认带上 help 和 version，如果你不想要它们，
-      可以在 opts 中将它们的值设置成 false
-
-    - 支持子命令，value 可以是
-      * comandFunction
-      * {desc: String, comand: Function}
-
-      另外 key 也支持 str1:str2... 这样的别名形式
-
-  配置项：
-    - showHelpOnError:            解析参数失败时不显示帮助信息
-    - stopParseOnFirstNoOption:   在遇到第一个非 option 参数时就停止解析（很适用于运行子程序）
-    - strict:                     遇到无法解析的 option 是否要报错
-
-  其它：https://github.com/yargs/yargs#parsing-tricks
-    - 解析到 "--" 就停止解析
-    - array 类型的参数支持重复设置，其它类型的参数会被覆盖，array 形式的 option 如果不加参数会返回空数组
-    - 支持短标签加数字的快捷方式，如 "-n100"，前提是 "-n" 需要是 number 类型
-
-  有 help 的话默认会加上 h 的别名
-  有 version 的话默认会加上 v 的别名
-  help 和 version 在 help option 的最后显示（依赖于 Object.keys 的结果）
-  默认显示短名称在最前面（直接使用数组的字符串排序）
+/**
+ * @class
+ * @param {Object} conf  cli 程序的配置项
+ * @param {String|Boolean} conf.help                String: 帮助描述              Boolean: 是否启用系统默认的帮助选项
+ * @param {String|Boolean} conf.version             String: 版本号（默认为 0.0.0） Boolean: 是否启用系统默认的版本选项
+ * @param {String} conf.usage                       简短的描述
+ * @param {String|Array<String>} conf.desc          命令的一些介绍
+ * @param {String|Array<String>} conf.example       使用命令的一些样例
+ * @param {String} conf.epilog                      放在 help 结尾的一段话，一般用来声明版权，或者显示查看更多的链接
+ *
+ * @param {Boolean} conf.strict                     遇到无法解析的 option 是否要报错
+ * @param {Boolean} conf.showHelpOnError            解析参数失败时不显示帮助信息
+ * @param {Boolean} conf.stopParseOnFirstNoOption   在遇到第一个非 option 参数时就停止解析（很适用于运行子程序）
+ *
+ * @example
+ * cli({
+ *   usage: 'cli [options] <foo>'
+ *   version: '1.0.0'
+ * })
+ * .options({
+ *   'e | escape': '<bool> escape input string'
+ * })
+ * .parse(function (res) {
+ *   if (res.escape) {
+ *     // ...
+ *   }
+ * })
+ *
+ * @author Zhonglei Qiu
+ * @since  2.0.0
+ * @see    optimist, minimist, yargs, nomnom, nopt, commander
  */
+function Cli (conf) {
+  if (!(this instanceof Cli)) return new Cli(conf)
 
-function Cli (opts, args, main) {
-  if (!(this instanceof Cli)) return new Cli(opts, args, main)
+  /**
+   * 配置信息
+   * @type {Object}
+   */
+  this.conf = conf || {}
+  conf = this.conf
 
-  if (typeof args === 'function') {
-    main = args
-    args = process.argv.slice(2)
-  }
+  /**
+   * 在遇到第一个非 option 参数时就停止解析（很适用于子程序）
+   * @type {Boolean}
+   */
+  this.stopParseOnFirstNoOption = !!conf.stopParseOnFirstNoOption
 
-  this.stopParseOnFirstNoOption = Cli.stopParseOnFirstNoOption
-  this.showHelpOnError = Cli.showHelpOnError
-  this.strict = Cli.strict
+  /**
+   * 出错时显示帮助信息
+   * @type {Boolean}
+   */
+  this.showHelpOnError = !!conf.showHelpOnError
+
+  /**
+   * 严格模式，遇到无法解析的 option 是就报错
+   * @type {Boolean}
+   */
+  this.strict = !!conf.strict
+
+  /**
+   * 解析完后剩下的给程序的参数
+   * @type {Array}
+   */
   this._ = []
 
-  // version epilog usage example description
-  // options commands aliasMap
-  init.call(this, assign({}, opts))
-  opts = this.options
+  /**
+   * 所有 commands 的配置
+   * @type {Object}
+   */
+  this.mapCommands = {}
 
-  try {
-    parse.call(this, args)
-  } catch (e) {
-    if (/^Error: /.test(e.message)) {
-      this.error(e.message)
-      return this
+  /**
+   * 所有 options 的配置
+   * @type {Object}
+   */
+  this.mapOptions = {}
+
+  /**
+   * 所有的分组名称
+   * @type {Array}
+   */
+  this.groups = []
+  this.groupsMap = {}
+
+  if (conf.usage) this.usage = conf.usage
+  if (conf.desc) this.desc = [].concat(conf.desc)
+  if (conf.example) this.example = [].concat(conf.example)
+  if (conf.epilog) this.epilog = conf.epilog
+}
+
+/**
+ * 设置 Cli 程序的子命令
+ *
+ * @param  {Object} opts 子命令配置
+ *
+ *   opts 是 key-value 对象，支持下面几种类型的配置
+ *   - str1:str2... => function
+ *   - str1:str2... => {desc: '', cmd: function}
+ *
+ * @return {Cli}
+ *
+ * @example
+ *
+ * cli.commands({
+ *   'r | run': function (res) {
+ *     // handle
+ *   },
+ *   second: {
+ *     desc: 'this is sub-command with description',
+ *     cmd: function (res) {
+ *       // handle
+ *     }
+ *   }
+ * })
+ *
+ */
+Cli.prototype.commands = function (opts) {
+  init.call(this, true, opts)
+  return this
+}
+
+/**
+ * 设置 Cli 程序支持的选项
+ *
+ * @param  {String} [group]     选项可以分组，此值可以指定分组的名称，在选项非常多的情况下，
+ *                              使用 --help 时可以看到效果
+ *
+ * @param  {Object} opts        此分组下的所有选项
+ *
+ * opts 是 key-value 对象，支持下面几种类型的配置
+ *   - str1:str2... => <type> desc
+ *   - str1:str2... => {type: '', desc: '', defaultValue: ''}
+ *
+ * 说明：
+ *   1. str1 是一个 option，":" 后面的 str2 等等表示 str1 的别名
+ *   2. desc 表示 option 的描述
+ *   3. type 表示 option 的类型，支持的类型有
+ *     * boolean   bool
+ *     * string    str   不能为空
+ *     * number    num   不能为空
+ *     * array     arr   可以为空
+ *     * count
+ *
+ * @return {Cli}
+ *
+ * @example
+ *
+ * cli.options({
+ *   'e | escape': '<boolean> enable escape',
+ *   'l | linefeed': {
+ *     type: 'boolean',
+ *     desc: 'append a system linefeed at end'
+ *   }
+ * })
+ *
+ */
+Cli.prototype.options = function (group, opts) {
+  if (typeof group !== 'string') {
+    opts = group
+    group = null
+  }
+  init.call(this, false, opts, group)
+  return this
+}
+
+function init (isCommand, opts, group) {
+  Object.keys(opts).forEach(function (origKey) {
+    var key, type, value, cmd, desc, alias, defaultValue, target, map
+
+    alias = origKey.trim().split(/\s*\|\s*/).sort()
+    key = alias[0]
+    value = opts[origKey]
+
+    if (isCommand) {
+      if (typeof value === 'function') {
+        cmd = value
+        desc = ''
+      } else if (isPlainObject(value)) {
+        cmd = value.cmd
+        desc = value.desc || ''
+
+        if (typeof cmd !== 'function') {
+          throw new Error('Command "' + origKey + '" should have a handle function.')
+        }
+      } else {
+        throw new Error('Command "' + origKey + '" is invalid')
+      }
+
+      target = { key: key, alias: alias, cmd: cmd, type: 'command', desc: desc }
+      map = this.mapCommands
     } else {
-      throw e
+      if (typeof value === 'string') {
+        if (reOption.test(value)) {
+          type = RegExp.$1
+          desc = RegExp.$2
+        } else {
+          throw new Error('Option "' + origKey + '" config "' + value + '" is invalid.')
+        }
+      } else if (isPlainObject(value)) {
+        type = value.type
+        desc = value.desc || ''
+        defaultValue = value.defaultValue
+
+        if (reOptionType.test(type)) {
+          type = RegExp.$1
+        } else {
+          throw new Error('Option "' + origKey + '" type is invalid.')
+        }
+      } else {
+        throw new Error('Option "' + origKey + '" is invalid.')
+      }
+
+      group = group || DEFAULT_GROUP_NAME
+      target = { key: key, alias: alias, defaultValue: defaultValue, type: type, group: group, desc: desc }
+      map = this.mapOptions
+
+      if (this.groups.indexOf(group) < 0) {
+        if (group === DEFAULT_GROUP_NAME) {
+          this.groups.unshift(group)
+        } else {
+          this.groups.push(group)
+        }
+        this.groupsMap[group] = []
+      }
+      this.groupsMap[group].push(target)
     }
-  }
 
-  var res = this.res = {}
-  Object.keys(opts).forEach(function (k) {
-    opts[k].alias.forEach(function (alias) {
-      res[alias] = opts[k].value
+    alias.forEach(function (k) {
+      if (k in map) throw new Error((isCommand ? 'Command' : 'Option') + ' key "' + k + '" is dumplicated.')
+      map[k] = target
     })
-  })
-
-  res.rawArgs = args
-
-  var _ = this._
-  var commander = _[0] && this.commands[_[0]]
-
-  if (res.help) {
-    this.help()
-  } else if (res.version) {
-    console.log(this.version || '0.0.0')
-  } else if (commander) {
-    res._ = _.slice(1)
-    commander.command.call(null, res, this)
-  } else if (main) {
-    res._ = _
-    main.call(this, res)
-  }
+  }, this)
 }
 
-var p = Cli.prototype
-
-// 格式化 option 的 key
-p.formatOptKey = function (key) {
-  return key.length === 1 ? '-' + key : '--' + key
-}
-
-p.getOptConfig = function (key) {
-  key = this.aliasMap[key]
-  if (key) return this.options[key]
-}
-
-p.isOptKeyValid = function (key) {
-  key = this.aliasMap[key]
-  return key in this.options
-}
-
-// 输出错误
-p.error = function () {
-  clog('\n%c%s\n', 'red', clog.format.apply(clog, arguments))
-  if (this.showHelpOnError) this.help()
-}
-
-// 输出 help
-p.help = function () {
-  if (this.usage) {
-    clog('\n%cUsage:  %c%s\n', 'white.bold', 'green', this.usage)
+// 确保将 -h, -v 放在 default group 的最后面
+function parseInit () {
+  var conf = this.conf
+  var opts = {}
+  if (conf.help !== false) {
+    opts['help | h'] = '<bool> ' + (typeof conf.help === 'string' ? conf.help : 'show help')
   }
-  if (this.description) {
-    this.description.forEach(function (row) { clog('  %c%s', 'gray', row) })
-    clog()
-  }
-  if (this.example) {
-    clog('%cExample%s:\n', 'white.bold', this.example.length ? 's' : '')
-    this.example.forEach(function (row) { clog('  %c%s%c', 'red.bg.white', row, 'end') })
-    clog()
-  }
-
-  // Commands
-  var commands = this.commands
-  var cmdRows = []
-  var cmd
-  var cmdKeys = Object.keys(commands)
-  var cmdCache = []
-
-  if (cmdKeys.length) {
-    clog('%cCommands:\n', 'white.bold')
-    cmdKeys.forEach(function (k) {
-      cmd = commands[k]
-      if (cmdCache.indexOf(cmd) >= 0) return
-      cmdCache.push(cmd)
-      var row = []
-      row.push(clog.format('  %c%s    ', 'green', cmd.alias.sort().join(', ')))
-      row.push(clog.format('%c%s', 'default', cmd.desc))
-      cmdRows.push(row)
-    })
-    console.log(table(cmdRows))
-    clog()
-  }
-
-  // Commands
-  var opts = this.options
-  var optRows = []
-
-  Object.keys(opts).forEach(function (k) {
-    var row = []
-    row.push(clog.format('  %c%s', 'green', opts[k].alias.join(', ')))
-    row.push(clog.format('  %c%s  ', 'cyan', '<' + opts[k].type + '>'))
-    row.push(clog.format('%c%s', 'default', opts[k].desc))
-    optRows.push(row)
-  })
-  if (optRows.length) {
-    clog('%cOptions:\n', 'white.bold')
-    console.log(table(optRows))
-    clog()
-  }
-
-  if (this.epilog) clog('  %s\n', this.epilog)
-}
-
-function init (opts) {
-  var options = {}
-  var commands = {}
-  var aliasMap = {}
-
-  if (opts.help !== false) {
-    opts['help | h'] = '<bool> ' + (typeof opts.help === 'string' ? opts.help : 'show help')
-  }
-  if (opts.version !== false) {
-    this.version = opts.version
+  if (conf.version !== false) {
+    this.version = conf.version
     opts['version | v'] = '<bool> ' + 'show version'
   }
-  if (opts.usage) this.usage = opts.usage
-  if (opts.description) this.description = [].concat(opts.description)
-  if (opts.example) this.example = [].concat(opts.example)
-  if (opts.epilog) this.epilog = opts.epilog
-
-  specialKeys.forEach(function (k) { delete opts[k] })
-
-  Object.keys(opts).forEach(function (k) {
-    var key, type, value, desc, alias, conf
-
-    alias = k.split(/\s*\|\s*/).sort()
-    key = alias[0]
-    value = opts[k]
-
-    if (re.test(value)) {
-      type = RegExp.$1
-      desc = RegExp.$2
-
-      conf = {key: key, alias: alias, type: type, desc: desc, raw: value}
-      alias.forEach(function (k) {
-        if (k in aliasMap) throw new Error('Option key "' + k + '" is dumplicated.')
-        aliasMap[k] = key
-      })
-      options[key] = conf
-    } else if (value && (typeof value === 'function' || typeof value.command === 'function')) {
-      if (typeof value === 'function') value = {desc: '', command: value}
-      value.alias = alias
-      alias.forEach(function (k) {
-        if (k in aliasMap || k in commands) throw new Error('Comand key "' + k + '" is dumplicated.')
-        commands[k] = value
-      })
-    } else {
-      throw new Error('Option ' + k + ' value "' + value + '" is invalid.')
-    }
-  })
-
-  this.options = options
-  this.commands = commands
-  this.aliasMap = aliasMap
+  init.call(this, false, opts)
 }
 
 function parse (args) {
@@ -266,7 +292,7 @@ function parse (args) {
     rawArg = arg = args[i]
     if (stopped) {
       _.push(arg)
-    } else if (_.length === 0 && arg in this.commands) { // 运行子命令剩下的参数给子命令去解析
+    } else if (_.length === 0 && arg in this.mapCommands) { // 运行子命令剩下的参数给子命令去解析
       stopped = true
       _.push(arg)
     } else if (arg === '--') {
@@ -280,20 +306,18 @@ function parse (args) {
     } else if (arg[0] === '-' && arg.length === 2) { // 单个短参数
       ck(arg[1])
     } else if (arg[0] === '-') { // 多个短参数，或单个数字短参数
-      arg = arg.slice(1)
-
       // 这里的参数被打散处理了，所以 consuem 前要先 check 整体参数是否 valid
-      if (/^\w(\d+)$/.test(arg)) {
-        if (checkOpt.call(this, arg[0], rawArg)) {
-          ck(arg[0])
-          cv(arg.slice(1))
+      if (/^-\w(\d+)$/.test(arg)) {
+        if (checkOpt.call(this, arg[1], rawArg)) {
+          ck(arg[1])
+          cv(arg.slice(2))
         }
       } else {
-        arg = arg.split('')
+        arg = arg.slice(1).split('')
         if (checkOpt.call(this, arg, rawArg)) {
           arg.forEach(function (k, i, ref) {
             if (ref.length - 1 === i) {
-              ck(k)    // 最好一个 option 可以接任意个参数
+              ck(k)    // 最后一个 option 可以接任意个参数
             } else {
               ck(k, 'noNeedArgs') // 后面不能接参数
             }
@@ -308,15 +332,196 @@ function parse (args) {
     if (_.length && this.stopParseOnFirstNoOption) stopped = true
   }
 
-  var conf = this.conf
-  if (conf && conf.needArgs > conf.currentArgs && conf.needArgs !== Infinity) {
-    throw new Error('Error: ' + conf.type + ' option ' + this.formatOptKey(conf.consumedKey) + ' need argument')
+  var ct = this.consumeTarget
+  if (ct && ct.needArgs > ct.currentArgs && ct.needArgs !== Infinity) {
+    throw new Error('Error: ' + ct.type + ' option ' + this.formatOptionKey(ct.consumedKey) + ' need argument.')
   }
+}
+
+/**
+ * 解析传入的参数
+ *
+ * - 解析到 "--" 就停止解析
+ * - array 类型的参数支持重复设置，其它类型的参数会被覆盖，array 形式的 option 如果不加参数会返回空数组
+ * - 支持短标签加数字的快捷方式，如 "-n100"，前提是 "-n" 需要是 number 类型
+ * - 其它：https://github.com/yargs/yargs#parsing-tricks
+ *
+ * @param  {Array<String>} [args]  参数
+ * @param {Function}      handle  parse 完成后，如果没有被内部 handle，则会调用此 handle
+ * @return {Cli}
+ *
+ * @example
+ *
+ * cli.parse(process.argv.slice(2), function (res) {
+ *   if (res.foo) {
+ *     // do something
+ *   }
+ * })
+ *
+ */
+Cli.prototype.parse = function (args, handle) {
+  if (!Array.isArray(args)) {
+    handle = args
+    args = process.argv.slice(2)
+  }
+
+  parseInit.call(this)
+
+  try {
+    parse.call(this, args)
+  } catch (e) {
+    /* istanbul ignore else */
+    if (/^Error: /.test(e.message)) {
+      this.error(e.message)
+      return this
+    } else {
+      throw e
+    }
+  }
+
+  var res = this.res = {}
+  var opts = this.mapOptions
+  Object.keys(opts).forEach(function (k) {
+    res[k] = 'value' in opts[k] ? opts[k].value : opts[k].defaultValue
+  })
+
+  res.rawArgs = args
+
+  var _ = this._
+  var commander = _[0] && this.mapCommands[_[0]]
+
+  if (res.help) {
+    this.help()
+  } else if (res.version) {
+    console.log(this.version || '0.0.0')
+  } else if (commander) {
+    res._ = _.slice(1)
+    commander.cmd.call(null, res, this)
+  } else if (typeof handle === 'function') {
+    res._ = _
+    handle.call(this, res)
+  }
+
+  return this
+}
+
+/**
+ * 格式化 option 选项
+ * @param  {String} key 选项名
+ * @return {String}     带 "-" 或 "--" 的选项名
+ */
+Cli.prototype.formatOptionKey = function (key) {
+  return key.length === 1 ? '-' + key : '--' + key
+}
+
+/**
+ * 得到某个 option 的配置
+ * @param  {String} key 选项名
+ * @return {Object}     解析过后的配置
+ */
+Cli.prototype.getOptionConfig = function (key) {
+  return this.mapOptions[key]
+}
+
+/**
+ * 判断某个 option 是否存在
+ * @param  {String}  key 选项名
+ * @return {Boolean}
+ */
+Cli.prototype.isOptionKeyValid = function (key) {
+  return key in this.mapOptions
+}
+
+/**
+ * 输出错误信息
+ *
+ * @param {...*} arg 参数格式和 {@link module:libs/sys/clog.format} 的格式是一致的
+ * @return {Cli}
+ */
+Cli.prototype.error = function () {
+  console.log(format('\n%c%s\n', 'red', format.apply(null, arguments)))
+  if (this.showHelpOnError) this.help()
+  return this
+}
+
+/**
+ * 根据 Cli 的配置，输出帮助信息
+ */
+Cli.prototype.help = function (returnStr) {
+  var buffer = []
+  var EOL = require('os').EOL
+  var puts = function () { buffer.push(format.apply(null, arguments)) }
+  var putsHeader = function (header) { puts('%c%s:\n', 'white.bold', header) }
+  var putsComands = function (header, obj) {
+    var cache = []
+    var rows = []
+    Object.keys(obj).forEach(function (key) {
+      var entry = obj[key]
+      if (cache.indexOf(entry) >= 0) return
+      cache.push(entry)
+      var row = []
+      row.push(format('  %c%s    ', 'green', entry.alias.join(', ')))
+      row.push(format('%c%s', 'default', entry.desc))
+      rows.push(row)
+    })
+    if (!rows.length) return
+    putsHeader(header)
+    puts(table(rows))
+    puts()
+  }
+
+  puts()
+  if (this.usage) {
+    puts('%cUsage:  %c%s\n', 'white.bold', 'green', this.usage)
+  }
+  if (this.desc) {
+    this.desc.forEach(function (row) { puts('  %c%s', 'gray', row) })
+    puts()
+  }
+  if (this.example) {
+    putsHeader('Example')
+    this.example.forEach(function (row) { puts('  %c%s', 'red.bg.white', row) })
+    puts()
+  }
+
+  putsComands('Commands', this.mapCommands)
+
+  if (this.groups.length) {
+    var rows = []
+    this.groups.forEach(function (group) {
+      if (group !== DEFAULT_GROUP_NAME) {
+        rows.push(['', '', ''])
+        rows.push([format('  %c%s:', 'green.bold', group), '', ''])
+        rows.push(['', '', ''])
+      }
+      this.groupsMap[group].forEach(function (entry) {
+        var row = []
+        var defaultValue = entry.defaultValue !== undef
+          ? format('  %c[ default: %s ]', 'gray', JSON.stringify(entry.defaultValue))
+          : ''
+        row.push(format('  %c%s', 'green', entry.alias.join(', ')))
+        row.push(format('  %c%s  ', 'cyan', '<' + entry.type + '>'))
+        row.push(format('%c%s', 'default', entry.desc + defaultValue))
+        rows.push(row)
+      })
+    }, this)
+    /* istanbul ignore else */
+    if (rows.length) {
+      putsHeader('Options')
+      puts(table(rows))
+      puts()
+    }
+  }
+
+  if (this.epilog) puts('  %s\n', this.epilog)
+
+  buffer = buffer.join(EOL)
+  return returnStr ? buffer : /* istanbul ignore next */ console.log(buffer)
 }
 
 function checkOpt (opts, rawArg) {
   var optsArr = [].concat(opts)
-  if (optsArr.every(this.isOptKeyValid.bind(this))) {
+  if (optsArr.every(this.isOptionKeyValid.bind(this))) {
     return true
   } else {
     invalidOpt.call(this, rawArg)
@@ -325,19 +530,22 @@ function checkOpt (opts, rawArg) {
 
 function invalidOpt (rawArg) {
   if (this.strict) {
-    throw new Error('Error: invalid option ' + rawArg)
+    throw new Error('Error: invalid option ' + rawArg + '.')
   } else {
     consumeVal.call(this, rawArg)
   }
 }
 
 function consumeKey (key, noNeedArgs) {
-  var conf = this.getOptConfig(key)
-  if (!conf) return invalidOpt.call(this, this.formatOptKey(key))
+  var conf = this.getOptionConfig(key)
+  if (!conf) return invalidOpt.call(this, this.formatOptionKey(key))
+
+  assign(conf, typeConfig[conf.type])
+  conf.currentArgs = 0
 
   if (noNeedArgs && conf.needArgs > 0) {
     throw new Error('Error: ' + conf.type + ' option ' +
-      this.formatOptKey(key) + ' need argument')
+      this.formatOptionKey(key) + ' need argument.')
   }
 
   switch (conf.type) {
@@ -353,44 +561,36 @@ function consumeKey (key, noNeedArgs) {
       break
   }
 
-  conf.currentArgs = 0
-  assign(conf, typeConfig[conf.type])
-
-  this.conf = conf
+  this.consumeTarget = conf
   conf.consumedKey = key
 }
 
 function consumeVal (val) {
-  var conf = this.conf
+  var conf = this.consumeTarget
   if (!conf || conf.needArgs === conf.currentArgs) {
     this._.push(val)
   } else if (conf.needArgs > conf.currentArgs) {
-    var consumedKey = this.formatOptKey(conf.consumedKey)
+    var consumedKey = this.formatOptionKey(conf.consumedKey)
+    conf.currentArgs++
 
     switch (conf.type) {
       case 'arr':
         conf.value.push(val)
-        conf.currentArgs++
         break
       case 'str':
         conf.value = val
-        conf.currentArgs++
         break
       case 'num':
         conf.value = parseNumber(val)
-        conf.currentArgs++
         if (isNaN(conf.value)) {
           throw new Error('Error: invalid number value "' +
             val + '" for option "' +
-            consumedKey + '"')
+            consumedKey + '".')
         }
         break
-      default:
-        throw new Error('Error: ' + conf.type + ' option ' +
-          consumedKey + ' do not need argument')
     }
   } else {
-    throw new SyntaxError('Parse error')
+    throw new SyntaxError('Parse error.')
   }
 }
 
