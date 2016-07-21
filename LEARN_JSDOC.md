@@ -1,4 +1,8 @@
 
+## Closure Compiler
+
+* Support tags https://developers.google.com/closure/compiler/docs/js-for-compiler#tags
+
 ## Basic Syntax Examples of Namepaths
 
 * myFunction

@@ -6,15 +6,13 @@
     "encoding": "utf8",
     "destination": "externals/docs/",
     "template": "node_modules/docdash",
+    // "template": "/Users/Mora/.nvm/versions/node/v6.0.0/lib/node_modules/jsdoc/templates/haruki",
     "recurse": true,
     "verbose": true
   },
   "source": {
     "include": [
-      "libs/lang/",
-      "libs/fs/",
-      "libs/sys",
-      "libs/tty"
+      "libs"
     ],
     "excludePattern": "(node_modules/|external/|test/)"
   },
