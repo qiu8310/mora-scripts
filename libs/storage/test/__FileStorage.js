@@ -1,6 +1,7 @@
 var assert = require('assert')
 var FileStorage = require('../FileStorage')
 var exists = require('../../fs/exists')
+var isWin = require('../../sys/isWin')
 var fs = require('fs')
 var resolve = require('path').resolve
 var FIXTURES = resolve(__dirname, 'fixtures')
@@ -58,6 +59,8 @@ describe('libs/storage/FileStorage', function () {
   })
 
   it('init from exists directory', function (done) {
+    if (isWin) return done() // window 下，如果要创建一个和文件夹相同的文件名不会报错
+
     var s = new FileStorage({file: DIR})
     assert.throws(function () {
       s.initSync()
