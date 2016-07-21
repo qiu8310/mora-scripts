@@ -63,8 +63,7 @@
     "report-dir": "externals/coverage",
     "include": [
       "cli/*",
-      "libs/**/*.js",
-      "js/**"
+      "libs/**/*.js"
     ],
     "exclude": [
       "externals/**",
