@@ -77,13 +77,21 @@ describe('libs/storage/BrowserStorage', function () {
   context('disable', function () {
     it('should warn when disabled', function () {
       var spy = sinon.stub(console, 'warn')
-
       BS.__with__({_store: null})(function () {
         var bs = new BS({key: '_', autoInit: true})
         bs.updateSync()
         assert.equal(spy.callCount, 1)
       })
+      spy.restore()
+    })
 
+    it('should cache', function () {
+      var spy = sinon.stub(console, 'warn')
+      BS.__with__({_store: null})(function () {
+        var bs = new BS({key: '_', autoInit: true})
+        bs.setSync('a', 1)
+        assert.equal(bs.getSync('a'), 1)
+      })
       spy.restore()
     })
   })

@@ -41,6 +41,7 @@ module.exports = Storage.extend({
       this.updateSync()
     } else {
       console.warn('localStorage was disabled, your data will lost if refresh browser')
+      this.data = Object(data)
     }
   },
 
