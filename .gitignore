@@ -2,5 +2,5 @@
 .nyc_output/
 externals/
 .vscode/
-build/
+dist/
 

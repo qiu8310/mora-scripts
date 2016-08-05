@@ -1,0 +1,53 @@
+#!/usr/bin/env node
+
+/**
+ * 打包指定的模块
+ *
+ * @required  webpack
+ *
+ * @module      build
+ * @createdAt   2016-08-05
+ *
+ * @copyright   Copyright (c) 2016 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
+ */
+
+var cp = require('child_process')
+var path = require('path')
+var cli = require('./libs/tty/cli')
+
+cli({
+  strict: true,
+  usage: 'build <path/to/filename> [options]',
+  version: '1.1.0',
+  epilog: 'Copyright Mora'
+})
+.options({
+  'm | min': '<boolean> minify source file',
+  'o | outDir': '<string> specified output directory, default is `dist` directory'
+})
+.parse(function (res) {
+  if (!res._.length) return this.help()
+  var outDir = path.resolve(res.outDir || 'dist')
+
+  res._.forEach(function (file) {
+    build(file, path.join(outDir, path.basename(file)))
+  })
+
+  if (res.min) {
+    res._.forEach(function (file) {
+      build(file, path.join(outDir, path.basename(file).replace(/\.js$/, '.min.js')), true)
+    })
+  }
+})
+
+function build (entry, outfile, min) {
+  var args = [
+    entry,
+    outfile,
+    '--output-library-target',
+    'commonjs2'
+  ]
+  if (min) args.push('-p')
+  cp.spawn('webpack', args, {stdio: 'inherit'})
+}
