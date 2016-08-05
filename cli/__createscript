@@ -3,65 +3,83 @@
 // Internal use only
 
 var fs = require('fs')
-var resolve = require('path').resolve
+var path = require('path')
+var resolve = path.resolve
 var exists = require('../libs/fs/exists')
+var findup = require('../libs/fs/findup')
+var mkdirp = require('../libs/fs/mkdirp')
 var formatDate = require('../libs/lang/formatDate')
 var cli = require('../libs/tty/cli')
 
-var libsDir = resolve(__dirname, '../libs')
-var libs = fs.readdirSync(libsDir)
-
 cli({
   strict: true,
-  usage: 'createscript { ' + libs.join(', ') + ' }/filename',
-  version: '1.0.0',
+  usage: 'createscript path/to/filename',
+  version: '1.1.0',
   epilog: 'Copyright Mora'
 })
 .options({
   t: '<boolean> create test script only',
-  s: '<boolean> create source script only'
+  s: '<boolean> create source script only',
+  'overwrite | o': '<boolean> overwrite exists file',
+  'root | r': '<string> root directory, default is the folder that contains package.json or current directory',
+  'desc | d': '<string> description for this module'
 })
 .parse(function (res) {
   if (!res._.length) return this.error('Error: need at lease one file path')
-
-  res._.forEach(make, this)
+  var root = resolveRoot(res)
+  res._.forEach(function (file) { make.call(this, root, file) }, this)
 })
 
-function make (file) {
-  var parts = file.replace(/(^\/+|\.js\/*$)/g, '').split('/')
-  if (parts.length !== 2) {
-    return this.error('Error: illegal file path %s, should only have one slash', file)
+function make (root, shortfile) {
+  if (shortfile !== '.js') {
+    shortfile = shortfile.replace(/\.js$/, '') // 去掉后缀 .js
   }
 
-  if (libs.indexOf(parts[0]) < 0) {
-    return this.error('Error: file path should starts with: ' + libs.join(', '))
-  }
+  var file = resolve(root, shortfile)
+  var testFile = file.replace(/([^\/\\]+)$/, 'test' + path.sep + '__$1')
+  var modulename = file.substr(root.length + 1) // 要创建的文件的模块名称
+  var basename = path.basename(file)
 
-  var file = resolve(libsDir, parts[0], parts[1]) + '.js'
-  var testFile = resolve(libsDir, parts[0], 'test', '__' + parts[1]) + '.js'
+  // 加上后缀
+  file += '.js'
+  testFile += '.js'
+
+  var overwrite = this.res.overwrite
 
   if (!this.res.t) {
-    if (exists(file)) return this.error('Error: file %s already exists', file)
-    fs.writeFileSync(file, makeLibsTemplate(parts))
+    mkdirp(path.dirname(file))
+    if (exists(file) && !overwrite) return this.error('Error: file %s already exists', file)
+    fs.writeFileSync(file, makeLibsTemplate(modulename, this.res.desc))
     console.log('Write file %s successfully', file)
   }
 
-  if (!this.res.s && !exists(testFile)) {
-    fs.writeFileSync(testFile, makeLibsTestTemplate(parts))
+  if (!this.res.s) {
+    mkdirp(path.dirname(testFile))
+    if (exists(testFile) && !overwrite) return this.error('Error: file %s already exists', testFile)
+    fs.writeFileSync(testFile, makeLibsTestTemplate(modulename, basename))
     console.log('Write test file %s successfully', testFile)
   }
 }
 
-function makeLibsTestTemplate(parts) {
+function resolveRoot (res) {
+  if (res.root) return resolve(res.root)
+  try {
+    return findup(process.cwd(), 'package.json')
+  } catch (e) {
+    return resolve(process.cwd())
+  }
+}
+
+function makeLibsTestTemplate (modulename, basename) {
   return [
     'var assert = require(\'assert\')',
-    'var ' + parts[1] + ' = require(\'../' + parts[1] + '\')',
+    'var ' + basename + ' = require(\'../' + basename + '\')',
     '',
     '/* eslint-env mocha */',
     '',
     '/* istanbul ignore next/if/else */',
     '',
-    'describe(\'libs/' + parts.join('/') + '\', function () {',
+    'describe(\'' + modulename + '\', function () {',
     '  it(\'should works\', function () {',
     '  ',
     '  })',
@@ -69,14 +87,15 @@ function makeLibsTestTemplate(parts) {
   ].join(require('os').EOL)
 }
 
-function makeLibsTemplate(parts) {
+function makeLibsTemplate (modulename, desc) {
   return [
     '/**',
-    ' * @module      libs/' + parts.join('/'),
+    ' * ' + (desc || ''),
+    ' * @module      ' + modulename,
     ' * @createdAt   ' + formatDate('yyyy-mm-dd'),
     ' *',
-    ' * Copyright (c) ' + formatDate('yyyy') + ' Zhonglei Qiu',
-    ' * Licensed under the MIT license.',
+    ' * @copyright   Copyright (c) ' + formatDate('yyyy') + ' Zhonglei Qiu',
+    ' * @license     Licensed under the MIT license.',
     ' */',
     ''
   ].join(require('os').EOL)
