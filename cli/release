@@ -2,6 +2,7 @@
 
 // https://github.com/conventional-changelog/standard-version
 // https://github.com/semantic-release/semantic-release
+// https://github.com/sindresorhus/np
 
 // 首次 push 到 github 时： greenkeeper enable
 

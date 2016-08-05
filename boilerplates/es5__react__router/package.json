@@ -1,0 +1,28 @@
+{
+  "name": "es5__react__router",
+  "version": "",
+  "main": "",
+  "description": "",
+  "license": "MIT",
+  "keywords": [],
+  "homepage": "",
+  "preferGlobal": false,
+  "private": false,
+  "scripts": {
+    "dev": "",
+    "build": ""
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "bundledDependencies": [],
+  "engines": {
+    "node": ">=6.0.0",
+    "npm": ">=3.0.0"
+  },
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ]
+}

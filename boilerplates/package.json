@@ -1,0 +1,20 @@
+{
+  "name": "boilerplates",
+  "version": "0.0.0",
+  "description": "",
+  "bin": {
+    "boilerplate": "./scripts/cli.js"
+  },
+  "dependencies": {
+    "all-the-package-names": "1.2003.0",
+    "async": "2.0.1",
+    "fs-extra": "0.30.0",
+    "inquirer": "1.1.2",
+    "isbinaryfile": "3.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "keywords": [],
+  "author": "Mora <qiuzhongleiabc@126.com> (https://qiu8310.github.io/)",
+  "license": "MIT"
+}
