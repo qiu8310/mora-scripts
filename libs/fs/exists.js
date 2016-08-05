@@ -53,3 +53,21 @@ module.exports = function (filepath, allowTypes) {
     return false
   }
 }
+
+/**
+ * 文件是否存在
+ * @param  {String} file 文件路径
+ * @return {Boolean}
+ */
+module.exports.file = function (file) {
+  return module.exports(file, 'File')
+}
+
+/**
+ * 目录是否存在
+ * @param  {String} dir 目录路径
+ * @return {Boolean}
+ */
+module.exports.directory = function (dir) {
+  return module.exports(dir, 'Directory')
+}

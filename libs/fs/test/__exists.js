@@ -49,4 +49,19 @@ describe('libs/fs/exists', function () {
       assert.equal(exists(__filename, ['directory', 'socket']), false)
     })
   })
+
+  context('file & directory', function () {
+    it('should exists', function () {
+      assert.ok(exists.file)
+      assert.ok(exists.directory)
+    })
+
+    it('should return false when file not exists', function () {
+      assert.ok(!exists.file('xxxyyyzzz'))
+    })
+
+    it('should return false when directory not exists', function () {
+      assert.ok(!exists.directory('xxxyyyzzz'))
+    })
+  })
 })
