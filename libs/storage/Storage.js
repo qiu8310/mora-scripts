@@ -79,7 +79,7 @@ Storage.prototype.define = function (keys, silent) {
   }
 
   keys.forEach(function (key) {
-    define(this, key, silent)
+    _define(this, key, silent)
   }, this)
 
   return this
@@ -242,7 +242,9 @@ Storage.prototype.toString = function () {
 
 module.exports = Storage
 
-function define (target, key, silent) {
+// 不能取名为 define
+// webpack 认为 define 是 全局变量，AMD 模块有 define('xxx', function) 写法
+function _define (target, key, silent) {
   if (key in target.constructor.prototype) {
     if (!silent) {
       console.warn('WARN: ignore defineProperty "' +
