@@ -1,0 +1,42 @@
+
+#[怎样写好一个 readme 文档](https://medium.com/@jwashke/document-your-github-repos-464642bb2e6d#.b0ksswfo4)
+
+## What is your project?
+
+## How do I clone down your app?
+
+```shell
+# clone down the project
+git clone git@github.com:jwashke/commissions.git
+
+# cd into the project directory
+cd commissions
+```
+
+## How do I start the app in development mode
+
+## Is there a database I need to set up?
+
+```shell
+rake db:setup
+```
+
+## Are there any environment variables I need to setup
+
+  1. What keys I need.
+  2. How I get them.
+  3. What they are called in the application.
+
+## How do I start the app and where can I find it?
+
+```shell
+rails s
+```
+
+visit http://localhost:3000 to view the app.
+
+## How do I run your tests?
+
+```
+rake test
+```

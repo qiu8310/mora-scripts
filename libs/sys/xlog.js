@@ -2,8 +2,8 @@
  * @module      libs/sys/xlog
  * @createdAt   2016-07-15
  *
- * Copyright (c) 2016 Zhonglei Qiu
- * Licensed under the MIT license.
+ * @copyright   Copyright (c) 2016 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
  */
 
 var util = require('util')

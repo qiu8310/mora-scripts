@@ -1,6 +1,9 @@
 
 ## 记录思路
 
+**[webpack 配置 dll，加快打包速度](https://segmentfault.com/a/1190000006087638)**
+
+
 * 模板只记录不太会变的部分，其它配置部分到时候写一个脚本自动生成
   比如 package.json 文件中：
   - name, version, keywords 等这些字段就是配置部分

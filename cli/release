@@ -4,7 +4,11 @@
 // https://github.com/semantic-release/semantic-release
 // https://github.com/sindresorhus/np
 
-// 首次 push 到 github 时： greenkeeper enable
+// 首次 push 到 github 时：
+//    启用依赖更新提醒： greenkeeper enable
+//    启用安全检查：     https://snyk.io
+//
+// 测试集成  https://github.com/philipwalton/easy-sauce， 可以参考 https://philipwalton.com/articles/learning-how-to-set-up-automated-cross-browser-javascript-unit-testing/
 
 /*
 

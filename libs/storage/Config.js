@@ -4,8 +4,8 @@
  * @module      libs/storage/Config
  * @createdAt   2016-07-21
  *
- * Copyright (c) 2016 Zhonglei Qiu
- * Licensed under the MIT license.
+ * @copyright   Copyright (c) 2016 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
  */
 var DotProp = require('../lang/DotProp')
 

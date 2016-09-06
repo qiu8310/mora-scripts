@@ -2,8 +2,8 @@
  * @module      libs/tty/cliTextSize
  * @createdAt   2016-07-17
  *
- * Copyright (c) 2016 Zhonglei Qiu
- * Licensed under the MIT license.
+ * @copyright   Copyright (c) 2016 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
  */
 
 var punycode = require('punycode')

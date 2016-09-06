@@ -2,8 +2,8 @@
  * @module      libs/fs/exists
  * @createdAt   2016-06-30
  *
- * Copyright (c) 2016 Zhonglei Qiu
- * Licensed under the MIT license.
+ * @copyright   Copyright (c) 2016 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
  */
 
 var fs = require('fs')
