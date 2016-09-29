@@ -50,7 +50,7 @@
     "codecov": "1.0.1",
     "docdash": "web-build-hub/docdash",
     "mocha": "3.0.2",
-    "nyc": "8.1.0",
+    "nyc": "8.3.0",
     "rewire": "2.5.2",
     "sinon": "1.17.6",
     "standard": "7.1.2"
