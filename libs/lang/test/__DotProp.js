@@ -1,6 +1,8 @@
 var assert = require('assert')
 var DotProp = require('../DotProp')
 
+/* eslint-env mocha */
+
 describe('libs/lang/DotProp', function() {
   describe('static method', function() {
     var obj

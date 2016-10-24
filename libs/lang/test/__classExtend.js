@@ -1,3 +1,5 @@
+/*eslint no-new: 0*/
+
 var assert = require('assert')
 var sinon = require('sinon')
 var Base = require('../classExtend')

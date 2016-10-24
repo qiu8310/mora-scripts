@@ -1,6 +1,7 @@
 var assert = require('assert')
 var assign = require('../assign')
 
+/* global Symbol:false */
 /* eslint-env mocha */
 
 describe('libs/lang/assign', function() {

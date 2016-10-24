@@ -10,21 +10,22 @@ var scripts = require(findup.pkg()).scripts
 var checks = ['lint', 'hint', 'test']
 var cmds = []
 
-checks.forEach(function (key) {
+checks.forEach(function(key) {
   if (key in scripts) cmds.push('npm run ' + key)
 })
 
+// TODO Promise.all 是并行的，这里需要串行
 Promise.all(cmds.map(run))
-  .then(function () {
+  .then(function() {
     process.exit(0)
   })
-  .catch(function (code) {
+  .catch(function(code) {
     process.exit(code)
   })
 
 function run(cmd) {
-  return new Promise(function (resolve, reject) {
-    shell(cmd, {stdio: 'inherit'}).on('exit', function (code, signal) {
+  return new Promise(function(resolve, reject) {
+    shell(cmd, {stdio: 'inherit'}).on('exit', function(code, signal) {
       if (code === 0 && !signal) resolve()
       else reject(signal ? -1 : code)
     })

@@ -1,0 +1,1 @@
+使用类似于 https://www.zybuluo.com/mdeditor 的方法为 github 的 markdown 实现各类图形（原理：在 markdown 使用注释语法写各类图形的文本表示，然后用一个脚本将这些文本生成 svg 文件，并通过 https://rawgit.com/ 访问这些 svg 文件，将其嵌入 markdown 文件中 ）

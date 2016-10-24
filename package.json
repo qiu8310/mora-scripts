@@ -9,7 +9,7 @@
     "preversion": "npm run lint && npm test",
     "version": "cli/puts '%cyou can run build and add build file to git in here' cyan",
     "postversion": "git push --follow-tags && npm publish && cli/run cnpm sync pkg.name",
-    "lint": "eslint libs/**/*.js",
+    "lint": "eslint libs/ hooks/",
     "test:watch": "mocha -R dot --watch **/test/__*.js",
     "test": "nyc _mocha **/test/__*.js",
     "report": "nyc report --reporter=html",
