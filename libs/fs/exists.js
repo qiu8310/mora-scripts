@@ -40,12 +40,12 @@ var fs = require('fs')
  * @since     2.0.0
  *
  */
-module.exports = function (filepath, allowTypes) {
+module.exports = function(filepath, allowTypes) {
   if (!allowTypes) allowTypes = 'File'
 
   try {
     var stats = fs.statSync(filepath)
-    return [].concat(allowTypes).some(function (type) {
+    return [].concat(allowTypes).some(function(type) {
       var typeFn = 'is' + type[0].toUpperCase() + type.slice(1)
       return stats[typeFn] && stats[typeFn]() && type
     })
@@ -59,7 +59,7 @@ module.exports = function (filepath, allowTypes) {
  * @param  {String} file 文件路径
  * @return {Boolean}
  */
-module.exports.file = function (file) {
+module.exports.file = function(file) {
   return module.exports(file, 'File')
 }
 
@@ -68,6 +68,6 @@ module.exports.file = function (file) {
  * @param  {String} dir 目录路径
  * @return {Boolean}
  */
-module.exports.directory = function (dir) {
+module.exports.directory = function(dir) {
   return module.exports(dir, 'Directory')
 }

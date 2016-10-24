@@ -29,7 +29,7 @@ var isObject = require('./isObject')
  * @author Zhonglei Qiu
  * @since 2.0.0
  */
-function DotProp (data) {
+function DotProp(data) {
   if (!(this instanceof DotProp)) return new DotProp(data)
   this.data = Object(data)
 }
@@ -42,7 +42,7 @@ function DotProp (data) {
  * @author Zhonglei Qiu
  * @since 2.0.0
  */
-DotProp.prototype.get = function (path) {
+DotProp.prototype.get = function(path) {
   return DotProp.get(this.data, path)
 }
 
@@ -57,7 +57,7 @@ DotProp.prototype.get = function (path) {
  * @author Zhonglei Qiu
  * @since 2.0.0
  */
-DotProp.prototype.set = function (path, value) {
+DotProp.prototype.set = function(path, value) {
   return DotProp.set(this.data, path, value)
 }
 
@@ -70,7 +70,7 @@ DotProp.prototype.set = function (path, value) {
  * @author Zhonglei Qiu
  * @since 2.0.0
  */
-DotProp.prototype.has = function (path) {
+DotProp.prototype.has = function(path) {
   return DotProp.has(this.data, path)
 }
 
@@ -82,7 +82,7 @@ DotProp.prototype.has = function (path) {
  * @author Zhonglei Qiu
  * @since 2.0.0
  */
-DotProp.prototype.del = function (path) {
+DotProp.prototype.del = function(path) {
   return DotProp.del(this.data, path)
 }
 
@@ -97,12 +97,12 @@ DotProp.prototype.del = function (path) {
  * @author Zhonglei Qiu
  * @since 2.0.0
  */
-DotProp.has = function (obj, path) {
+DotProp.has = function(obj, path) {
   if (!isObject(obj) || typeof path !== 'string') {
     return false
   }
 
-  return find(obj, getPathSegments(path), function (data) {
+  return find(obj, getPathSegments(path), function(data) {
     if (data.isDrained) {
       return {next: false, value: false}
     } else if (data.isLast) {
@@ -124,12 +124,12 @@ DotProp.has = function (obj, path) {
  * @author Zhonglei Qiu
  * @since 2.0.0
  */
-DotProp.get = function (obj, path) {
+DotProp.get = function(obj, path) {
   if (!isObject(obj) || typeof path !== 'string') {
     return obj
   }
 
-  return find(obj, getPathSegments(path), function (data) {
+  return find(obj, getPathSegments(path), function(data) {
     if (data.isDrained) {
       return {next: false, value: undefined}
     } else if (data.isLast) {
@@ -151,12 +151,12 @@ DotProp.get = function (obj, path) {
  * @author Zhonglei Qiu
  * @since 2.0.0
  */
-DotProp.del = function (obj, path) {
+DotProp.del = function(obj, path) {
   if (!isObject(obj) || typeof path !== 'string') {
     return false
   }
 
-  return find(obj, getPathSegments(path), function (data) {
+  return find(obj, getPathSegments(path), function(data) {
     if (data.isDrained) {
       return {next: false, value: false}
     } else if (data.isLast) {
@@ -180,12 +180,12 @@ DotProp.del = function (obj, path) {
  * @author Zhonglei Qiu
  * @since 2.0.0
  */
-DotProp.set = function (obj, path, value) {
+DotProp.set = function(obj, path, value) {
   if (!isObject(obj) || typeof path !== 'string') {
     return false
   }
 
-  return find(obj, getPathSegments(path), function (data) {
+  return find(obj, getPathSegments(path), function(data) {
     var current = data.current
     var segment = data.segment
     if (data.isLast) {
@@ -200,7 +200,7 @@ DotProp.set = function (obj, path, value) {
   })
 }
 
-function find (obj, segments, fn) {
+function find(obj, segments, fn) {
   var len = segments.length
   var parent = null
   var current = obj
@@ -235,7 +235,7 @@ function find (obj, segments, fn) {
   return result
 }
 
-function getPathSegments (path) {
+function getPathSegments(path) {
   var p
   var parts = []
   var pathArr = path.split('.')

@@ -19,11 +19,11 @@
 /* istanbul ignore else */
 if (!Promise.prototype.finally) {
   /* eslint-disable no-extend-native */
-  Promise.prototype.finally = function (callback) {
+  Promise.prototype.finally = function(callback) {
     var P = this.constructor
     return this.then(
-      function (value) { return P.resolve(callback()).then(function () { return value }) },
-      function (reason) { return P.resolve(callback()).then(function () { throw reason }) }
+      function(value) { return P.resolve(callback()).then(function() { return value }) },
+      function(reason) { return P.resolve(callback()).then(function() { throw reason }) }
     )
   }
   /* eslint-enable no-extend-native */
@@ -38,8 +38,8 @@ if (!Promise.prototype.finally) {
  */
 /* istanbul ignore else */
 if (!Promise.try) {
-  Promise.try = function (fn) {
-    return new Promise(function (resolve, reject) {
+  Promise.try = function(fn) {
+    return new Promise(function(resolve, reject) {
       resolve(fn())
     })
   }

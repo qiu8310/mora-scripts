@@ -8,7 +8,7 @@
 
 var util = require('util')
 
-function format () {
+function format() {
   return '\x1b[31m' + util.format.apply(util, arguments) + '\x1b[0m'
 }
 
@@ -20,7 +20,7 @@ function format () {
  * @author Zhonglei Qiu
  * @since 2.0.0
  */
-module.exports = function () { console.log(format.apply(null, arguments)) }
+module.exports = function() { console.log(format.apply(null, arguments)) }
 
 /**
  * 返回红色的字符串

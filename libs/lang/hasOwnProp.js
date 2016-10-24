@@ -18,7 +18,7 @@ var hasOwnProp = Object.prototype.hasOwnProperty
  * @author  Zhonglei Qiu
  * @since   2.0.0
  */
-module.exports = function (obj, key) {
+module.exports = function(obj, key) {
   if (obj == null) return false
 
   return hasOwnProp.call(obj, key)

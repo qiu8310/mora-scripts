@@ -4,8 +4,8 @@ var Storage = require('../Storage')
 
 /* eslint-env mocha */
 
-describe('libs/storage/Config', function () {
-  it('manual init storage', function () {
+describe('libs/storage/Config', function() {
+  it('manual init storage', function() {
     var s = new Storage()
     s.initSync({foo: true})
     var c = new Config(s)
@@ -22,7 +22,7 @@ describe('libs/storage/Config', function () {
     assert.equal(s.data, c.dp.data)
   })
 
-  it('auto init storage', function () {
+  it('auto init storage', function() {
     var s = new Storage()
     var c = new Config(s)
 

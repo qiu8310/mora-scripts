@@ -15,9 +15,8 @@ require('../../lang/promiseExtra')
 
 /* eslint-env mocha */
 
-describe('libs/storage/FileStorage', function () {
-
-  it('init from exists file', function (done) {
+describe('libs/storage/FileStorage', function() {
+  it('init from exists file', function(done) {
     var s = new FileStorage({file: FILE})
     s.initSync()
     s.define()
@@ -30,20 +29,20 @@ describe('libs/storage/FileStorage', function () {
 
     s = new FileStorage({file: FILE})
     s.init()
-      .then(function () {
+      .then(function() {
         s.define()
         assert.equal(s.foo, 1)
         assert.equal(s.bar, null)
         return s.init() // 重复 init 没有影响
       })
-      .then(function () {
+      .then(function() {
         assert.equal(s.foo, 1)
         assert.equal(s.bar, null)
       })
       .then(done, done)
   })
 
-  it('init from not exists file', function (done) {
+  it('init from not exists file', function(done) {
     var f = resolve(FIXTURES, 'xx')
 
     new FileStorage({file: f}).initSync()
@@ -51,57 +50,57 @@ describe('libs/storage/FileStorage', function () {
     fs.unlinkSync(f)
 
     new FileStorage({file: f}).init()
-      .then(function () {
+      .then(function() {
         assert.ok(exists(f))
         fs.unlinkSync(f)
         done()
       })
   })
 
-  it('init from exists directory', function (done) {
+  it('init from exists directory', function(done) {
     if (isWin) return done() // window 下，如果要创建一个和文件夹相同的文件名不会报错
 
     var s = new FileStorage({file: DIR})
-    assert.throws(function () {
+    assert.throws(function() {
       s.initSync()
     })
 
     s.init()
-      .catch(function (e) {
+      .catch(function(e) {
         assert.ok(e)
         done()
       })
   })
 
-  it('update sync error', function () {
+  it('update sync error', function() {
     var f = resolve(FIXTURES, 'us')
     var s = new FileStorage({file: f})
     s.initSync()
     changeFileToDirectory(f)
-    assert.throws(function () {
+    assert.throws(function() {
       s.setSync('a', 1)
     })
     rmdir(f)
   })
 
-  it('update async error', function (done) {
+  it('update async error', function(done) {
     var f = resolve(FIXTURES, 'ua')
     var s = new FileStorage({file: f})
     s.initSync()
     changeFileToDirectory(f)
     s.set('a', 1)
-      .catch(function (e) {
+      .catch(function(e) {
         rmdir(f)
         done()
       })
   })
 })
 
-function changeFileToDirectory (file) {
+function changeFileToDirectory(file) {
   fs.unlinkSync(file)
   fs.mkdirSync(file)
 }
 
-function rmdir (file) {
+function rmdir(file) {
   fs.rmdirSync(file)
 }

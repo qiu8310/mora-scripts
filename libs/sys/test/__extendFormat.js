@@ -5,34 +5,34 @@ var extendFormat = require('../extendFormat')
 
 /* eslint-env mocha */
 
-var defaultHandle = function (v) { return v }
+var defaultHandle = function(v) { return v }
 
-describe('libs/sys/extendFormat', function () {
-  it('should not handle when no format string', function () {
+describe('libs/sys/extendFormat', function() {
+  it('should not handle when no format string', function() {
     var format = extendFormat(/%a/, defaultHandle)
     assert.equal(format(), util.format())
     assert.equal(format('aa'), 'aa')
     assert.equal(format('aa', 'bb'), 'aa bb')
   })
 
-  it('should not handle when template is not string', function () {
+  it('should not handle when template is not string', function() {
     var format = extendFormat(/%a/, defaultHandle)
     assert.equal(format(true), util.format(true))
   })
 
-  it('should escape % with %%', function () {
+  it('should escape % with %%', function() {
     var format = extendFormat(/%a/, defaultHandle)
     assert.equal(format('%% %a', 'foo', 'bar'), '% foo bar')
   })
 
-  it('should throws when match include captcher group', function () {
-    assert.throws(function () {
+  it('should throws when match include captcher group', function() {
+    assert.throws(function() {
       extendFormat(/(%a)/, defaultHandle)
     })
   })
 
-  it('should return number format function', function () {
-    var spy = sinon.spy(function (value, format) {
+  it('should return number format function', function() {
+    var spy = sinon.spy(function(value, format) {
       return parseInt(value, 10).toString()
     })
 
@@ -48,8 +48,7 @@ describe('libs/sys/extendFormat', function () {
     assert.ok(spy.thirdCall.calledWith('10', '%f'))
   })
 
-  it('should support order property', function () {
-
+  it('should support order property', function() {
     var format1 = extendFormat([
       {match: /%a/, order: 1, handle: defaultHandle},
       {match: /%aa/, order: 2, handle: defaultHandle}
@@ -63,10 +62,9 @@ describe('libs/sys/extendFormat', function () {
     assert.equal(format2('%aa', 'b'), 'b')
   })
 
-  context('expectArgNum', function () {
-
-    it('can equal 0', function () {
-      var handle = sinon.spy(function () {
+  context('expectArgNum', function() {
+    it('can equal 0', function() {
+      var handle = sinon.spy(function() {
         return 'hack'
       })
       var format = extendFormat({
@@ -85,8 +83,8 @@ describe('libs/sys/extendFormat', function () {
       assert.ok(handle.thirdCall.calledWith('%a'))
     })
 
-    it('can equal 2', function () {
-      var handle = sinon.spy(function (a, b, format) {
+    it('can equal 2', function() {
+      var handle = sinon.spy(function(a, b, format) {
         return a + b
       })
       var format = extendFormat({
@@ -99,7 +97,7 @@ describe('libs/sys/extendFormat', function () {
       assert.equal(format('%a, %a', 'b', 'c', 1, 2), 'bc, 3')
     })
 
-    it('should not handled when expect 1 bug got 0', function () {
+    it('should not handled when expect 1 bug got 0', function() {
       var handle = sinon.spy()
       var format = extendFormat(/%a/, handle)
 
@@ -107,24 +105,24 @@ describe('libs/sys/extendFormat', function () {
       assert.equal(handle.callCount, 0)
     })
 
-    it('should not handled when expect 2 bug got 0 or 1', function () {
+    it('should not handled when expect 2 bug got 0 or 1', function() {
       var handle = sinon.spy()
       var format = extendFormat({match: /%a/, handle: handle, expectArgNum: 2})
 
       assert.equal(format('%a a'), '%a a')
       assert.equal(format('%a a', 'a'), '%a a a')
-      assert.equal(format('%d %a a', '1','a'), '1 %a a a')
+      assert.equal(format('%d %a a', '1', 'a'), '1 %a a a')
       assert.equal(format('%a a', 'a'), '%a a a')
       assert.equal(handle.callCount, 0)
     })
   })
 
-  context('hooks', function () {
-    it('support onStart and onEnd', function () {
-      var onStart = sinon.spy(function () {
+  context('hooks', function() {
+    it('support onStart and onEnd', function() {
+      var onStart = sinon.spy(function() {
         return 's_'
       })
-      var onEnd = sinon.spy(function () {
+      var onEnd = sinon.spy(function() {
         return '_e'
       })
       var format = extendFormat({
@@ -139,11 +137,11 @@ describe('libs/sys/extendFormat', function () {
       assert.equal(format('%a %a', 'b', 'c'), 's_b c_e')
       assert.equal(format('%a', 'b', '%a', 'c'), 's_b c_e')
     })
-    it('support onGroupStart and onGroupEnd', function () {
-      var onGroupStart = sinon.spy(function () {
+    it('support onGroupStart and onGroupEnd', function() {
+      var onGroupStart = sinon.spy(function() {
         return 's_'
       })
-      var onGroupEnd = sinon.spy(function () {
+      var onGroupEnd = sinon.spy(function() {
         return '_e'
       })
       var format = extendFormat({
@@ -158,11 +156,11 @@ describe('libs/sys/extendFormat', function () {
       assert.equal(format('%a %a', 'b', 'c'), 's_b c_e')
       assert.equal(format('%a', 'b', '%a', 'c'), 's_b_e s_c_e')
     })
-    it('support onFormatStart and onFormatEnd', function () {
-      var onFormatStart = sinon.spy(function () {
+    it('support onFormatStart and onFormatEnd', function() {
+      var onFormatStart = sinon.spy(function() {
         return 's_'
       })
-      var onFormatEnd = sinon.spy(function () {
+      var onFormatEnd = sinon.spy(function() {
         return '_e'
       })
       var format = extendFormat({

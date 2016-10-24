@@ -15,7 +15,7 @@ var path = require('path')
  * 递归遍历删除指定的文件或文件夹
  * @param  {String} file 要删除的文件的路径
  */
-function rm (file) {
+function rm(file) {
   var stat = fs.statSync(file)
 
   if (stat.isDirectory()) {
@@ -25,12 +25,12 @@ function rm (file) {
   }
 }
 
-function rmFile (file) {
+function rmFile(file) {
   return fs.unlinkSync(file)
 }
 
-function rmDir (dir) {
-  fs.readdirSync(dir).forEach(function (item) {
+function rmDir(dir) {
+  fs.readdirSync(dir).forEach(function(item) {
     rm(path.join(dir, item))
   })
   return fs.rmdirSync(dir)

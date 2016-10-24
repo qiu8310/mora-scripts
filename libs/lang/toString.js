@@ -15,6 +15,6 @@
  * @author  Zhonglei Qiu
  * @since   2.0.0
  */
-module.exports = function (any) {
+module.exports = function(any) {
   return Object.prototype.toString.call(any)
 }

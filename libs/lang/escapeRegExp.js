@@ -20,7 +20,7 @@ var re = /[-.*+?^${}()|[\]\/\\]/
  * @author    Zhongle Qiu
  * @since     2.0.0
  */
-module.exports = function (str) {
+module.exports = function(str) {
   return str.replace(gre, '\\$&')
 }
 

@@ -4,16 +4,16 @@ var stripAnsi = require('../stripAnsi')
 
 /* eslint-env mocha */
 
-describe('libs/tty/stripAnsi', function () {
-  it('should be a function', function () {
+describe('libs/tty/stripAnsi', function() {
+  it('should be a function', function() {
     assert.equal(typeof stripAnsi, 'function')
   })
 
-  it('should exports the regexp', function () {
+  it('should exports the regexp', function() {
     assert.ok(stripAnsi.gre instanceof RegExp)
   })
 
-  it('should strip ansi code', function () {
+  it('should strip ansi code', function() {
     var ansiStr1 = format('b')
     var ansiStr2 = 'a' + ansiStr1
     var ansiStr3 = ansiStr1 + 'c'
@@ -30,7 +30,7 @@ describe('libs/tty/stripAnsi', function () {
     assert.equal(stripAnsi(ansiStr4), 'abc')
   })
 
-  it('should return itself when str is not a string', function () {
+  it('should return itself when str is not a string', function() {
     assert.equal(stripAnsi(true), true)
     assert.equal(stripAnsi(1), 1)
   })

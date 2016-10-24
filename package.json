@@ -9,7 +9,7 @@
     "preversion": "npm run lint && npm test",
     "version": "cli/puts '%cyou can run build and add build file to git in here' cyan",
     "postversion": "git push --follow-tags && npm publish && cli/run cnpm sync pkg.name",
-    "lint": "standard libs/**/*.js build",
+    "lint": "eslint libs/**/*.js",
     "test:watch": "mocha -R dot --watch **/test/__*.js",
     "test": "nyc _mocha **/test/__*.js",
     "report": "nyc report --reporter=html",
@@ -49,11 +49,11 @@
   "devDependencies": {
     "codecov": "1.0.1",
     "docdash": "web-build-hub/docdash",
+    "eslint": "3.8.1",
     "mocha": "3.1.2",
     "nyc": "8.3.0",
     "rewire": "2.5.2",
-    "sinon": "1.17.6",
-    "standard": "7.1.2"
+    "sinon": "1.17.6"
   },
   "nyc": {
     "check-coverage": false,

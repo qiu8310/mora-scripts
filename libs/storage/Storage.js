@@ -35,7 +35,7 @@ var hasOwnProp = require('../lang/hasOwnProp')
  * })
  *
  */
-function Storage (opts) {
+function Storage(opts) {
   /**
    * 内存中的所有数据
    * @type {Object}
@@ -70,7 +70,7 @@ Storage.extend = extend
  * @param  {Boolean}              silent   是否禁止输出提醒信息（主要是 defineProperty 会出现 key 已经存在的问题）
  * @return {Storage}
  */
-Storage.prototype.define = function (keys, silent) {
+Storage.prototype.define = function(keys, silent) {
   if (typeof keys === 'string') {
     keys = [keys]
   } else if (!Array.isArray(keys)) {
@@ -78,7 +78,7 @@ Storage.prototype.define = function (keys, silent) {
     keys = Object.keys(this.data)
   }
 
-  keys.forEach(function (key) {
+  keys.forEach(function(key) {
     _define(this, key, silent)
   }, this)
 
@@ -89,7 +89,7 @@ Storage.prototype.define = function (keys, silent) {
  * 初始化 Storage
  * @return {Promise}
  */
-Storage.prototype.init = function (data) {
+Storage.prototype.init = function(data) {
   this.data = Object(data)
   return Promise.resolve()
 }
@@ -97,7 +97,7 @@ Storage.prototype.init = function (data) {
 /**
  * Stroage#init 的同步版本
  */
-Storage.prototype.initSync = function (data) {
+Storage.prototype.initSync = function(data) {
   this.data = Object(data)
 }
 
@@ -106,7 +106,7 @@ Storage.prototype.initSync = function (data) {
  * @param  {String} key
  * @return {Promise}
  */
-Storage.prototype.has = function (key) {
+Storage.prototype.has = function(key) {
   return Promise.resolve(this.hasSync(key))
 }
 
@@ -115,7 +115,7 @@ Storage.prototype.has = function (key) {
  * @param  {String} key
  * @return {*}
  */
-Storage.prototype.hasSync = function (key) {
+Storage.prototype.hasSync = function(key) {
   return hasOwnProp(this.data, key)
 }
 
@@ -124,7 +124,7 @@ Storage.prototype.hasSync = function (key) {
  * @param  {String} key
  * @return {Promise}
  */
-Storage.prototype.get = function (key) {
+Storage.prototype.get = function(key) {
   return Promise.resolve(this.getSync(key))
 }
 
@@ -133,7 +133,7 @@ Storage.prototype.get = function (key) {
  * @param  {String} key
  * @return {*}
  */
-Storage.prototype.getSync = function (key) {
+Storage.prototype.getSync = function(key) {
   return this.data[key]
 }
 
@@ -144,7 +144,7 @@ Storage.prototype.getSync = function (key) {
  * @param  {Boolean}  sync      是否是同步操作
  * @return {*}     操作函数返回的内容
  */
-Storage.prototype.safeOperate = function (key, op, sync) {
+Storage.prototype.safeOperate = function(key, op, sync) {
   var data = this.data
   var oldVal = data[key]
 
@@ -159,7 +159,7 @@ Storage.prototype.safeOperate = function (key, op, sync) {
     }
   } else {
     return this.update()
-      .catch(function (e) {
+      .catch(function(e) {
         data[key] = oldVal
         return Promise.reject(e)
       })
@@ -172,8 +172,8 @@ Storage.prototype.safeOperate = function (key, op, sync) {
  * @param {*} val
  * @return {Promise}
  */
-Storage.prototype.set = function (key, val) {
-  return this.safeOperate(key, function (data, key) {
+Storage.prototype.set = function(key, val) {
+  return this.safeOperate(key, function(data, key) {
     data[key] = val
   })
 }
@@ -183,8 +183,8 @@ Storage.prototype.set = function (key, val) {
  * @param  {String} key
  * @param  {*} val
  */
-Storage.prototype.setSync = function (key, val) {
-  return this.safeOperate(key, function (data, key) {
+Storage.prototype.setSync = function(key, val) {
+  return this.safeOperate(key, function(data, key) {
     data[key] = val
   }, true)
 }
@@ -194,8 +194,8 @@ Storage.prototype.setSync = function (key, val) {
  * @param  {String} key
  * @return {Promise}
  */
-Storage.prototype.del = function (key) {
-  return this.safeOperate(key, function (data, key) {
+Storage.prototype.del = function(key) {
+  return this.safeOperate(key, function(data, key) {
     delete data[key]
   })
 }
@@ -204,8 +204,8 @@ Storage.prototype.del = function (key) {
  * Storage.del 的同步版本
  * @param  {String} key
  */
-Storage.prototype.delSync = function (key) {
-  return this.safeOperate(key, function (data, key) {
+Storage.prototype.delSync = function(key) {
+  return this.safeOperate(key, function(data, key) {
     delete data[key]
   }, true)
 }
@@ -214,7 +214,7 @@ Storage.prototype.delSync = function (key) {
  * 将数据同步到对应的存储中
  * @return {Promise}
  */
-Storage.prototype.update = function () {
+Storage.prototype.update = function() {
   return Promise.resolve()
 }
 
@@ -222,13 +222,13 @@ Storage.prototype.update = function () {
  * Storage.update 的同步版本
  * @return {Promise}
  */
-Storage.prototype.updateSync = function () {}
+Storage.prototype.updateSync = function() {}
 
 /**
  * 将 Storage 中的 data 克隆
  * @return {*}
  */
-Storage.prototype.toJSON = function () {
+Storage.prototype.toJSON = function() {
   return JSON.parse(this.toString())
 }
 
@@ -236,7 +236,7 @@ Storage.prototype.toJSON = function () {
  * 将 Storage 中的 data 转化成字符串
  * @return {String}
  */
-Storage.prototype.toString = function () {
+Storage.prototype.toString = function() {
   return JSON.stringify(this.data, null, this.opts.format)
 }
 
@@ -244,21 +244,21 @@ module.exports = Storage
 
 // 不能取名为 define
 // webpack 认为 define 是 全局变量，AMD 模块有 define('xxx', function) 写法
-function _define (target, key, silent) {
+function _define(target, key, silent) {
   if (key in target.constructor.prototype) {
     if (!silent) {
-      console.warn('WARN: ignore defineProperty "' +
-        key + '", because it is Storage\'s native method.')
+      console.warn('WARN: ignore defineProperty "'
+        + key + '", because it is Storage\'s native method.')
     }
   } else if (key in target) {
     if (!silent) {
-      console.warn('INFO: ignore defineProperty "' +
-        key + '", because the property already exists.')
+      console.warn('INFO: ignore defineProperty "'
+        + key + '", because the property already exists.')
     }
   } else {
     Object.defineProperty(target, key, {
-      get: function () { return target.getSync(key) },
-      set: function (v) { return target.setSync(key, v) }
+      get: function() { return target.getSync(key) },
+      set: function(v) { return target.setSync(key, v) }
     })
   }
 }

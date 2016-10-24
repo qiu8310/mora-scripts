@@ -26,7 +26,7 @@ var rePath = /^path$/i
  * @author Zhonglei Qiu
  * @since 2.0.0
  */
-module.exports = function (env, paths) {
+module.exports = function(env, paths) {
   var pathKey = getPathKey(env)
   var oldPath = env[pathKey]
   if (!Array.isArray(paths)) paths = [paths]
@@ -35,7 +35,7 @@ module.exports = function (env, paths) {
   return env
 }
 
-function getPathKey (env) {
+function getPathKey(env) {
   if (isWin) {
     var keys = Object.keys(env)
     for (var i = 0; i < keys.length; i++) {

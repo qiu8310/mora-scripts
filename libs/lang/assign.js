@@ -30,7 +30,7 @@ var propIsEnumerable = Object.prototype.propertyIsEnumerable
  * @author    Zhongle Qiu
  * @since     2.0.0
  */
-module.exports = function (target, source) {
+module.exports = function(target, source) {
   if (target == null) throw new TypeError('Object.assign cannot be called with null or undefined')
 
   var i, j, k, from, symbols

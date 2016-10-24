@@ -68,7 +68,7 @@ var gre = /(?:yyyy|yy|mm|m|MM|M|dd|d|DD|Do|D|HH|H|hh|h|A|a|ii|i|ss|s|X|x)/g
  * @author Zhonglei Qiu
  * @since 2.0.0
  */
-module.exports = function (date, format) {
+module.exports = function(date, format) {
   if (!format) {
     format = date
     date = new Date()
@@ -86,7 +86,7 @@ module.exports = function (date, format) {
   var h = hour % 12
   var a = hour > 11 ? 'pm' : 'am'
 
-  return format.replace(gre, function (key) {
+  return format.replace(gre, function(key) {
     switch (key) {
       case 'yyyy': return year
       case 'yy': return year.toString().substr(2)
@@ -117,11 +117,11 @@ module.exports = function (date, format) {
   })
 }
 
-function pad (num) {
+function pad(num) {
   return num < 10 ? '0' + num : num
 }
 
-function order (day) {
+function order(day) {
   var prefix = day.toString()
   var suffix = 'th'
   var map = {'1': 'st', '2': 'nd', '3': 'rd'}

@@ -19,7 +19,7 @@ var hasOwnProp = require('./hasOwnProp')
  * var Base = require('classExtend')
  * var Sub = Base.extend(protoProps, staticProps)
  */
-function Base () {}
+function Base() {}
 
 /**
  * Extend this Class to create a new one inherithing this one.
@@ -39,7 +39,7 @@ function Base () {}
  * MyClass.extend = require('classExtend').extend
  *
  */
-Base.extend = function (protoProps, staticProps) {
+Base.extend = function(protoProps, staticProps) {
   var parent = this
   var child
 
@@ -49,7 +49,7 @@ Base.extend = function (protoProps, staticProps) {
   if (protoProps && hasOwnProp(protoProps, 'constructor')) {
     child = protoProps.constructor
   } else {
-    child = function () { return parent.apply(this, arguments) }
+    child = function() { return parent.apply(this, arguments) }
   }
 
   // Add static properties to the constructor function, if supplied.

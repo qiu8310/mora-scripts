@@ -8,15 +8,15 @@ var info = require('../info')
 
 /* eslint-env mocha */
 
-describe('libs/sys/error,warn,info', function () {
-  it('should have format function', function () {
+describe('libs/sys/error,warn,info', function() {
+  it('should have format function', function() {
     assert.equal(typeof error.format, 'function')
     assert.equal(typeof warn.format, 'function')
     assert.equal(typeof info.format, 'function')
   })
 
-  it('should call util.format in error,warn,info', function () {
-    var log = sinon.stub(console, 'log', function () {})
+  it('should call util.format in error,warn,info', function() {
+    var log = sinon.stub(console, 'log', function() {})
     var spy = sinon.spy(util, 'format')
 
     error('a', 'b')

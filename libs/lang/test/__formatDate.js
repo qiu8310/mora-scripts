@@ -3,9 +3,8 @@ var formatDate = require('../formatDate')
 
 /* eslint-env mocha */
 
-describe('libs/lang/formatDate', function () {
-
-  it('should format specified date', function () {
+describe('libs/lang/formatDate', function() {
+  it('should format specified date', function() {
     var date = new Date('2016-07-14 16:05:06')
     var X = date.getTime()
     var x = Math.round(X / 1000)
@@ -15,12 +14,12 @@ describe('libs/lang/formatDate', function () {
     assert.equal(formatDate(date, format), expect)
   })
 
-  it('should format current date', function () {
+  it('should format current date', function() {
     var date = new Date()
     assert.equal(formatDate('yyyy'), date.getFullYear())
   })
 
-  it('should format day of month', function () {
+  it('should format day of month', function() {
     assert.equal(formatDate(new Date('2016-01-01'), 'Do'), '1st')
     assert.equal(formatDate(new Date('2016-01-02'), 'Do'), '2nd')
     assert.equal(formatDate(new Date('2016-01-03'), 'Do'), '3rd')
@@ -32,5 +31,4 @@ describe('libs/lang/formatDate', function () {
     assert.equal(formatDate(new Date('2016-01-23'), 'Do'), '23rd')
     assert.equal(formatDate(new Date('2016-01-24'), 'Do'), '24th')
   })
-
 })

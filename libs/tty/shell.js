@@ -27,7 +27,7 @@ var isWin = require('../sys/isWin')
  * @since 2.0.0
  * @author Zhonglei Qiu
  */
-module.exports = function (command, options) {
+module.exports = function(command, options) {
   options = options || {}
 
   var file, args

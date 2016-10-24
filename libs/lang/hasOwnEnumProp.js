@@ -20,7 +20,7 @@ var isObject = require('./isObject')
  * @author  Zhonglei Qiu
  * @since   2.0.0
  */
-module.exports = function (obj, key) {
+module.exports = function(obj, key) {
   // 如果不做判断 node v0.12 会报 TypeError: Object.getOwnPropertyDescriptor called on non-object
   // 但高版本的都不会报错
   if (!isObject(obj)) return false

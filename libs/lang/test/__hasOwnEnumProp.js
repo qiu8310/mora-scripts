@@ -3,7 +3,7 @@ var hasOwnEnumProp = require('../hasOwnEnumProp')
 
 /* eslint-env mocha */
 
-describe('libs/lang/hasOwnEnumProp', function () {
+describe('libs/lang/hasOwnEnumProp', function() {
   function Person() {
     this.bar = 'inst'
   }
@@ -25,55 +25,54 @@ describe('libs/lang/hasOwnEnumProp', function () {
     }
   })
 
-  context('class instance prototype', function () {
-    it('should returns true on instance prototype', function () {
+  context('class instance prototype', function() {
+    it('should returns true on instance prototype', function() {
       assert.equal(hasOwnEnumProp(p, 'bar'), true)
     })
 
-    it('should returns true on keys exists in object', function () {
+    it('should returns true on keys exists in object', function() {
       assert.equal(hasOwnEnumProp(o, 'bar'), true)
     })
   })
 
-  context('plain object prototype', function () {
-    it('should returns true on enumerable key', function () {
+  context('plain object prototype', function() {
+    it('should returns true on enumerable key', function() {
       assert.equal(hasOwnEnumProp(d, 'bar'), true)
     })
 
-    it('should returns false on prototype property', function () {
+    it('should returns false on prototype property', function() {
       assert.equal(hasOwnEnumProp(p, 'foo'), false)
     })
   })
 
-  context('plain object with defineProperties prototype', function () {
-    it('should returns false on not exists key of object', function () {
+  context('plain object with defineProperties prototype', function() {
+    it('should returns false on not exists key of object', function() {
       assert.equal(hasOwnEnumProp(o, 'foo'), false)
     })
 
-    it('should returns false on no enumerable key', function () {
+    it('should returns false on no enumerable key', function() {
       assert.equal(hasOwnEnumProp(d, 'foo'), false)
     })
   })
 
-  context('native prototype property', function () {
-    it('should returns false on hasOwnProperty', function () {
+  context('native prototype property', function() {
+    it('should returns false on hasOwnProperty', function() {
       assert.equal(hasOwnEnumProp({}, 'hasOwnProperty'), false)
       assert.equal(hasOwnEnumProp({}, 'toString'), false)
     })
 
-    it('should return true if hasOwnProperty is object instance key', function () {
+    it('should return true if hasOwnProperty is object instance key', function() {
       assert.equal(hasOwnEnumProp({hasOwnProperty: null}, 'hasOwnProperty'), true)
       assert.equal(hasOwnEnumProp({toString: null}, 'toString'), true)
     })
   })
 
-  context('no object prototype', function () {
-    it('should returns false', function () {
-      assert.equal(hasOwnEnumProp(1,      'aa'), false, 'number')
-      assert.equal(hasOwnEnumProp('str',  'aa'), false, 'string')
-      assert.equal(hasOwnEnumProp(true,   'aa'), false, 'boolean')
-      assert.equal(hasOwnEnumProp(null,   'aa'), false, 'null')
+  context('no object prototype', function() {
+    it('should returns false', function() {
+      assert.equal(hasOwnEnumProp(1, 'aa'), false, 'number')
+      assert.equal(hasOwnEnumProp('str', 'aa'), false, 'string')
+      assert.equal(hasOwnEnumProp(true, 'aa'), false, 'boolean')
+      assert.equal(hasOwnEnumProp(null, 'aa'), false, 'null')
     })
   })
-
 })

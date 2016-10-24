@@ -65,7 +65,7 @@ var typeConfig = {
  * @since  2.0.0
  * @see    optimist, minimist, yargs, nomnom, nopt, commander
  */
-function Cli (conf) {
+function Cli(conf) {
   if (!(this instanceof Cli)) return new Cli(conf)
 
   /**
@@ -150,7 +150,7 @@ function Cli (conf) {
  * })
  *
  */
-Cli.prototype.commands = function (opts) {
+Cli.prototype.commands = function(opts) {
   init.call(this, true, opts)
   return this
 }
@@ -190,7 +190,7 @@ Cli.prototype.commands = function (opts) {
  * })
  *
  */
-Cli.prototype.options = function (group, opts) {
+Cli.prototype.options = function(group, opts) {
   if (typeof group !== 'string') {
     opts = group
     group = null
@@ -199,8 +199,8 @@ Cli.prototype.options = function (group, opts) {
   return this
 }
 
-function init (isCommand, opts, group) {
-  Object.keys(opts).forEach(function (origKey) {
+function init(isCommand, opts, group) {
+  Object.keys(opts).forEach(function(origKey) {
     var key, type, value, cmd, desc, alias, defaultValue, target, map
 
     alias = origKey.trim().split(/\s*\|\s*/).sort()
@@ -261,7 +261,7 @@ function init (isCommand, opts, group) {
       this.groupsMap[group].push(target)
     }
 
-    alias.forEach(function (k) {
+    alias.forEach(function(k) {
       if (k in map) throw new Error((isCommand ? 'Command' : 'Option') + ' key "' + k + '" is dumplicated.')
       map[k] = target
     })
@@ -269,7 +269,7 @@ function init (isCommand, opts, group) {
 }
 
 // 确保将 -h, -v 放在 default group 的最后面
-function parseInit () {
+function parseInit() {
   var conf = this.conf
   var opts = {}
   if (conf.help !== false) {
@@ -282,7 +282,7 @@ function parseInit () {
   init.call(this, false, opts)
 }
 
-function parse (args) {
+function parse(args) {
   var _ = this._
   var i, arg, rawArg, stopped
   var ck = consumeKey.bind(this)
@@ -315,7 +315,7 @@ function parse (args) {
       } else {
         arg = arg.slice(1).split('')
         if (checkOpt.call(this, arg, rawArg)) {
-          arg.forEach(function (k, i, ref) {
+          arg.forEach(function(k, i, ref) {
             if (ref.length - 1 === i) {
               ck(k)    // 最后一个 option 可以接任意个参数
             } else {
@@ -359,7 +359,7 @@ function parse (args) {
  * })
  *
  */
-Cli.prototype.parse = function (args, handle) {
+Cli.prototype.parse = function(args, handle) {
   if (!Array.isArray(args)) {
     handle = args
     args = process.argv.slice(2)
@@ -381,7 +381,7 @@ Cli.prototype.parse = function (args, handle) {
 
   var res = this.res = {}
   var opts = this.mapOptions
-  Object.keys(opts).forEach(function (k) {
+  Object.keys(opts).forEach(function(k) {
     res[k] = 'value' in opts[k] ? opts[k].value : opts[k].defaultValue
   })
 
@@ -410,7 +410,7 @@ Cli.prototype.parse = function (args, handle) {
  * @param  {String} key 选项名
  * @return {String}     带 "-" 或 "--" 的选项名
  */
-Cli.prototype.formatOptionKey = function (key) {
+Cli.prototype.formatOptionKey = function(key) {
   return key.length === 1 ? '-' + key : '--' + key
 }
 
@@ -419,7 +419,7 @@ Cli.prototype.formatOptionKey = function (key) {
  * @param  {String} key 选项名
  * @return {Object}     解析过后的配置
  */
-Cli.prototype.getOptionConfig = function (key) {
+Cli.prototype.getOptionConfig = function(key) {
   return this.mapOptions[key]
 }
 
@@ -428,7 +428,7 @@ Cli.prototype.getOptionConfig = function (key) {
  * @param  {String}  key 选项名
  * @return {Boolean}
  */
-Cli.prototype.isOptionKeyValid = function (key) {
+Cli.prototype.isOptionKeyValid = function(key) {
   return key in this.mapOptions
 }
 
@@ -438,7 +438,7 @@ Cli.prototype.isOptionKeyValid = function (key) {
  * @param {...*} arg 参数格式和 {@link module:libs/sys/clog.format} 的格式是一致的
  * @return {Cli}
  */
-Cli.prototype.error = function () {
+Cli.prototype.error = function() {
   console.log(format('\n%c%s\n', 'red', format.apply(null, arguments)))
   if (this.showHelpOnError) this.help()
   return this
@@ -447,15 +447,15 @@ Cli.prototype.error = function () {
 /**
  * 根据 Cli 的配置，输出帮助信息
  */
-Cli.prototype.help = function (returnStr) {
+Cli.prototype.help = function(returnStr) {
   var buffer = []
   var EOL = require('os').EOL
-  var puts = function () { buffer.push(format.apply(null, arguments)) }
-  var putsHeader = function (header) { puts('%c%s:\n', 'white.bold', header) }
-  var putsComands = function (header, obj) {
+  var puts = function() { buffer.push(format.apply(null, arguments)) }
+  var putsHeader = function(header) { puts('%c%s:\n', 'white.bold', header) }
+  var putsComands = function(header, obj) {
     var cache = []
     var rows = []
-    Object.keys(obj).forEach(function (key) {
+    Object.keys(obj).forEach(function(key) {
       var entry = obj[key]
       if (cache.indexOf(entry) >= 0) return
       cache.push(entry)
@@ -475,12 +475,12 @@ Cli.prototype.help = function (returnStr) {
     puts('%cUsage:  %c%s\n', 'white.bold', 'green', this.usage)
   }
   if (this.desc) {
-    this.desc.forEach(function (row) { puts('  %c%s', 'gray', row) })
+    this.desc.forEach(function(row) { puts('  %c%s', 'gray', row) })
     puts()
   }
   if (this.example) {
     putsHeader('Example')
-    this.example.forEach(function (row) { puts('  %c%s', 'red.bg.white', row) })
+    this.example.forEach(function(row) { puts('  %c%s', 'red.bg.white', row) })
     puts()
   }
 
@@ -488,13 +488,13 @@ Cli.prototype.help = function (returnStr) {
 
   if (this.groups.length) {
     var rows = []
-    this.groups.forEach(function (group) {
+    this.groups.forEach(function(group) {
       if (group !== DEFAULT_GROUP_NAME) {
         rows.push(['', '', ''])
         rows.push([format('  %c%s:', 'green.bold', group), '', ''])
         rows.push(['', '', ''])
       }
-      this.groupsMap[group].forEach(function (entry) {
+      this.groupsMap[group].forEach(function(entry) {
         var row = []
         var defaultValue = entry.defaultValue !== undef
           ? format('  %c[ default: %s ]', 'gray', JSON.stringify(entry.defaultValue))
@@ -519,7 +519,7 @@ Cli.prototype.help = function (returnStr) {
   return returnStr ? buffer : /* istanbul ignore next */ console.log(buffer)
 }
 
-function checkOpt (opts, rawArg) {
+function checkOpt(opts, rawArg) {
   var optsArr = [].concat(opts)
   if (optsArr.every(this.isOptionKeyValid.bind(this))) {
     return true
@@ -528,7 +528,7 @@ function checkOpt (opts, rawArg) {
   }
 }
 
-function invalidOpt (rawArg) {
+function invalidOpt(rawArg) {
   if (this.strict) {
     throw new Error('Error: invalid option ' + rawArg + '.')
   } else {
@@ -536,7 +536,7 @@ function invalidOpt (rawArg) {
   }
 }
 
-function consumeKey (key, noNeedArgs) {
+function consumeKey(key, noNeedArgs) {
   var conf = this.getOptionConfig(key)
   if (!conf) return invalidOpt.call(this, this.formatOptionKey(key))
 
@@ -544,8 +544,8 @@ function consumeKey (key, noNeedArgs) {
   conf.currentArgs = 0
 
   if (noNeedArgs && conf.needArgs > 0) {
-    throw new Error('Error: ' + conf.type + ' option ' +
-      this.formatOptionKey(key) + ' need argument.')
+    throw new Error('Error: ' + conf.type + ' option '
+      + this.formatOptionKey(key) + ' need argument.')
   }
 
   switch (conf.type) {
@@ -565,7 +565,7 @@ function consumeKey (key, noNeedArgs) {
   conf.consumedKey = key
 }
 
-function consumeVal (val) {
+function consumeVal(val) {
   var conf = this.consumeTarget
   if (!conf || conf.needArgs === conf.currentArgs) {
     this._.push(val)
@@ -583,9 +583,9 @@ function consumeVal (val) {
       case 'num':
         conf.value = parseNumber(val)
         if (isNaN(conf.value)) {
-          throw new Error('Error: invalid number value "' +
-            val + '" for option "' +
-            consumedKey + '".')
+          throw new Error('Error: invalid number value "'
+            + val + '" for option "'
+            + consumedKey + '".')
         }
         break
     }
@@ -594,7 +594,7 @@ function consumeVal (val) {
   }
 }
 
-function parseNumber (val, ctx) {
+function parseNumber(val, ctx) {
   if (/\./.test(val)) val = parseFloat(val)
   else val = parseInt(val, 10)
   return val
