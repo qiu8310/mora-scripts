@@ -9,7 +9,6 @@ node_js:
   - "6"     # latest 6.x release
   - "5"
   - "4"
-  - "0.12"
 
 before_script:
   - node --version
