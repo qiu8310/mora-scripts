@@ -1,6 +1,8 @@
 
 ## 记录思路
 
+参考 [plop](https://github.com/amwmedia/plop) 的实现
+
 **[webpack 配置 dll，加快打包速度](https://segmentfault.com/a/1190000006087638)**
 
 

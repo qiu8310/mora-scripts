@@ -12,6 +12,8 @@
 //
 // 测试集成  https://github.com/philipwalton/easy-sauce， 可以参考 https://philipwalton.com/articles/learning-how-to-set-up-automated-cross-browser-javascript-unit-testing/
 
+// 发布前可以用 irish-pub 模块来检查要发布的文件
+//
 /*
 
 when you land commits on your master branch, select the Squash and Merge option.

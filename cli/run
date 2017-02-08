@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+// https://github.com/RyanZim/awesome-npm-scripts
+
 var path = require('path');
 var spawn = require('cross-spawn');
 var assign = require('../libs/lang/assign');
@@ -46,10 +48,10 @@ var all = process.argv.slice(2), i, arg, envKey, envVal
 
 for (i = 0; i < all.length; i++) {
   arg = all[i]
-  if (!cmd) {
+  if (!cmd) { // 环境变量 和 此程序的参数 必须放在 run 命令之后，实际运行的命令之前
     if (reEnvArg.test(arg)) {
       envKey = RegExp.$1
-      envVal = RegExp.$2 || RegExp.$3 || RegExp.$4
+      envVal = RegExp.$2 || RegExp.$3 || RegExp.$4 || ''
       env[envKey] = envVal
       addedEnvs.push(info.format(envKey + '=' + quoteShellArg(envVal)))
     } else if (reOptArg.test(arg)) {
@@ -74,7 +76,7 @@ for (i = 0; i < all.length; i++) {
 
 // 支持运行 package.json 中的 scripts 脚本
 if (cmd && !args.length && pkg.scripts && cmd in pkg.scripts) {
-  args = ['run', cmd]
+  args = ['run', cmd].concat(args)
   cmd = 'npm'
 }
 
