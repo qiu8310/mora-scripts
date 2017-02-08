@@ -279,7 +279,7 @@ describe('libs/tty/cli', function() {
 
     it('should output default value in help message', function() {
       testHelp(Cli().options({a: {type: 'bool', defaultValue: true}}), function(message) {
-        assert.ok(message.indexOf('[ default: true ]') > 0)
+        assert.ok(message.indexOf('[ default: true ]') > 0) // travis 的终端只有 32 列，导致不在一行上，也就 assert error
       })
     })
 

@@ -20,7 +20,7 @@ var MIN_OVERFLOW_CELL_WIDTH = 10
 var SCREEN_WIDTH = 120
 
 /* istanbul ignore else */
-if (stream.getWindowSize) SCREEN_WIDTH = stream.getWindowSize()[0]
+if (stream.getWindowSize && !process.env.CI) SCREEN_WIDTH = stream.getWindowSize()[0] // 在 CI 中以 120 为准，travis 中只有 32，导致很多输出断行了，很多测试失败
 
 /**
  * 将一个二维的字符串数组，转化成一个 table 格式的字符串，方便在终端上显示，主要特点有：

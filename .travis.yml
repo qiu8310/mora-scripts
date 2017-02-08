@@ -5,7 +5,7 @@ sudo: false
 
 node_js:
   - "node"  # latest stable Node.js release
-  - "iojs"  # latest stable io.js release
+  - "7"
   - "6"     # latest 6.x release
   - "5"
   - "4"
