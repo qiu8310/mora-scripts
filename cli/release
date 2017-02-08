@@ -3,6 +3,8 @@
 // https://github.com/conventional-changelog/standard-version
 // https://github.com/semantic-release/semantic-release
 // https://github.com/sindresorhus/np
+// https://github.com/zeit/release
+// https://github.com/shipitjs/shipit-deploy
 
 // 首次 push 到 github 时：
 //    启用依赖更新提醒： greenkeeper enable

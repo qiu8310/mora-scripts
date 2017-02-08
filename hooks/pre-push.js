@@ -14,7 +14,9 @@ checks.forEach(function(key) {
   if (key in scripts) cmds.push('npm run ' + key)
 })
 
-// TODO Promise.all 是并行的，这里需要串行
+// Promise.all 是并行的，这里本来需要串行
+// 但 Promise.all 中只要有一个命令执行失败，整个就失败了，所以和串行差不多
+// 再说 lint 和 test 也不需要强制先后执行
 Promise.all(cmds.map(run))
   .then(function() {
     process.exit(0)

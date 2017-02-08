@@ -13,7 +13,7 @@ var cli = require('../libs/tty/cli')
 
 cli({
   strict: true,
-  usage: 'createscript path/to/filename',
+  usage: 'createscript [options] path/to/filename',
   version: '1.1.0',
   epilog: 'Copyright Mora'
 })

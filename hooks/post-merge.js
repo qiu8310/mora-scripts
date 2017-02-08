@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-'use strict'
 
 var spawn = require('cross-spawn')
 

@@ -10,10 +10,10 @@
     "version": "cli/puts '%cyou can run build and add build file to git in here' cyan",
     "postversion": "git push --follow-tags && npm publish && cli/run cnpm sync pkg.name",
     "lint": "eslint libs/ hooks/",
-    "test:watch": "mocha -R dot --watch **/test/__*.js",
-    "test": "nyc _mocha **/test/__*.js",
-    "report": "nyc report --reporter=html",
-    "test:istanbul": "istanbul cover --report html --dir externals/coverage _mocha **/test/__*.js",
+    "test:watch": "mocha -R dot --watch **/__*.js",
+    "test": "nyc _mocha **/__*.js",
+    "report": "nyc report --reporter html --report-dir externals/coverage",
+    "test:istanbul": "istanbul cover --report html --dir externals/coverage _mocha **/__*.js",
     "test:report": "npm run test && npm run report",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "docs": "jsdoc -c ./jsdoc.json"
@@ -43,7 +43,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "cross-spawn": "^4.0.0",
+    "cross-spawn": "4.0.2",
     "semver-regex": "1.0.0"
   },
   "devDependencies": {
@@ -60,9 +60,9 @@
     "lines": 100,
     "functions": 100,
     "branches": 100,
-    "report-dir": "externals/coverage",
     "include": [
       "cli/*",
+      "hooks/**/*.js",
       "libs/**/*.js"
     ],
     "exclude": [
@@ -70,11 +70,5 @@
       "**/__*.js",
       "test/**/*.*"
     ]
-  },
-  "standard": {
-    "ignore": [
-      "externals/**"
-    ],
-    "globals": []
   }
 }

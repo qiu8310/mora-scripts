@@ -5,12 +5,10 @@ var shell = require('../../libs/tty/shell')
 var assign = require('../../libs/lang/assign')
 var exists = require('../../libs/fs/exists')
 
-var root, pkgFile, pkg
-
 module.exports = function(dir, alias) {
-  pkgFile = findup.pkg(dir)
-  pkg = require(pkgFile)
-  root = path.dirname(pkgFile)
+  var pkgFile = findup.pkg(dir)
+  var pkg = require(pkgFile)
+  var root = path.dirname(pkgFile)
 
   var hooks = pkg.config && pkg.config.hooks
   var cmd = hooks && hooks[alias]
@@ -25,14 +23,14 @@ module.exports = function(dir, alias) {
       }
     }
 
-    cmd = replaceCommandArgv(cmd)
+    cmd = replaceCommandArgv(cmd, root)
     env = assign({}, process.env)
     addEnvPath(env, path.join(root, 'node_modules', '.bin'))
     shell(cmd, {stdio: 'inherit', env: env}).on('exit', process.exit)
   }
 }
 
-function replaceCommandArgv(cmd) {
+function replaceCommandArgv(cmd, root) {
   return cmd
       // replace any instance of $1 or $2 etc. to that item as an process.argv
       .replace(/\$(\d)/g, function(raw, index) {

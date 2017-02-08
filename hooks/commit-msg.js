@@ -12,7 +12,7 @@ var findup = require('../libs/fs/findup')
 
 // fixup! and squash! are part of Git, commits tagged with them are not intended to be merged, cf. https://git-scm.com/docs/git-commit
 var PATTERN = /^((fixup! |squash! )?(\w+)(?:\(([^\)\s]+)\))?: (.+))(?:\n|$)/
-var MERGE_COMMIT_PATTERN = /^Merge /
+var MERGE_COMMIT_PATTERN = /^Merge .+/
 var IGNORED_PATTERN = new RegExp(util.format('(^WIP)|(^%s$)', require('semver-regex')().source))
 
 var isPackageFileExists = false
@@ -52,7 +52,7 @@ if (module.parent === null) {
 }
 
 function validate(raw) {
-  var messageWithBody = (raw || '').split('\n').filter(function(str) {
+  var messageWithBody = (raw || '').split(/\r?\n/).filter(function(str) {
     return str.indexOf('#') !== 0
   }).join('\n')
 
@@ -131,10 +131,12 @@ function validate(raw) {
 }
 
 function outputHelp() {
+  // istanbul ignore if
   if (!config.showHelp) return
 
   console.log('\x1b[90m\nCurrent commit-msg hook config:')
   console.log(JSON.stringify(formatObject(config), null, 4).replace(/^|\n/g, '\n    '))
+  // istanbul ignore if
   if (isPackageFileExists) {
     console.log('\nYou can overwrite the config use `config.hooks.commit-msg` in package.json')
   }
@@ -164,6 +166,7 @@ function formatObject(obj) {
   obj = JSON.parse(JSON.stringify(obj))
   for (var key in obj) {
     if (Array.isArray(obj[key])) obj[key] = '[ ' + obj[key].join(', ') + ' ]'
+    // istanbul ignore next
     else if (typeof obj[key] === 'object') obj[key] = formatObject(obj[key])
   }
   return obj
