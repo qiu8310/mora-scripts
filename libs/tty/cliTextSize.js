@@ -2,8 +2,8 @@
  * @module      libs/tty/cliTextSize
  * @createdAt   2016-07-17
  *
- * Copyright (c) 2016 Zhonglei Qiu
- * Licensed under the MIT license.
+ * @copyright   Copyright (c) 2016 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
  */
 
 var punycode = require('punycode')
@@ -18,7 +18,7 @@ var ambRanges = [[161],[164],[167,168],[170],[173,174],[176,180],[182,186],[188,
 var cp936Ranges = [[0,127],[164],[167,168],[176,177],[183],[215],[224,225],[232,234],[236,237],[242,243],[247],[249,250],[252],[257],[275],[283],[299],[324],[328],[333],[363],[462],[464],[466],[468],[470],[472],[474],[476],[593],[609],[711],[713,715],[729],[913,929],[931,937],[945,961],[963,969],[1025],[1040,1103],[1105],[8208],[8211,8214],[8216,8217],[8220,8221],[8229,8230],[8240],[8242,8243],[8245],[8251],[8364],[8451],[8453],[8457],[8470],[8481],[8544,8555],[8560,8569],[8592,8595],[8598,8601],[8712],[8719],[8721],[8725],[8730],[8733,8736],[8739],[8741],[8743,8747],[8750],[8756,8759],[8765],[8776],[8780],[8786],[8800,8801],[8804,8807],[8814,8815],[8853],[8857],[8869],[8895],[8978],[9312,9321],[9332,9371],[9472,9547],[9552,9587],[9601,9615],[9619,9621],[9632,9633],[9650,9651],[9660,9661],[9670,9671],[9675],[9678,9679],[9698,9701],[9733,9734],[9737],[9792],[9794],[12288,12291],[12293,12311],[12317,12318],[12321,12329],[12353,12435],[12443,12446],[12449,12534],[12540,12542],[12549,12585],[12832,12841],[12849],[12963],[13198,13199],[13212,13214],[13217],[13252],[13262],[13265,13266],[13269],[19968,40869],[63788],[63865],[63893],[63975],[63985],[64012,64015],[64017],[64019,64020],[64024],[64031,64033],[64035,64036],[64039,64041],[65072,65073],[65075,65092],[65097,65106],[65108,65111],[65113,65126],[65128,65131],[65281,65374],[65504,65509]]
 /* eslint-enable */
 
-var sizes = Object.keys(sizeRangesMap).map(function (s) { return parseInt(s, 10) })
+var sizes = Object.keys(sizeRangesMap).map(function(s) { return parseInt(s, 10) })
 
 /**
  * 计算 Unicode 字符串在终端上的长度
@@ -36,14 +36,14 @@ var sizes = Object.keys(sizeRangesMap).map(function (s) { return parseInt(s, 10)
  * @since 2.0.0
  * @author Zhonglei Qiu
  */
-module.exports = function (str) {
+module.exports = function(str) {
   str = stripAnsi(str)
-  return punycode.ucs2.decode(str).reduce(function (size, cp) {
+  return punycode.ucs2.decode(str).reduce(function(size, cp) {
     return size + getCodePointCliSize(cp)
   }, 0)
 }
 
-function getCodePointCliSize (cp) {
+function getCodePointCliSize(cp) {
   // 特殊字符无法知道它的 size
   if ([9, 10, 11, 12, 13].indexOf(cp) >= 0) {
     throw new Error('Code point ' + cp + ' not allowed, its size is not predictable.')
@@ -67,8 +67,8 @@ function getCodePointCliSize (cp) {
   return 1
 }
 
-function inRanges (cp, ranges) {
-  return ranges.some(function (range) {
+function inRanges(cp, ranges) {
+  return ranges.some(function(range) {
     if (range.length === 1) return cp === range[0]
     return cp >= range[0] && cp <= range[1]
   })

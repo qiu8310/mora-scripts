@@ -22,7 +22,7 @@ var o777 = parseInt('0777', 8)
  * @param   {Object}        opts.fs
  * @return  {String}
  */
-module.exports = function mkdirp (p, opts, made) {
+module.exports = function mkdirp(p, opts, made) {
   if (!opts || typeof opts !== 'object') {
     opts = { mode: opts }
   }

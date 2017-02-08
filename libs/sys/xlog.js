@@ -2,8 +2,8 @@
  * @module      libs/sys/xlog
  * @createdAt   2016-07-15
  *
- * Copyright (c) 2016 Zhonglei Qiu
- * Licensed under the MIT license.
+ * @copyright   Copyright (c) 2016 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
  */
 
 var util = require('util')
@@ -61,7 +61,7 @@ exports = module.exports
  *
  * @return {String}        对齐后的 str
  */
-exports.align = function (str, format, opts) {
+exports.align = function(str, format, opts) {
   opts = opts || {}
   var lLen, rLen, lPad, rPad, i, diff
   var flag = true
@@ -104,28 +104,28 @@ exports.format = extend([
   {
     match: /%[jo]/,
     order: 1,
-    handle: function (val) {
+    handle: function(val) {
       return util.format('%j', val)
     }
   },
   {
     match: /%(?:\d+)?\.?(?:\d+)?(?::.\.?.?)?s/,
     order: 1,
-    handle: function (val, format) {
+    handle: function(val, format) {
       return exports.align(String(val), format.slice(1, -1))
     }
   },
   {
     match: /%d/,
     order: 2,
-    handle: function (val) {
+    handle: function(val) {
       return parseInt(val, 10)
     }
   },
   {
     match: /%\d*f/,
     order: 2,
-    handle: function (val, format) {
+    handle: function(val, format) {
       var fixed = parseInt(format.substr(1), 10)
       val = parseFloat(val)
       return fixed ? val.toFixed(fixed) : val.toString()
@@ -134,16 +134,16 @@ exports.format = extend([
 ]);
 
 // @FIXME 这些字段无法生成 jsdoc
-['autoResetAtEnd', 'autoResetAtGroupEnd', 'NAMED_COLORS'].forEach(function (k) {
+['autoResetAtEnd', 'autoResetAtGroupEnd', 'NAMED_COLORS'].forEach(function(k) {
   Object.defineProperty(xlog, k, {
     enumerable: true,
     configurable: true,
-    set: function (val) { clog[k] = val },
-    get: function () { return clog[k] }
+    set: function(val) { clog[k] = val },
+    get: function() { return clog[k] }
   })
 })
 
-function xlog () {
+function xlog() {
   console.log(exports.format.apply(null, arguments))
 }
 

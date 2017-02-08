@@ -2,8 +2,8 @@
  * @module      libs/sys/addEnvPath
  * @createdAt   2016-07-14
  *
- * Copyright (c) 2016 Zhonglei Qiu
- * Licensed under the MIT license.
+ * @copyright   Copyright (c) 2016 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
  */
 
 var isWin = require('./isWin')
@@ -26,7 +26,7 @@ var rePath = /^path$/i
  * @author Zhonglei Qiu
  * @since 2.0.0
  */
-module.exports = function (env, paths) {
+module.exports = function(env, paths) {
   var pathKey = getPathKey(env)
   var oldPath = env[pathKey]
   if (!Array.isArray(paths)) paths = [paths]
@@ -35,7 +35,7 @@ module.exports = function (env, paths) {
   return env
 }
 
-function getPathKey (env) {
+function getPathKey(env) {
   if (isWin) {
     var keys = Object.keys(env)
     for (var i = 0; i < keys.length; i++) {

@@ -2,8 +2,8 @@
  * @module      libs/sys/clog
  * @createdAt   2016-07-15
  *
- * Copyright (c) 2016 Zhonglei Qiu
- * Licensed under the MIT license.
+ * @copyright   Copyright (c) 2016 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
  */
 
 var hasAnsiColorRegExp = require('../tty/stripAnsi').gre
@@ -39,10 +39,10 @@ var MODIFIERS = {   // reset
 var NAMES = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white']
 
 var ansiStack = []
-var reset = function () { ansiStack.length = 0; return RESET }
+var reset = function() { ansiStack.length = 0; return RESET }
 var colorMatcher = {
   match: /%c/,
-  handle: function (color) {
+  handle: function(color) {
     var ansi = parseColor(color)
     var i = ansi.indexOf(RESET)
     if (i >= 0) {
@@ -52,13 +52,13 @@ var colorMatcher = {
     ansiStack.push(ansi)
     return ansi
   },
-  onEnd: function () {
+  onEnd: function() {
     return clog.autoResetAtEnd ? reset() : ''
   },
-  onGroupEnd: function () {
+  onGroupEnd: function() {
     return clog.autoResetAtGroupEnd ? reset() : ''
   },
-  onFormatEnd: function (arg) {
+  onFormatEnd: function(arg) {
     if (this !== arg.matcher) {
       // format 的 value 自带颜色，需要保留它自带的所有样式
       if (arg.values.some(hasAnsi)) {
@@ -183,11 +183,11 @@ exports.colorMatcher = colorMatcher // 提供给 xlog.js 使用
  */
 module.exports = clog
 
-function clog () {
+function clog() {
   console.log(exports.format.apply(null, arguments))
 }
 
-function hasAnsi (str) {
+function hasAnsi(str) {
   return typeof str === 'string' && hasAnsiColorRegExp.test(str)
 }
 
@@ -196,19 +196,19 @@ function hasAnsi (str) {
 // h. l. 或者 high. low. 可以设置成使用 high intensity 相关的颜色
 // 每次切换 color 或者 background 都会自动将 high 设置成 false (high intensity color 兼容性不好)
 // 而 MODIFIERS 可以随便加，不加前缀时默认使用 color.
-function parseColor (color) {
+function parseColor(color) {
   color = String(color)
 
   var bg = false
   var high = false
-  var getNamedColorValue = function (key, forceBG) {
+  var getNamedColorValue = function(key, forceBG) {
     return (high ? 60 : 0) + (bg || forceBG ? 40 : 30) + NAMES.indexOf(key)
   }
 
   /* eslint-disable no-multi-spaces, brace-style */
   return color
     .split(/[\{\}#\.,:;"'\s]+/)
-    .map(function (raw) {
+    .map(function(raw) {
       var k = raw.toLowerCase()
       // 空字符串
       if (!k) return
@@ -236,17 +236,17 @@ function parseColor (color) {
       // 其它
       else return raw // 用户可以自己直接写 ASCII 编码
     })
-    .map(function (n) {
+    .map(function(n) {
       return n == null || n === '' ? '' : PREFIX + n + SUFFIX
     })
     .join('')
     /* eslint-enable no-multi-spaces, brace-style */
 }
 
-function getHexColor (hex, bg) {
+function getHexColor(hex, bg) {
   return (bg ? '48;5;' : '38;5;') + hexToRGB5(hex)
 }
-function hexToRGB5 (hex) {
+function hexToRGB5(hex) {
   var rgb, gap
   gap = hex.length === 3 ? 1 : 2
   rgb = [
@@ -257,9 +257,9 @@ function hexToRGB5 (hex) {
 
   return 16 + rgb[0] * 36 + rgb[1] * 6 + rgb[2]
 }
-function mapHexToInt5 (hex) {
+function mapHexToInt5(hex) {
   return hexToInt5(hex.length === 1 ? hex + hex : hex)
 }
-function hexToInt5 (hex) {
+function hexToInt5(hex) {
   return Math.round((parseInt(hex, 16) || 0) * 5 / 255)
 }

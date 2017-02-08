@@ -12,8 +12,8 @@ var mkdirp = require('../mkdirp')
 var fixturesDir = resolve(__dirname, './fixtures')
 /* istanbul ignore next/if/else */
 
-describe('libs/fs/mkdirp', function () {
-  it('should create directory', function () {
+describe('libs/fs/mkdirp', function() {
+  it('should create directory', function() {
     var dir = resolve(fixturesDir, 'm1')
     assert.ok(!exists(dir, 'Directory'))
     mkdirp(dir)
@@ -21,7 +21,7 @@ describe('libs/fs/mkdirp', function () {
     rm(dir)
   })
 
-  it('should create directory recursive', function () {
+  it('should create directory recursive', function() {
     var dir = resolve(fixturesDir, 'm2', 'm22', 'm222')
     assert.ok(!exists(dir, 'Directory'))
     mkdirp(dir)
@@ -30,7 +30,7 @@ describe('libs/fs/mkdirp', function () {
   })
 
   if (!isWin) {
-    it('should create directory with specified mode', function () {
+    it('should create directory with specified mode', function() {
       var dir = resolve(fixturesDir, 'm3')
       var mode = parseInt('0766', 8) & (~process.umask())
       mkdirp(dir, mode)
@@ -39,7 +39,7 @@ describe('libs/fs/mkdirp', function () {
       rm(dir)
     })
 
-    it('should create directory with specified mode object', function () {
+    it('should create directory with specified mode object', function() {
       var dir = resolve(fixturesDir, 'm3')
       var mode = parseInt('0766', 8) & (~process.umask())
       mkdirp(dir, { mode: mode })
@@ -49,11 +49,11 @@ describe('libs/fs/mkdirp', function () {
     })
   }
 
-  it('should throws when exists a same file', function () {
+  it('should throws when exists a same file', function() {
     var file = resolve(fixturesDir, 'm3')
     assert.ok(!exists(file, ['File', 'Directory']))
     fs.writeFileSync(file, 'xxx')
-    assert.throws(function () {
+    assert.throws(function() {
       mkdirp(file)
     })
     rm(file)

@@ -4,20 +4,20 @@
  * @module      libs/storage/FileStorage
  * @createdAt   2016-07-21
  *
- * Copyright (c) 2016 Zhonglei Qiu
- * Licensed under the MIT license.
+ * @copyright   Copyright (c) 2016 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
  */
 
 var Storage = require('./Storage')
 var fs = require('fs')
 
 module.exports = Storage.extend({
-  init: function (data) {
+  init: function(data) {
     var self = this
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       if (self.data) return resolve()
 
-      fs.readFile(self.opts.file, function (err, content) {
+      fs.readFile(self.opts.file, function(err, content) {
         if (err) {
           if (err.code === 'ENOENT') {
             self.data = Object(data)
@@ -33,7 +33,7 @@ module.exports = Storage.extend({
     })
   },
 
-  initSync: function (data) {
+  initSync: function(data) {
     if (!this.data) {
       try {
         this.data = JSON.parse(fs.readFileSync(this.opts.file).toString().trim())
@@ -48,17 +48,17 @@ module.exports = Storage.extend({
     }
   },
 
-  update: function () {
+  update: function() {
     var self = this
-    return new Promise(function (resolve, reject) {
-      fs.writeFile(self.opts.file, self.toString(), function (err) {
+    return new Promise(function(resolve, reject) {
+      fs.writeFile(self.opts.file, self.toString(), function(err) {
         if (err) return reject(err)
         resolve()
       })
     })
   },
 
-  updateSync: function () {
+  updateSync: function() {
     fs.writeFileSync(this.opts.file, this.toString())
   }
 })

@@ -4,8 +4,8 @@
  * @module      libs/storage/BrowserStorage
  * @createdAt   2016-07-21
  *
- * Copyright (c) 2016 Zhonglei Qiu
- * Licensed under the MIT license.
+ * @copyright   Copyright (c) 2016 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
  */
 
 var Storage = require('./Storage')
@@ -20,14 +20,14 @@ try { // IE 8 或移动端的隐身模式 下直接调用 window.localStorage �
 }
 
 module.exports = Storage.extend({
-  init: function (data) {
+  init: function(data) {
     var self = this
-    return new Promise(function (resolve) {
+    return new Promise(function(resolve) {
       resolve(self.initSync(data))
     })
   },
 
-  initSync: function (data) {
+  initSync: function(data) {
     if (_store) {
       var saved = _store.getItem(this.opts.key)
       if (saved) {
@@ -45,14 +45,14 @@ module.exports = Storage.extend({
     }
   },
 
-  update: function () {
+  update: function() {
     var self = this
-    return new Promise(function (resolve) {
+    return new Promise(function(resolve) {
       resolve(self.updateSync())
     })
   },
 
-  updateSync: function () {
+  updateSync: function() {
     if (_store) {
       _store.setItem(this.opts.key, this.toString())
     }

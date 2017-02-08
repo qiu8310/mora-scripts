@@ -2,8 +2,8 @@
  * @module      libs/lang/isObject
  * @createdAt   2016-07-01
  *
- * Copyright (c) 2016 Zhonglei Qiu
- * Licensed under the MIT license.
+ * @copyright   Copyright (c) 2016 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
  */
 
 /**
@@ -18,7 +18,7 @@
  * @author  Zhonglei Qiu
  * @since   2.0.0
  */
-module.exports = function (any) {
+module.exports = function(any) {
   var type = typeof any
   return any !== null && (type === 'object' || type === 'function')
 }

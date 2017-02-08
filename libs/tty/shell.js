@@ -2,8 +2,8 @@
  * @module      libs/tty/shell
  * @createdAt   2016-07-18
  *
- * Copyright (c) 2016 Zhonglei Qiu
- * Licensed under the MIT license.
+ * @copyright   Copyright (c) 2016 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
  */
 
 var cp = require('child_process')
@@ -27,7 +27,7 @@ var isWin = require('../sys/isWin')
  * @since 2.0.0
  * @author Zhonglei Qiu
  */
-module.exports = function (command, options) {
+module.exports = function(command, options) {
   options = options || {}
 
   var file, args

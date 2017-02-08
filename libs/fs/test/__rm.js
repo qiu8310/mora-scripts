@@ -10,8 +10,8 @@ var mkdirp = require('../mkdirp')
 
 var fixturesDir = resolve(__dirname, './fixtures')
 
-describe('libs/fs/rm', function () {
-  it('should remove single directory', function () {
+describe('libs/fs/rm', function() {
+  it('should remove single directory', function() {
     var dir = resolve(fixturesDir, 'xx1')
     mkdirp(dir)
     assert.ok(exists(dir, 'Directory'))
@@ -19,7 +19,7 @@ describe('libs/fs/rm', function () {
     assert.ok(!exists(dir, 'Directory'))
   })
 
-  it('should remove single file', function () {
+  it('should remove single file', function() {
     var file = resolve(fixturesDir, 'xx2')
     fs.writeFileSync(file, 'foo')
     assert.ok(exists(file))
@@ -27,7 +27,7 @@ describe('libs/fs/rm', function () {
     assert.ok(!exists(file))
   })
 
-  it('should remove directory that include other files', function () {
+  it('should remove directory that include other files', function() {
     var dir = resolve(fixturesDir, 'xx3')
     mkdirp(dir)
     fs.writeFileSync(resolve(dir, 'foo'), 'foo')

@@ -2,8 +2,8 @@
  * @module      libs/sys/extendFormat
  * @createdAt   2016-07-14
  *
- * Copyright (c) 2016 Zhonglei Qiu
- * Licensed under the MIT license.
+ * @copyright   Copyright (c) 2016 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
  */
 
 var util = require('util')
@@ -13,7 +13,7 @@ var isPlainObject = require('../lang/isPlainObject')
 // 后来发现，如果不处理 %%，那么处理 %%c 情况
 // 时就会出错，所以还必须在正则里处理 %% 转义
 var baseMatchers = [
-  {match: /%%/, order: 0, expectArgNum: 0, handle: function () { return '%%' }},
+  {match: /%%/, order: 0, expectArgNum: 0, handle: function() { return '%%' }},
   {match: /%s/},
   {match: /%d/},
   {match: /%j/}
@@ -71,7 +71,7 @@ var reIllegalMatch = /(^|[^\\])\((?!\?[:=!])/
  * @author Zhonglei Qiu
  * @since 2.0.0
  */
-module.exports = function (regexp, fn) {
+module.exports = function(regexp, fn) {
   var matchers = regexp
 
   if (isPlainObject(regexp)) {
@@ -85,9 +85,9 @@ module.exports = function (regexp, fn) {
     .map(matcherMap)
     .sort(matcherSort)
 
-  regexp = buildRegExp(matchers.map(function (it) { return it.match }))
+  regexp = buildRegExp(matchers.map(function(it) { return it.match }))
 
-  return function format () {
+  return function format() {
     var i, group, arg, argIndex
     var groups = []
 
@@ -110,20 +110,20 @@ module.exports = function (regexp, fn) {
 
     if (group && groups.indexOf(group) < 0) groups.push(group)
 
-    return hook(matchers, 'onStart', -1, [groups]) +
-          util.format.apply(util, groups.reduce(function (newArgs, group, i) {
+    return hook(matchers, 'onStart', -1, [groups])
+          + util.format.apply(util, groups.reduce(function(newArgs, group, i) {
             newArgs.push.apply(newArgs, compileToNewArgs(matchers, regexp, group))
             return newArgs
-          }, [])) +
-          hook(matchers, 'onEnd', 1, [groups]) + '' // make it to string
+          }, []))
+          + hook(matchers, 'onEnd', 1, [groups]) + '' // make it to string
   }
 }
 
-function parseToGroup (matchers, regexp, template) {
+function parseToGroup(matchers, regexp, template) {
   var group = { template: template, args: [], expectArgNum: 0, argNum: 0 }
 
   if (typeof template === 'string') {
-    template.replace(regexp, function (format) {
+    template.replace(regexp, function(format) {
       var i, matcher
       for (i = 0; i < matchers.length; i++) {
         if (format === arguments[i + 1]) {
@@ -145,14 +145,14 @@ function parseToGroup (matchers, regexp, template) {
   return group
 }
 
-function compileToNewArgs (matchers, regexp, group) {
+function compileToNewArgs(matchers, regexp, group) {
   var result = []
   var template = group.template
   var args = group.args
   var prefix, suffix
   if (typeof template === 'string') {
     prefix = hook(matchers, 'onGroupStart', -1, [group, template])
-    template = template.replace(regexp, function (raw) {
+    template = template.replace(regexp, function(raw) {
       // 既然进来了，就一定有 args.length > 0
       if (args[0].matcher.expectArgNum > group.argNum) { // 参数不足，给原生处理
         // 参数不足时一定是 args.length === 1
@@ -174,9 +174,9 @@ function compileToNewArgs (matchers, regexp, group) {
           result.push.apply(result, values)
         }
 
-        return hook(matchers, 'onFormatStart', -1, [arg, group]) +
-               raw +
-               hook(matchers, 'onFormatEnd', 1, [arg, group])
+        return hook(matchers, 'onFormatStart', -1, [arg, group])
+               + raw
+               + hook(matchers, 'onFormatEnd', 1, [arg, group])
       }
     })
 
@@ -188,7 +188,7 @@ function compileToNewArgs (matchers, regexp, group) {
   return result
 }
 
-function hook (matchers, fn, order, args) {
+function hook(matchers, fn, order, args) {
   var l = matchers.length
   var i = l
   var result = []
@@ -205,29 +205,29 @@ function hook (matchers, fn, order, args) {
   return result.join('')
 }
 
-function _add (arr, item) {
+function _add(arr, item) {
   if (item !== undefined) arr.push(String(item))
 }
 
-function _callFn (fn, binder, args) {
+function _callFn(fn, binder, args) {
   if (typeof fn === 'function') return fn.apply(binder, args)
 }
 
 // 根据需要 extend 的参数重新生成 正则
-function buildRegExp (regexps) {
+function buildRegExp(regexps) {
   return new RegExp(regexps.map(stringifyRegExp).join('|'), 'g')
 }
 
 // 将用户提供的正则转化成字符串，并去掉首尾以提供给新的正则使用
-function stringifyRegExp (regexp) {
+function stringifyRegExp(regexp) {
   return '(' + regexp.toString().replace(/^\/|\/\w*$/g, '') + ')'
 }
 
-function matcherSort (a, b) {
+function matcherSort(a, b) {
   return a.order - b.order
 }
 
-function matcherMap (matcher) {
+function matcherMap(matcher) {
   if (reIllegalMatch.test(matcher.match)) throw new Error('正则不能使用捕获性数组')
   if (!('order' in matcher)) matcher.order = 100
   if (!('expectArgNum' in matcher)) matcher.expectArgNum = 1

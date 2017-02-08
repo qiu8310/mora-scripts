@@ -2,8 +2,8 @@
  * @module      libs/lang/hasOwnProp
  * @createdAt   2016-07-01
  *
- * Copyright (c) 2016 Zhonglei Qiu
- * Licensed under the MIT license.
+ * @copyright   Copyright (c) 2016 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
  */
 
 var hasOwnProp = Object.prototype.hasOwnProperty
@@ -18,7 +18,7 @@ var hasOwnProp = Object.prototype.hasOwnProperty
  * @author  Zhonglei Qiu
  * @since   2.0.0
  */
-module.exports = function (obj, key) {
+module.exports = function(obj, key) {
   if (obj == null) return false
 
   return hasOwnProp.call(obj, key)

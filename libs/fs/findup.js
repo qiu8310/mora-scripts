@@ -2,8 +2,8 @@
  * @module      libs/fs/findup
  * @createdAt   2016-06-30
  *
- * Copyright (c) 2016 Zhonglei Qiu
- * Licensed under the MIT license.
+ * @copyright   Copyright (c) 2016 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
  */
 
 var fs = require('fs')
@@ -29,13 +29,13 @@ var exists = require('./exists')
  * @since     2.0.0
  *
  */
-module.exports = function (dir, iteratorSync, options) {
+module.exports = function(dir, iteratorSync, options) {
   dir = path.normalize(dir)
   options = options || {}
 
   if (typeof iteratorSync === 'string') {
     var file = iteratorSync
-    iteratorSync = function (dir) {
+    iteratorSync = function(dir) {
       return exists(path.join(dir, file), options.allowTypes)
     }
   }
@@ -54,7 +54,7 @@ module.exports = function (dir, iteratorSync, options) {
 
 exports = module.exports
 
-function _find (root, file, allowTypes) {
+function _find(root, file, allowTypes) {
   if (file == null) {
     file = root
     root = process.cwd()
@@ -74,7 +74,7 @@ function _find (root, file, allowTypes) {
  * @author    Zhongle Qiu
  * @since     1.5.0
  */
-exports.file = function (root, file) {
+exports.file = function(root, file) {
   return _find(root, file, 'File')
 }
 
@@ -89,7 +89,7 @@ exports.file = function (root, file) {
  * @author    Zhongle Qiu
  * @since     1.5.0
  */
-exports.dir = function (root, dir) {
+exports.dir = function(root, dir) {
   return _find(root, dir, 'Directory')
 }
 
@@ -103,7 +103,7 @@ exports.dir = function (root, dir) {
  * @author    Zhongle Qiu
  * @since     1.5.0
  */
-exports.pkg = function (root) {
+exports.pkg = function(root) {
   return exports.file(root || process.cwd(), 'package.json')
 }
 
@@ -117,7 +117,7 @@ exports.pkg = function (root) {
  * @author    Zhongle Qiu
  * @since     1.5.0
  */
-exports.git = function (root) {
+exports.git = function(root) {
   var dir = _find(root || process.cwd(), '.git', ['File', 'Directory'])
 
   var stats = fs.statSync(dir)

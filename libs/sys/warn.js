@@ -2,13 +2,13 @@
  * @module      libs/sys/warn
  * @createdAt   2016-07-14
  *
- * Copyright (c) 2016 Zhonglei Qiu
- * Licensed under the MIT license.
+ * @copyright   Copyright (c) 2016 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
  */
 
 var util = require('util')
 
-function format () {
+function format() {
   return '\x1b[33m' + util.format.apply(util, arguments) + '\x1b[0m'
 }
 
@@ -20,7 +20,7 @@ function format () {
  * @author Zhonglei Qiu
  * @since 2.0.0
  */
-module.exports = function () { console.log(format.apply(null, arguments)) }
+module.exports = function() { console.log(format.apply(null, arguments)) }
 
 /**
  * 返回黄色的字符串

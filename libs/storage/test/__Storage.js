@@ -6,9 +6,9 @@ require('../../lang/promiseExtra')
 
 /* eslint-env mocha */
 
-describe('libs/storage/Storage', function () {
-  context('init', function () {
-    it('before init', function () {
+describe('libs/storage/Storage', function() {
+  context('init', function() {
+    it('before init', function() {
       var s = new Storage()
       assert.equal(s.data, null)
       assert.deepEqual(s.opts, {})
@@ -22,44 +22,44 @@ describe('libs/storage/Storage', function () {
       assert.equal(s.data, null)
       assert.deepEqual(s.opts, {})
     })
-    it('async', function (done) {
+    it('async', function(done) {
       var s = new Storage()
       var p = s.init()
       assert.ok(p instanceof Promise)
-      p.then(function () {
+      p.then(function() {
         assert.deepEqual(s.data, {})
         done()
       })
     })
-    it('sync', function () {
+    it('sync', function() {
       var s = new Storage()
       s.initSync()
       assert.deepEqual(s.data, {})
     })
-    it('autoInit', function () {
+    it('autoInit', function() {
       var s = new Storage({autoInit: true})
       assert.deepEqual(s.data, {})
     })
   })
 
-  context('get', function () {
-    it('async', function (done) {
+  context('get', function() {
+    it('async', function(done) {
       var s = new Storage()
 
       s.initSync({foo: true})
       var p = s.get('foo')
       assert.ok(p instanceof Promise)
-      p.then(function (d) {
+      p.then(function(d) {
         assert.equal(d, true)
         return s.get('bar')
-          .then(function (u) {
+          .then(function(u) {
             assert.equal(u, undefined)
           })
       })
       .then(done, done)
     })
 
-    it('sync', function () {
+    it('sync', function() {
       var s = new Storage()
       s.initSync({foo: true})
       assert.equal(s.getSync('foo'), true)
@@ -67,16 +67,16 @@ describe('libs/storage/Storage', function () {
     })
   })
 
-  context('has', function () {
-    it('async', function (done) {
+  context('has', function() {
+    it('async', function(done) {
       var s = new Storage({autoInit: true})
       var p = s.has('foo')
       assert.ok(p instanceof Promise)
-      p.then(function (d) {
+      p.then(function(d) {
         assert.equal(d, false)
       }).then(done, done)
     })
-    it('sync', function () {
+    it('sync', function() {
       var s = new Storage()
       s.initSync({foo: true})
       assert.ok(s.hasSync('foo'))
@@ -84,28 +84,28 @@ describe('libs/storage/Storage', function () {
     })
   })
 
-  context('set', function () {
-    it('async', function (done) {
+  context('set', function() {
+    it('async', function(done) {
       var s = new Storage()
       s.initSync({foo: true})
 
       Promise
-        .try(function () {
+        .try(function() {
           return s.set('bar', true)
         })
-        .then(function () {
+        .then(function() {
           assert.equal(s.getSync('bar'), true)
           assert.equal(s.getSync('foo'), true)
           return s.set('foo', false)
         })
-        .then(function () {
+        .then(function() {
           assert.equal(s.getSync('bar'), true)
           assert.equal(s.getSync('foo'), false)
           return Promise.resolve()
         })
         .then(done, done)
     })
-    it('sync', function () {
+    it('sync', function() {
       var s = new Storage()
       s.initSync({foo: true})
 
@@ -119,21 +119,21 @@ describe('libs/storage/Storage', function () {
     })
   })
 
-  context('del', function () {
-    it('async', function (done) {
+  context('del', function() {
+    it('async', function(done) {
       var s = new Storage()
       s.initSync({foo: true})
 
       Promise
-        .try(function () {
+        .try(function() {
           s.del('foo')
         })
-        .then(function () {
+        .then(function() {
           assert.equal(s.getSync('foo'), undefined)
         })
         .then(done, done)
     })
-    it('sync', function () {
+    it('sync', function() {
       var s = new Storage()
       s.initSync({foo: true})
       s.delSync('foo')
@@ -142,8 +142,8 @@ describe('libs/storage/Storage', function () {
     })
   })
 
-  context('define', function () {
-    it('specify key', function () {
+  context('define', function() {
+    it('specify key', function() {
       var s = new Storage()
       s.initSync({foo: true})
 
@@ -153,7 +153,7 @@ describe('libs/storage/Storage', function () {
       assert.equal(s.foo, 1)
       assert.equal(s.getSync('foo'), 1)
     })
-    it('specify keys', function () {
+    it('specify keys', function() {
       var s = new Storage()
       s.initSync({a: 1, b: 2})
       s.define(['a', 'b'])
@@ -163,7 +163,7 @@ describe('libs/storage/Storage', function () {
       assert.equal(s.a, 2)
       assert.equal(s.b, 2)
     })
-    it('specify no key', function () {
+    it('specify no key', function() {
       var s = new Storage()
       s.initSync({a: 1, b: 2})
       s.define()
@@ -173,7 +173,7 @@ describe('libs/storage/Storage', function () {
       assert.equal(s.a, 2)
       assert.equal(s.b, 2)
     })
-    it('specify key not exists', function () {
+    it('specify key not exists', function() {
       var s = new Storage()
       s.initSync()
       s.define('a')
@@ -182,7 +182,7 @@ describe('libs/storage/Storage', function () {
       assert.equal(s.a, 2)
       assert.equal(s.getSync('a'), 2)
     })
-    it('warn message', function () {
+    it('warn message', function() {
       var spy = sinon.stub(console, 'warn')
       var s = new Storage({autoInit: true})
       s.xx = true
@@ -190,7 +190,7 @@ describe('libs/storage/Storage', function () {
       assert.equal(spy.callCount, 2)
       spy.restore()
     })
-    it('silent warn message', function () {
+    it('silent warn message', function() {
       var spy = sinon.stub(console, 'warn')
       var s = new Storage({autoInit: true})
       s.xx = true
@@ -200,7 +200,7 @@ describe('libs/storage/Storage', function () {
     })
   })
 
-  it('toString', function () {
+  it('toString', function() {
     var s = new Storage()
     assert.equal(s.toString(), 'null')
 
@@ -208,7 +208,7 @@ describe('libs/storage/Storage', function () {
     assert.equal(s.toString(), '{"foo":true}')
   })
 
-  it('toJSON', function () {
+  it('toJSON', function() {
     var s = new Storage()
     var d = {foo: true}
     s.initSync(d)

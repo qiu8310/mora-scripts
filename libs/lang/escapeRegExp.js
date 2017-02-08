@@ -2,8 +2,8 @@
  * @module      libs/lang/escapeRegExp
  * @createdAt   2016-06-30
  *
- * Copyright (c) 2016 Zhonglei Qiu
- * Licensed under the MIT license.
+ * @copyright   Copyright (c) 2016 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
  */
 
 var gre = /[-.*+?^${}()|[\]\/\\]/g
@@ -20,7 +20,7 @@ var re = /[-.*+?^${}()|[\]\/\\]/
  * @author    Zhongle Qiu
  * @since     2.0.0
  */
-module.exports = function (str) {
+module.exports = function(str) {
   return str.replace(gre, '\\$&')
 }
 

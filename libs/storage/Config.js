@@ -4,8 +4,8 @@
  * @module      libs/storage/Config
  * @createdAt   2016-07-21
  *
- * Copyright (c) 2016 Zhonglei Qiu
- * Licensed under the MIT license.
+ * @copyright   Copyright (c) 2016 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
  */
 var DotProp = require('../lang/DotProp')
 
@@ -13,7 +13,7 @@ var DotProp = require('../lang/DotProp')
  * @class
  * @param {Storage} storage
  */
-function Config (storage) {
+function Config(storage) {
   if (!storage.data) storage.initSync()
 
   this.dp = new DotProp(storage.data)
@@ -25,7 +25,7 @@ function Config (storage) {
  * @param  {String}  key
  * @return {Boolean}
  */
-Config.prototype.has = function (key) {
+Config.prototype.has = function(key) {
   return this.dp.has(key)
 }
 
@@ -34,7 +34,7 @@ Config.prototype.has = function (key) {
  * @param  {String} key
  * @return {*}
  */
-Config.prototype.get = function (key) {
+Config.prototype.get = function(key) {
   return this.dp.get(key)
 }
 
@@ -43,7 +43,7 @@ Config.prototype.get = function (key) {
  * @param  {String} key
  * @return {Boolean}     是否删除成功
  */
-Config.prototype.del = function (key) {
+Config.prototype.del = function(key) {
   var rtn = this.dp.del(key)
   if (rtn) {
     this.storage.updateSync()
@@ -57,7 +57,7 @@ Config.prototype.del = function (key) {
  * @param {*} val
  * @return {Boolean} 是否修改成功
  */
-Config.prototype.set = function (key, val) {
+Config.prototype.set = function(key, val) {
   var rtn = this.dp.set(key, val)
   if (rtn) {
     this.storage.updateSync()
