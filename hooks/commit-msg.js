@@ -11,7 +11,7 @@ var util = require('util')
 var findup = require('../libs/fs/findup')
 
 // fixup! and squash! are part of Git, commits tagged with them are not intended to be merged, cf. https://git-scm.com/docs/git-commit
-var PATTERN = /^((fixup! |squash! )?(\w+)(?:\(([^\)\s]+)\))?: (.+))(?:\n|$)/
+var PATTERN = /^((fixup! |squash! )?(\w+)(?:\(([^)\s]+)\))?: (.+))(?:\n|$)/
 var MERGE_COMMIT_PATTERN = /^Merge .+/
 var IGNORED_PATTERN = new RegExp(util.format('(^WIP)|(^%s$)', require('semver-regex')().source))
 
@@ -111,7 +111,7 @@ function validate(raw) {
       isValid = false
     }
 
-    if (/[\.,!;]/.test(lastLetter)) {
+    if (/[.,!;]/.test(lastLetter)) {
       error('no punctuation mark at the end !')
       isValid = false
     }

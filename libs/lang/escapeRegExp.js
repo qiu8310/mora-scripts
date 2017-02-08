@@ -6,8 +6,8 @@
  * @license     Licensed under the MIT license.
  */
 
-var gre = /[-.*+?^${}()|[\]\/\\]/g
-var re = /[-.*+?^${}()|[\]\/\\]/
+var gre = /[-.*+?^${}()|[\]/\\]/g
+var re = /[-.*+?^${}()|[\]/\\]/
 
 /**
  * 对字符串中的字符进行转义

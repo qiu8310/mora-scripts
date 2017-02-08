@@ -207,7 +207,7 @@ function parseColor(color) {
 
   /* eslint-disable no-multi-spaces, brace-style */
   return color
-    .split(/[\{\}#\.,:;"'\s]+/)
+    .split(/[{}#.,:;"'\s]+/)
     .map(function(raw) {
       var k = raw.toLowerCase()
       // 空字符串
