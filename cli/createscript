@@ -24,19 +24,19 @@ cli({
   'root | r': '<string> root directory, default is the folder that contains package.json or current directory',
   'desc | d': '<string> description for this module'
 })
-.parse(function (res) {
+.parse(function(res) {
   if (!res._.length) return this.error('Error: need at lease one file path')
   var root = resolveRoot(res)
-  res._.forEach(function (file) { make.call(this, root, file) }, this)
+  res._.forEach(function(file) { make.call(this, root, file) }, this)
 })
 
-function make (root, shortfile) {
+function make(root, shortfile) {
   if (shortfile !== '.js') {
     shortfile = shortfile.replace(/\.js$/, '') // 去掉后缀 .js
   }
 
   var file = resolve(root, shortfile)
-  var testFile = file.replace(/([^\/\\]+)$/, 'test' + path.sep + '__$1')
+  var testFile = file.replace(/([^/\\]+)$/, 'test' + path.sep + '__$1')
   var modulename = file.substr(root.length + 1) // 要创建的文件的模块名称
   var basename = path.basename(file)
 
@@ -61,7 +61,7 @@ function make (root, shortfile) {
   }
 }
 
-function resolveRoot (res) {
+function resolveRoot(res) {
   if (res.root) return resolve(res.root)
   try {
     return findup(process.cwd(), 'package.json')
@@ -70,7 +70,7 @@ function resolveRoot (res) {
   }
 }
 
-function makeLibsTestTemplate (modulename, basename) {
+function makeLibsTestTemplate(modulename, basename) {
   return [
     'var assert = require(\'assert\')',
     'var ' + basename + ' = require(\'../' + basename + '\')',
@@ -79,15 +79,15 @@ function makeLibsTestTemplate (modulename, basename) {
     '',
     '/* istanbul ignore next/if/else */',
     '',
-    'describe(\'' + modulename + '\', function () {',
-    '  it(\'should works\', function () {',
+    'describe(\'' + modulename + '\', function() {',
+    '  it(\'should works\', function() {',
     '  ',
     '  })',
     '})'
   ].join(require('os').EOL)
 }
 
-function makeLibsTemplate (modulename, desc) {
+function makeLibsTemplate(modulename, desc) {
   return [
     '/**',
     ' * ' + (desc || ''),

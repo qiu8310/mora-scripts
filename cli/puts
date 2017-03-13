@@ -19,13 +19,13 @@ cli({
 })
 .parse(main)
 
-function main (res) {
-  var escape = res.e,
-    linefeed = !res.n;
+function main(res) {
+  var escape = res.e
+  var linefeed = !res.n
 
   if (escape) {
-    res._ = res._.map(function (arg) {
-      return arg.replace(/(.)\\(.)/g, function (raw, prefix, char) {
+    res._ = res._.map(function(arg) {
+      return arg.replace(/(.)\\(.)/g, function(raw, prefix, char) {
         if (prefix === '\\') return '\\' + char
         if (char === 't') return prefix + '\t'
         if (char === 'n') return prefix + '\n'

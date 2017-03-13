@@ -5,6 +5,9 @@
 // https://github.com/sindresorhus/np
 // https://github.com/zeit/release
 // https://github.com/shipitjs/shipit-deploy
+// https://github.com/shinnn/gulp-gh-pages
+//
+// https://github.com/c4milo/github-release  // GO 语言
 
 // 首次 push 到 github 时：
 //    启用依赖更新提醒： greenkeeper enable

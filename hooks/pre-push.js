@@ -5,6 +5,7 @@
 
 var findup = require('../libs/fs/findup')
 var shell = require('../libs/tty/shell')
+var info = require('../libs/sys/info')
 var scripts = require(findup.pkg()).scripts
 
 var checks = ['lint', 'hint', 'test']
@@ -27,6 +28,7 @@ Promise.all(cmds.map(run))
 
 function run(cmd) {
   return new Promise(function(resolve, reject) {
+    console.log('Running %s...', info.format(cmd))
     shell(cmd, {stdio: 'inherit'}).on('exit', function(code, signal) {
       if (code === 0 && !signal) resolve()
       else reject(signal ? -1 : code)
