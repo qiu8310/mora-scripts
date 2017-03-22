@@ -17,7 +17,7 @@ var git = spawn(
 git.stdout.on('data', function(data) {
   var files = data.toString().trim().split(/[\r\n]+/)
 
-  checkRun('package.json', 'npm install')
+  checkRun('package.json', 'yarn install')
   checkRun('bower.json', 'bower install')
   checkRun('composer.json', 'composer install')
 
