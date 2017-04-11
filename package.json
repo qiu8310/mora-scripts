@@ -8,7 +8,7 @@
     "release": "cli/run npm version minor -m 'chore: bump minor version to pkg.version'",
     "preversion": "npm run lint && npm test",
     "version": "cli/puts '%cyou can run build and add build file to git in here' cyan",
-    "postversion": "git push --follow-tags && npm publish && cli/run cnpm sync pkg.name",
+    "postversion": "git push --follow-tags && snpm publish && cli/run cnpm sync pkg.name",
     "lint": "eslint libs/ hooks/",
     "test:watch": "mocha -R dot --watch **/__*.js",
     "test": "nyc _mocha **/__*.js",
