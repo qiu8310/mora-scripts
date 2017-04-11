@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "importHelpers": true,
+    "noEmitHelpers": true,
+    "declaration": true,
+    "removeComments": false,
+    "noImplicitUseStrict": true,
+    "lib": ["dom", "es2015.promise", "es5"],
+    "module": "commonjs",
+    "target": "es5"
+  },
+  "include": [
+    "libs/**/*.ts"
+  ]
+}

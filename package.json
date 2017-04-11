@@ -44,7 +44,8 @@
   "license": "MIT",
   "dependencies": {
     "cross-spawn": "5.1.0",
-    "semver-regex": "1.0.0"
+    "semver-regex": "1.0.0",
+    "tslib": "1.6.0"
   },
   "devDependencies": {
     "codecov": "1.0.1",
