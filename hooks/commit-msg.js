@@ -19,7 +19,7 @@ var isPackageFileExists = false
 var config = {
   command: __filename,
   warnOnFail: false,
-  showHelp: true,
+  showHelp: false,
   maxSubjectLength: 80,
   subjectPattern: '.+',
   types: ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'chore', 'revert']

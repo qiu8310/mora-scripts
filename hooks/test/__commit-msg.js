@@ -103,10 +103,18 @@ describe('hooks/commit-msg', function() {
   }, 'error', 'calledOnce', /no punctuation mark at the end/))
 
   it('should output help message', function() {
-    var log = sinon.stub(console, 'log')
-    validate.help()
-    assert.ok(log.calledWithMatch(/Git Commit Message Guides/))
-    log.restore()
+    validate.__with__({
+      config: {
+        maxSubjectLength: 80,
+        showHelp: true,
+        warnOnFail: false
+      }
+    })(function() {
+      var log = sinon.stub(console, 'log')
+      validate.help()
+      assert.ok(log.calledWithMatch(/Git Commit Message Guides/))
+      log.restore()
+    })
   })
 })
 

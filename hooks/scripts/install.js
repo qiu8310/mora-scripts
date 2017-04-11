@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
 var fs = require('fs')
+var path = require('path')
 var resolve = require('path').resolve
 var findup = require('../../libs/fs/findup')
 var warn = require('../../libs/sys/warn')
+var shell = require('../../libs/tty/shell')
 
 var config = require('./config')
 var template = fs.readFileSync(resolve(__dirname, 'template.js'))
@@ -23,6 +25,7 @@ function install() {
   try {
     gitDir = findup.git()
     config.hooks.forEach(installHook.bind(null, resolve(gitDir, 'hooks')))
+    installGitMessage(path.join(path.dirname(gitDir), '.gitmessage'))
   } catch (e) {
     warnAboutGit()
   }
@@ -32,6 +35,7 @@ function uninstall() {
   try {
     var gitDir = findup.git()
     config.hooks.forEach(uninstallHook.bind(null, resolve(gitDir, 'hooks')))
+    uninstallGitMessage(path.join(path.dirname(gitDir), '.gitmessage'))
   } catch (e) {}
 }
 
@@ -53,6 +57,26 @@ function uninstallHook(dir, file) {
   if (isHookTemplateFile(filepath)) {
     console.log('  uninstall hook ' + file)
     restore(filepath)
+  }
+}
+
+function installGitMessage(messageFile) {
+  console.log('\n  set git commit.template')
+  if (!exists(messageFile)) {
+    // 文件不存在，使用模板
+    fs.writeFileSync(messageFile, fs.readFileSync(resolve(__dirname, '..', 'gitmessage')).toString())
+  }
+  shell('git config --local commit.template ' + messageFile)
+}
+
+function uninstallGitMessage(messageFile) {
+  shell('git config --local --unset commit.template')
+  if (exists(messageFile)) {
+    warn(
+      '\ngit config commit.template has already unseted.\n'
+      + 'so file ' + messageFile + ' not in use.\n'
+      + 'you can delete it anytime.\n'
+    )
   }
 }
 
