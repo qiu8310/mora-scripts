@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var spawn = require('cross-spawn')
+var isCommandExists = require('../libs/tty/isCommandExists')
 
 var git = spawn(
   'git',
@@ -17,7 +18,7 @@ var git = spawn(
 git.stdout.on('data', function(data) {
   var files = data.toString().trim().split(/[\r\n]+/)
 
-  checkRun('package.json', 'yarn install')
+  checkRun('package.json', isCommandExists('yarn') ? 'yarn install' : 'npm install')
   checkRun('bower.json', 'bower install')
   checkRun('composer.json', 'composer install')
 
