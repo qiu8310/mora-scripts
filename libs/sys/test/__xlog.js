@@ -16,7 +16,7 @@ describe('libs/sys/xlog', function() {
 
   context('basic', function() {
     it('should call console.log', function() {
-      var spy = sinon.stub(console, 'log', function() {})
+      var spy = sinon.stub(console, 'log').callsFake(function() {})
       xlog()
       xlog('aa')
       assert.ok(spy.calledTwice)
