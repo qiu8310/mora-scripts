@@ -6,7 +6,14 @@ var assign = require('../../libs/lang/assign')
 var exists = require('../../libs/fs/exists')
 
 module.exports = function(dir, alias) {
-  var pkgFile = findup.pkg(dir)
+  var pkgFile
+  try {
+    pkgFile = findup.pkg(dir)
+  } catch (e) {
+    // 找不到 package.json 文件，则不需要执行任何操作
+    return
+  }
+
   var pkg = require(pkgFile)
   var root = path.dirname(pkgFile)
 

@@ -8,7 +8,7 @@ var format = clog.format
 
 describe('libs/sys/clog', function() {
   it('should call console.log', function() {
-    var spy = sinon.stub(console, 'log', function() {})
+    var spy = sinon.stub(console, 'log').callsFake(function() {})
     clog()
     clog('aa')
 

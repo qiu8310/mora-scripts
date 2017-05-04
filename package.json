@@ -1,6 +1,6 @@
 {
   "name": "mora-scripts",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "Some collection scripts by myself",
   "scripts": {
     "postinstall": "node hooks/scripts/install",
@@ -11,7 +11,7 @@
     "postversion": "git push --follow-tags && snpm publish && cli/run cnpm sync pkg.name",
     "lint": "eslint libs/ hooks/",
     "test:watch": "mocha -R dot --watch **/__*.js",
-    "test": "nyc _mocha **/__*.js",
+    "test": "nyc _mocha -R dot **/__*.js",
     "report": "nyc report --reporter html --report-dir externals/coverage",
     "test:istanbul": "istanbul cover --report html --dir externals/coverage _mocha **/__*.js",
     "test:report": "npm run test && npm run report",
@@ -48,14 +48,14 @@
     "tslib": "1.6.0"
   },
   "devDependencies": {
-    "codecov": "1.0.1",
+    "codecov": "^2.0.0",
     "docdash": "web-build-hub/docdash",
-    "eslint": "3.16.1",
-    "nyc": "10.1.2",
-    "mocha": "3.2.0",
-    "rewire": "2.5.2",
-    "sinon": "1.17.7",
-    "standard": "8.6.0"
+    "eslint": "^3.16.1",
+    "nyc": "^10.0.0",
+    "mocha": "^3.2.0",
+    "rewire": "^2.5.2",
+    "sinon": "^2.0.0",
+    "standard": "^10.0.0"
   },
   "nyc": {
     "check-coverage": false,
