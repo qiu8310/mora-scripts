@@ -139,7 +139,7 @@ describe('libs/lang/Events', function() {
   })
 
   it('should warn when Object already contains on/once/off/emit/_events', function() {
-    var spy = sinon.stub(console, 'warn', function() {})
+    var spy = sinon.stub(console, 'warn').callsFake(function() {})
     var obj = {_events: 123, on: 456, off: 789}
     Events.mixin(obj)
 

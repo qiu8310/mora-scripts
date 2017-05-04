@@ -165,6 +165,7 @@ function outputHelp() {
 function formatObject(obj) {
   obj = JSON.parse(JSON.stringify(obj))
   for (var key in obj) {
+    // istanbul ignore if
     if (Array.isArray(obj[key])) obj[key] = '[ ' + obj[key].join(', ') + ' ]'
     // istanbul ignore next
     else if (typeof obj[key] === 'object') obj[key] = formatObject(obj[key])

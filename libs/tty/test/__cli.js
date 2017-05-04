@@ -34,7 +34,7 @@ describe('libs/tty/cli', function() {
     it('showHelpOnError enable', function() {
       var cli = Cli({ showHelpOnError: true })
       var log = sinon.stub(console, 'log')
-      var help = sinon.stub(cli, 'help', function() {})
+      var help = sinon.stub(cli, 'help').callsFake(function() {})
 
       cli.options({ a: '<string> ' }).parse(['-a'])
 
@@ -46,7 +46,7 @@ describe('libs/tty/cli', function() {
     it('showHelpOnError disable (default)', function() {
       var cli = Cli()
       var log = sinon.stub(console, 'log')
-      var help = sinon.stub(cli, 'help', function() {})
+      var help = sinon.stub(cli, 'help').callsFake(function() {})
 
       cli.options({ a: '<string> ' }).parse(['-a'])
 
@@ -380,7 +380,7 @@ describe('libs/tty/cli', function() {
 
 function testHelp(cli, test) {
   var help = cli.help
-  var stub = sinon.stub(cli, 'help', function() {
+  var stub = sinon.stub(cli, 'help').callsFake(function() {
     var helpMessage = help.call(cli, true)
     test(helpMessage, cli)
   })
@@ -408,7 +408,7 @@ function testOptions(opts, args, expect) {
 function testError(opts, args, re) {
   if (typeof args === 'string') args = args.split(/\s+/)
   var cli = Cli().options(assign({}, opts))
-  var spy = sinon.stub(cli, 'error', function(message) {
+  var spy = sinon.stub(cli, 'error').callsFake(function(message) {
     assert.ok(re.test(message), 'expect ' + message + ' match ' + re.toString())
   })
 

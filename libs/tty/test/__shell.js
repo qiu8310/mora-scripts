@@ -8,7 +8,7 @@ var shell = require('rewire')('../shell')
 describe('libs/tty/shell', function() {
   var spy
   beforeEach(function() {
-    spy = sinon.stub(cp, 'spawn', function() {})
+    spy = sinon.stub(cp, 'spawn').callsFake(function() {})
   })
   afterEach(function() {
     spy.restore()

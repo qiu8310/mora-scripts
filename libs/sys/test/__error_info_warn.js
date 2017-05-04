@@ -16,7 +16,7 @@ describe('libs/sys/error,warn,info', function() {
   })
 
   it('should call util.format in error,warn,info', function() {
-    var log = sinon.stub(console, 'log', function() {})
+    var log = sinon.stub(console, 'log').callsFake(function() {})
     var spy = sinon.spy(util, 'format')
 
     error('a', 'b')
