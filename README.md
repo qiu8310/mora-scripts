@@ -1,7 +1,6 @@
 # mora-scripts
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/qiu8310/mora-scripts.svg)](https://greenkeeper.io/)
-
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 [![Build Status](https://img.shields.io/travis/qiu8310/mora-scripts/master.svg)](https://travis-ci.org/qiu8310/mora-scripts)
 [![Build status](https://ci.appveyor.com/api/projects/status/90txwxbg4mo3hlc1/branch/master?svg=true)](https://ci.appveyor.com/project/qiu8310/mora-scripts/branch/master)
