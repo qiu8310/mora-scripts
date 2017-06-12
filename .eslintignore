@@ -1,1 +1,2 @@
 libs/db/*.js
+**/test/fixtures/**/*.js
