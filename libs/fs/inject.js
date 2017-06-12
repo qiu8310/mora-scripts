@@ -1,0 +1,125 @@
+/**
+ *
+ * @module      libs/fs/inject
+ * @createdAt   2017-06-12
+ *
+ * @copyright   Copyright (c) 2017 Zhonglei Qiu
+ * @license     Licensed under the MIT license.
+ */
+var fs = require('fs')
+var escapeRegExp = require('../lang/escapeRegExp')
+var EOL = '\n'
+
+var TAGS_MAP = {
+  hash: ['## ', ' ##', '## ', ' ##'],
+  docs: ['/*# ', ' #*/', '/*# ', ' #*/'],
+  html: ['<!--# ', ' #-->', '<!--# ', ' #-->']
+}
+var TAGS_FILE_EXTENSIONS = {
+  hash: ['gitignore', 'sh', 'bash'],
+  docs: ['js', 'jsx', 'css', 'sass', 'ts', 'tsx', 'json'],
+  html: ['html', 'md']
+}
+
+var TAG_START_KEYWORD = 'INJECT_START'
+var TAG_END_KEYWORD = 'INJECT_END'
+
+/**
+ * 根据文件 file 中的注释，注入 data 中对应的内容
+ * @param  {string} file      要注入的文件的文件路径
+ * @param  {Object} data      要注入的内容
+ * @param  {Object} [options] 选项
+ * @param  {string|Array<string>} [options.tags]     [tagStartLeft, tagStartRight, tagEndLeft, tagEndRight]
+ * @example
+ * bash 中可以这样写： (type 默认是 string，可以不写，另外支持 file，这时 key 对应的 value 是文件地址)
+ *
+ *  ## INJECT_START {"type": "string", "key": "ignores"} ##
+ *  ## INJECT_END ##
+ *
+ * 或
+ *
+ *  ## INJECT_START ignores ##
+ *  ## INJECT_END ##
+ *
+ * @return {number}         返回注入成功的数量
+ */
+module.exports = function inject(file, data, options) {
+  options = options || {}
+  var content = fs.readFileSync(file).toString()
+  var counter = {count: 0}
+
+  var tags = getTags(file, options)
+  var regexp = buildRegExp(tags, TAG_START_KEYWORD, TAG_END_KEYWORD)
+  var newContent = content.replace(regexp, replaceContent(data, counter))
+
+  fs.writeFileSync(file, newContent)
+
+  return counter.count
+}
+
+function getTags(file, options) {
+  var tagsKey = options.tags
+  var tags = tagsKey
+  if (!tagsKey) {
+    var extension = file.split('.').pop()
+    tagsKey = Object.keys(TAGS_FILE_EXTENSIONS).find(function(key) {
+      return TAGS_FILE_EXTENSIONS[key].indexOf(extension) >= 0
+    })
+
+    if (!tagsKey) throw new Error('Can not judge the tags from current file extension')
+  }
+
+  if (typeof tagsKey === 'string') tags = TAGS_MAP[tagsKey]
+  if (!Array.isArray(tags) || tags.length !== 4) throw new Error('Tags options should be Array and contains 4 string items')
+
+  return tags
+}
+
+function replaceContent(data, counter) {
+  return function(raw, startLine, jsonString, oldValue, endLine) {
+    var json = checkJsonString(jsonString)
+    var type = json.type || 'string'
+    var dataValue = data[json.key] || ''
+
+    var replaceValue
+    switch (type) {
+      case 'string':
+        replaceValue = dataValue
+        break
+      case 'file':
+        replaceValue = fs.readFileSync(dataValue).toString()
+        break
+      default:
+        throw new Error('Not supported inject type<' + data.type + '>')
+    }
+
+    counter.count++
+    return startLine.trim() + EOL
+      + replaceValue + (replaceValue && EOL)
+      + endLine
+  }
+}
+
+function checkJsonString(raw) {
+  var json
+  var str = raw.trim()
+  try {
+    json = str[0] === '{' ? JSON.parse(str) : {key: str}
+  } catch (e) {
+    throw new Error('Inject config<' + raw + '> is not a valid json string')
+  }
+
+  if (!json.hasOwnProperty('key')) throw new Error('Inject config<' + raw + '> should contains "key" field')
+
+  return json
+}
+
+function buildRegExp(tags, startKeyword, endKeyword) {
+  return new RegExp(
+    '(' + escapeRegExp(tags[0] + startKeyword) + '\\s*(.*)\\s*' + escapeRegExp(tags[1]) + ')'
+    + '([\\s\\S]*?)'
+    // 保持前导的空格或 tab 一样多
+    + '([   ]*' + escapeRegExp(tags[2] + endKeyword + tags[3]) + ')',
+    'g'
+  )
+}

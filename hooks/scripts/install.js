@@ -73,7 +73,7 @@ function uninstallGitMessage(messageFile) {
   shell('git config --local --unset commit.template')
   if (exists(messageFile)) {
     warn(
-      '\ngit config commit.template has already unseted.\n'
+      '\ngit config commit.template has already unset.\n'
       + 'so file ' + messageFile + ' not in use.\n'
       + 'you can delete it anytime.\n'
     )
