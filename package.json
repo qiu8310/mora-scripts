@@ -5,7 +5,7 @@
   "scripts": {
     "postinstall": "node hooks/scripts/install",
     "postuninstall": "node hooks/scripts/install --reverse",
-    "release": "cli/run npm version minor -m 'chore: bump minor version to pkg.version'",
+    "release": "cli/run npm version patch -m 'chore: bump patch version'",
     "preversion": "npm run lint && npm test",
     "version": "cli/puts '%cyou can run build and add build file to git in here' cyan",
     "postversion": "git push --follow-tags && snpm publish && cli/run cnpm sync pkg.name",
