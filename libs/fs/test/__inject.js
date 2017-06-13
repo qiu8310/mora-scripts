@@ -27,8 +27,15 @@ describe('libs/fs/inject', function() {
     injectAndExpect(
       'inject.array',
       {test: 'abc'},
-      '  // INJECT_START {"type": "string", "key": "test"} //\nabc\n  // INJECT_END //\n',
+      '  // INJECT_START {"type": "string", "key": "test"} //\n  abc\n  // INJECT_END //\n',
       {tags: ['// ', ' //', '// ', ' //']}
+    )
+
+    injectAndExpect(
+      'inject.array',
+      {test: 'abc'},
+      '  // INJECT_START {"type": "string", "key": "test"} //\nabc\n  // INJECT_END //\n',
+      {tags: ['// ', ' //', '// ', ' //'], autoPrefixSpaces: false}
     )
   })
 
