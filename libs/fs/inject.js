@@ -54,7 +54,7 @@ module.exports = function inject(file, data, options) {
   var regexp = buildRegExp(tags, TAG_START_KEYWORD, TAG_END_KEYWORD)
   var newContent = content.replace(regexp, replaceContent(data, counter, options.autoPrefixSpaces))
 
-  fs.writeFileSync(file, newContent)
+  if (newContent !== content) fs.writeFileSync(file, newContent)
 
   return counter.count
 }

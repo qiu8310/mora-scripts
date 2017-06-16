@@ -1,6 +1,8 @@
 **/node_modules/
 .nyc_output/
 externals/
+.vscode/
 .DS_Store
 .idea/
 
+**/test/**

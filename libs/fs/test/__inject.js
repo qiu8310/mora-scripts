@@ -84,6 +84,13 @@ describe('libs/fs/inject', function() {
       inject(file('inject.nokey'), {}, {tags: 'html'})
     }, /Inject config.* should contains "key" field/)
   })
+
+  it('should not update original file when nothing updated', function() {
+    var f = file('inject.notupdate')
+    var oldmtime = fs.statSync(f).mtime
+    inject(f, {foo: 'xx'}, {tags: 'html'})
+    assert.equal(fs.statSync(f).mtime.getTime(), oldmtime.getTime())
+  })
 })
 
 function injectAndExpect(name, data, expect, options) {
