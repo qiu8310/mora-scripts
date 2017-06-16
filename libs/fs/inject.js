@@ -30,6 +30,7 @@ var TAG_END_KEYWORD = 'INJECT_END'
  * @param  {Object} data      要注入的内容
  * @param  {Object} [options] 选项
  * @param  {string|Array<string>} [options.tags]     [tagStartLeft, tagStartRight, tagEndLeft, tagEndRight]
+ * @param  {boolean} [options.autoPrefixSpaces = true]  自动根据最后一个注释前的空格给每一行都添加相同的空格
  * @example
  * bash 中可以这样写： (type 默认是 string，可以不写，另外支持 file，这时 key 对应的 value 是文件地址)
  *
@@ -45,14 +46,15 @@ var TAG_END_KEYWORD = 'INJECT_END'
  */
 module.exports = function inject(file, data, options) {
   options = options || {}
+  if (!('autoPrefixSpaces' in options)) options.autoPrefixSpaces = true
   var content = fs.readFileSync(file).toString()
   var counter = {count: 0}
 
   var tags = getTags(file, options)
   var regexp = buildRegExp(tags, TAG_START_KEYWORD, TAG_END_KEYWORD)
-  var newContent = content.replace(regexp, replaceContent(data, counter))
+  var newContent = content.replace(regexp, replaceContent(data, counter, options.autoPrefixSpaces))
 
-  fs.writeFileSync(file, newContent)
+  if (newContent !== content) fs.writeFileSync(file, newContent)
 
   return counter.count
 }
@@ -75,8 +77,8 @@ function getTags(file, options) {
   return tags
 }
 
-function replaceContent(data, counter) {
-  return function(raw, startLine, jsonString, oldValue, endLine) {
+function replaceContent(data, counter, autoPrefixSpaces) {
+  return function(raw, startLine, jsonString, oldValue, endLine, spaces) {
     var json = checkJsonString(jsonString)
     var type = json.type || 'string'
     var dataValue = data[json.key] || ''
@@ -95,9 +97,14 @@ function replaceContent(data, counter) {
 
     counter.count++
     return startLine.trim() + EOL
-      + replaceValue + (replaceValue && EOL)
+      + prefixSpaces(replaceValue, spaces, autoPrefixSpaces) + (replaceValue && EOL)
       + endLine
   }
+}
+
+function prefixSpaces(content, spaces, enabled) {
+  if (!content || !enabled) return content
+  return spaces + content.replace(/\r?\n/g, '$&' + spaces)
 }
 
 function checkJsonString(raw) {
@@ -119,7 +126,7 @@ function buildRegExp(tags, startKeyword, endKeyword) {
     '(' + escapeRegExp(tags[0] + startKeyword) + '\\s*(.*)\\s*' + escapeRegExp(tags[1]) + ')'
     + '([\\s\\S]*?)'
     // 保持前导的空格或 tab 一样多
-    + '([   ]*' + escapeRegExp(tags[2] + endKeyword + tags[3]) + ')',
+    + '(([   ]*)' + escapeRegExp(tags[2] + endKeyword + tags[3]) + ')',
     'g'
   )
 }

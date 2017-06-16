@@ -27,8 +27,15 @@ describe('libs/fs/inject', function() {
     injectAndExpect(
       'inject.array',
       {test: 'abc'},
-      '  // INJECT_START {"type": "string", "key": "test"} //\nabc\n  // INJECT_END //\n',
+      '  // INJECT_START {"type": "string", "key": "test"} //\n  abc\n  // INJECT_END //\n',
       {tags: ['// ', ' //', '// ', ' //']}
+    )
+
+    injectAndExpect(
+      'inject.array',
+      {test: 'abc'},
+      '  // INJECT_START {"type": "string", "key": "test"} //\nabc\n  // INJECT_END //\n',
+      {tags: ['// ', ' //', '// ', ' //'], autoPrefixSpaces: false}
     )
   })
 
@@ -76,6 +83,13 @@ describe('libs/fs/inject', function() {
     assert.throws(function() {
       inject(file('inject.nokey'), {}, {tags: 'html'})
     }, /Inject config.* should contains "key" field/)
+  })
+
+  it('should not update original file when nothing updated', function() {
+    var f = file('inject.notupdate')
+    var oldmtime = fs.statSync(f).mtime
+    inject(f, {foo: 'xx'}, {tags: 'html'})
+    assert.equal(fs.statSync(f).mtime.getTime(), oldmtime.getTime())
   })
 })
 
