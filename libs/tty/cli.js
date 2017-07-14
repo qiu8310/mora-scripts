@@ -499,7 +499,7 @@ Cli.prototype.help = function(returnStr) {
         var defaultValue = entry.defaultValue !== undef
           ? format('  %c[ default: %s ]', 'gray', JSON.stringify(entry.defaultValue))
           : ''
-        row.push(format('  %c%s', 'green', entry.alias.join(', ')))
+        row.push(format('  %c%s', 'green', entry.alias.map(function(a) { return (a.length === 1 ? '-' : '--') + a }).join(', ')))
         row.push(format('  %c%s  ', 'cyan', '<' + entry.type + '>'))
         row.push(format('%c%s', 'default', entry.desc + defaultValue))
         rows.push(row)

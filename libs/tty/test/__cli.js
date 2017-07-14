@@ -285,10 +285,10 @@ describe('libs/tty/cli', function() {
 
     it('should output one entry when option have alias', function() {
       testHelp(Cli().options({'a | alpha': '<bool>'}), function(message) {
-        assert.ok(message.indexOf('a, alpha') > 0, 'include a, alpha')
-        var left = message.replace('a, alpha', '')
-        assert.ok(left.indexOf('a') < 0, 'not include a')
-        assert.ok(left.indexOf('alpha') < 0, 'not include alpha')
+        assert.ok(message.indexOf('-a, --alpha') > 0, 'include a, alpha')
+        var left = message.replace('-a, --alpha', '')
+        assert.ok(left.indexOf('-a') < 0, 'not include a')
+        assert.ok(left.indexOf('--alpha') < 0, 'not include alpha')
       })
     })
   })
