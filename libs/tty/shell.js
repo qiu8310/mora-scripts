@@ -45,3 +45,13 @@ module.exports = function(command, options) {
 
   return cp.spawn(file, args, options)
 }
+
+module.exports.promise = function(command, options) {
+  return new Promise(function(resolve, reject) {
+    module.exports(command, options || {stdio: 'inherit'})
+      .on('close', function(code) {
+        if (code) reject(code)
+        else resolve(code)
+      })
+  })
+}

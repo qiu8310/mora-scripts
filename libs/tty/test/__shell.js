@@ -35,3 +35,46 @@ describe('libs/tty/shell', function() {
     })
   })
 })
+
+describe('libs/tty/shell.promise', function() {
+  var spy
+  afterEach(function() {
+    spy.restore()
+  })
+
+  it('should work on promise success', function(done) {
+    spy = sinon.stub(cp, 'spawn').callsFake(function() {
+      return {
+        on: function(type, callback) { callback(0) }
+      }
+    })
+    shell.__with__({ isWin: false })(function() {
+      shell.promise('ls')
+        .then(function(code) {
+          assert.equal(code, 0)
+          done()
+        })
+        .catch(function(code) {
+          done(code)
+        })
+    })
+  })
+
+  it('should work on promise error', function(done) {
+    spy = sinon.stub(cp, 'spawn').callsFake(function() {
+      return {
+        on: function(type, callback) { callback(1) }
+      }
+    })
+    shell.__with__({ isWin: false, code: 1 })(function() {
+      shell.promise('ls')
+        .then(function(code) {
+          done(new Error('not expected'))
+        })
+        .catch(function(code) {
+          assert.equal(code, 1)
+          done()
+        })
+    })
+  })
+})
