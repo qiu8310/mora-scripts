@@ -55,7 +55,7 @@
     "proxyquire": "1.8.0",
     "rewire": "^2.5.2",
     "sinon": "^2.0.0",
-    "standard": "^10.0.0"
+    "standard": "^10.0.3"
   },
   "nyc": {
     "check-coverage": false,
