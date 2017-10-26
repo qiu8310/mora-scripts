@@ -1,5 +1,6 @@
 var assert = require('assert')
 var path = require('path')
+var fs = require('fs')
 var rewire = require('rewire')
 var config = rewire('../config')
 
@@ -10,8 +11,10 @@ var config = rewire('../config')
 describe('libs/fs/config', function() {
   context('chdir', function() {
     var _cwd = process.cwd()
+    var configDir
     beforeEach(function() {
-      process.chdir(path.join(__dirname, 'fixtures', 'config'))
+      configDir = path.join(__dirname, 'fixtures', 'config')
+      process.chdir(configDir)
     })
     afterEach(function() {
       process.chdir(_cwd)
@@ -25,6 +28,16 @@ describe('libs/fs/config', function() {
       assert.deepEqual(config('config2'), {config: 2})
     })
 
+    it('should get json cached config', function() {
+      var configFile = path.join(configDir, 'config2.json')
+      assert.deepEqual(config('config2'), {config: 2})
+      fs.writeFileSync(configFile, JSON.stringify({config: 3}, null, 2))
+      assert.deepEqual(config('config2'), {config: 2})
+      assert.deepEqual(config('config2', {nocache: true}), {config: 3})
+      assert.deepEqual(config('config2'), {config: 3})
+      fs.writeFileSync(configFile, JSON.stringify({config: 2}, null, 2))
+    })
+
     it('should merge two config', function() {
       var data = config('.eslintrc', {merge: true})
       assert.deepEqual(data.env, false)
@@ -36,7 +49,7 @@ describe('libs/fs/config', function() {
         assert(msg.indexOf('Unexpected token') > 0)
         done()
       })
-      config('warn')
+      config('warn', {nocache: true})
       revert()
     })
   })

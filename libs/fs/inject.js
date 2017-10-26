@@ -26,6 +26,13 @@ var TAG_END_KEYWORD = 'INJECT_END'
 
 /**
  * 根据文件 file 中的注释，注入 data 中对应的内容
+ *
+ * GROUP   |  EXTENSIONS                          |  TAGS
+ * --------|--------------------------------------------------------------
+ * hash    |  gitignore, sh, bash                 | ['## ', ' ##', '## ', ' ##']
+ * docs    |  js, jsx, css, sass, ts, tsx, json   | (文档注释加 "#")
+ * html    |  html, md                            | ['<!--# ', ' #-->', '<!--# ', ' #-->']
+ *
  * @param  {string} file      要注入的文件的文件路径
  * @param  {Object} data      要注入的内容
  * @param  {Object} [options] 选项

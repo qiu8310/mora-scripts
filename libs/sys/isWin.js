@@ -1,3 +1,4 @@
+
 /**
  * @module      libs/sys/isWin
  * @createdAt   2016-07-14
