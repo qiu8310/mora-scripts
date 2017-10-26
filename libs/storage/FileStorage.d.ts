@@ -1,3 +1,16 @@
-import {FileStorage} from './_base'
-declare const instance: FileStorage
-export = instance
+import * as Storage from './Storage'
+
+declare namespace FileStorage {
+  interface Options {
+    /**
+     * 指定要存储到的文件
+     */
+    file: string
+  }
+}
+
+declare class FileStorage extends Storage {
+  constructor(options: FileStorage.Options)
+}
+
+export = FileStorage

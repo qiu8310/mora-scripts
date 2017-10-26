@@ -1,100 +1,29 @@
-export interface ICliConf {
-  /**
-   * 指定命令行的用法
-   *
-   * @example
-   * cli [options] <foo>
-   */
-  usage?: string
-  /**
-   * 命令行的描述
-   */
-  desc?: string | string[]
-  /**
-   * 命令行的使用示例
-   */
-  example?: string | string[]
-  /**
-   * 放在 help 末尾的信息，一般可以放一些版权之类的说明
-   */
-  epilog?: string
-  /**
-   * 指定版本号， 如 1.0.0
-   *
-   * 如果设置为 false，就不会自动加上 "v | version" 选项
-   */
-  version?: false | string
-  /**
-   * 禁用自动添加的 "h | help" 选项
-   */
-  help?: false
-  /**
-   * 在遇到第一个非 option 参数时就停止解析（很适用于子程序）
-   */
-  stopParseOnFirstNoOption?: boolean
-  /**
-   * 出错时显示帮助信息
-   */
-  showHelpOnError?: boolean
-  /**
-   * 严格模式，遇到无法解析的 option 是就报错
-   */
-  strict?: boolean
-}
-export interface ICliResponse {
-  /**
-   * 原始的未处理过的 args，默认是 process.argv.slice(2)
-   */
-  rawArgs: string[]
-  /**
-   * 解析完后剩下的给程序的参数
-   */
-  _: string[]
-  /**
-   * 其它 options 中指定的键值，如果没设置也会存在，且值为 undefined
-   */
-  [optionKey: string]: any
-}
-export declare type ICliOptionType = 'boolean' | 'string' | 'number' | 'array' | 'count'
-export declare type ICliOptions = {
-  [key: string]: string | {
-      type: ICliOptionType
-      desc?: string
-      defaultValue?: any
-  }
-}
-export declare type ICliCommands = {
-  [key: string]: ((this: Cli, res: ICliResponse) => void) | {
-      desc: string
-      cmd: ((this: Cli, res: ICliResponse) => void)
-  }
-}
 /**
-* @example
-* cli({
-*   usage: 'cli [options] <foo>'
-*   version: '1.0.0'
-* })
-* .options({
-*   'e | escape': '<bool> escape input string'
-* })
-* .parse(function (res) {
-*   if (res.escape) {
-*     // ...
-*   }
-* })
-*
-* @author Zhonglei Qiu
-* @since  2.0.0
-* @see    optimist, minimist, yargs, nomnom, nopt, commander
-*/
-export declare class Cli {
-  conf: ICliConf
+ * @example
+ * cli({
+ *   usage: 'cli [options] <foo>'
+ *   version: '1.0.0'
+ * })
+ * .options({
+ *   'e | escape': '<bool> escape input string'
+ * })
+ * .parse(function (res) {
+ *   if (res.escape) {
+ *     // ...
+ *   }
+ * })
+ *
+ * @author Zhonglei Qiu
+ * @since  2.0.0
+ * @see    optimist, minimist, yargs, nomnom, nopt, commander
+ */
+export class Cli {
+  conf: Cli.Conf
   /**
    * 解析完后剩下的给程序的参数
    */
   _: string[]
-  constructor(conf: ICliConf)
+  constructor(conf: Cli.Conf)
   /**
    * 设置 Cli 程序支持的选项
    *
@@ -130,7 +59,7 @@ export declare class Cli {
    * })
    *
    */
-  options(groupName: string, opts: ICliOptions): Cli
+  options(groupName: string, opts: Cli.Options): Cli
 
   /**
    * 设置 Cli 程序支持的选项
@@ -164,7 +93,7 @@ export declare class Cli {
    * })
    *
    */
-  options(opts: ICliOptions): Cli
+  options(opts: Cli.Options): Cli
 
   /**
    * 设置 Cli 程序的子命令
@@ -192,7 +121,7 @@ export declare class Cli {
    * })
    *
    */
-  commands(commands: ICliCommands): Cli
+  commands(commands: Cli.Commands): Cli
 
   /**
    * 解析传入的参数
@@ -215,7 +144,7 @@ export declare class Cli {
    * })
    *
    */
-  parse(args: string[], handle: (this: Cli, res: ICliResponse) => void): void
+  parse(args: string[], handle: (this: Cli, res: Cli.Response) => void): void
 
   /**
    * 解析传入的参数
@@ -237,8 +166,83 @@ export declare class Cli {
    * })
    *
    */
-  parse(handle?: (this: Cli, res: ICliResponse) => void): void
+  parse(handle?: (this: Cli, res: Cli.Response) => void): void
 
   error(...args: string[]): void
   help(returnStr?: boolean): string | void
+}
+
+export namespace Cli {
+  interface Conf {
+    /**
+     * 指定命令行的用法
+     *
+     * @example
+     * cli [options] <foo>
+     */
+    usage?: string
+    /**
+     * 命令行的描述
+     */
+    desc?: string | string[]
+    /**
+     * 命令行的使用示例
+     */
+    example?: string | string[]
+    /**
+     * 放在 help 末尾的信息，一般可以放一些版权之类的说明
+     */
+    epilog?: string
+    /**
+     * 指定版本号， 如 1.0.0
+     *
+     * 如果设置为 false，就不会自动加上 "v | version" 选项
+     */
+    version?: false | string
+    /**
+     * 禁用自动添加的 "h | help" 选项
+     */
+    help?: false
+    /**
+     * 在遇到第一个非 option 参数时就停止解析（很适用于子程序）
+     */
+    stopParseOnFirstNoOption?: boolean
+    /**
+     * 出错时显示帮助信息
+     */
+    showHelpOnError?: boolean
+    /**
+     * 严格模式，遇到无法解析的 option 是就报错
+     */
+    strict?: boolean
+  }
+  interface Response {
+    /**
+     * 原始的未处理过的 args，默认是 process.argv.slice(2)
+     */
+    rawArgs: string[]
+    /**
+     * 解析完后剩下的给程序的参数
+     */
+    _: string[]
+    /**
+     * 其它 options 中指定的键值，如果没设置也会存在，且值为 undefined
+     */
+    [optionKey: string]: any
+  }
+  type OptionType = 'boolean' | 'string' | 'number' | 'array' | 'count'
+  type Options = {
+    [key: string]: string | {
+        type: OptionType
+        desc?: string
+        defaultValue?: any
+    }
+  }
+  type Commands = {
+    [key: string]: ((this: Cli, res: Response) => void) | {
+        desc: string
+        cmd: ((this: Cli, res: Response) => void)
+    }
+  }
+
 }

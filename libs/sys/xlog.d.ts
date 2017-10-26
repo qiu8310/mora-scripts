@@ -24,7 +24,7 @@ interface Interface {
    * @author Zhonglei Qiu
    * @since  2.0.0
    */
-  (...args: string[]): void
+  (...args: any[]): void
 
   /**
    * 使用的 format 函数，类似于 console.log 使用了 util.format 函数
@@ -32,7 +32,7 @@ interface Interface {
    * @method
    * @return {String}  格式化后的字符串
    */
-  format(...args: string[]): string
+  format(...args: any[]): string
 
   /**
    * 对齐 str 字符串

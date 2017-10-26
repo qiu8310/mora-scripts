@@ -1,4 +1,3 @@
-export * from './_base'
 import * as cli from './cli'
 import * as cliTextSize from './cliTextSize'
 import * as isCommandExists from './isCommandExists'

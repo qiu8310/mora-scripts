@@ -7,7 +7,7 @@ interface Interface {
    * @author Zhonglei Qiu
    * @since 2.0.0
    */
-  (...args: string[]): void
+  (...args: any[]): void
 
   /**
    * 返回红色的字符串
@@ -19,7 +19,7 @@ interface Interface {
    * @author Zhonglei Qiu
    * @since 2.0.0
    */
-  format(...args: string[]): string
+  format(...args: any[]): string
 }
 
 declare const instance: Interface

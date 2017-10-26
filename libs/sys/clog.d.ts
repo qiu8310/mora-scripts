@@ -59,13 +59,13 @@ interface Interface {
    * @author Zhonglei Qiu
    * @since 2.0.0
    */
-  (...args: string[]): void
+  (...args: any[]): void
 
   /**
    * {@link module:libs/sys/clog} 使用的 format 函数，类似于 console.log 使用了 util.format 函数
    * @type {Function}
    */
-  format(...args: string[]): string
+  format(...args: any[]): string
 
   NAMED_COLORS: {
     brown: string

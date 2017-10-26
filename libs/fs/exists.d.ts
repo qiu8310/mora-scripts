@@ -33,7 +33,7 @@ interface Interface {
  * @since     2.0.0
  *
  */
-  (startFile: string, allowTypes: IFileType | IFileType[]): boolean
+  (startFile: string, allowTypes?: IFileType | IFileType[]): boolean
 /**
  * 文件是否存在
  * @param  {String} startFile 文件路径

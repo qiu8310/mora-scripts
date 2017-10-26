@@ -1,5 +1,3 @@
-import {} from './base'
-
 interface Interface {
   /**
    * 添加指定的路径到 PATH 环境变量中

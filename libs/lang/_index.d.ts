@@ -9,5 +9,4 @@ import * as isObject from './isObject'
 import * as isPlainObject from './isPlainObject'
 import * as toString from './toString'
 
-export * from './_base'
 export {DotProp, Events, assign, escapeRegExp, formatDate, hasOwnEnumProp, hasOwnProp, isObject, isPlainObject, toString}

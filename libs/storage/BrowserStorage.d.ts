@@ -1,3 +1,16 @@
-import {BrowserStorage} from './_base'
-declare const instance: BrowserStorage
-export = instance
+import * as Storage from './Storage'
+
+declare namespace BrowserStorage {
+  interface Options {
+    /**
+     * 指定要存储到的 localStorage 的 key
+     */
+    key: string
+  }
+}
+
+declare class BrowserStorage extends Storage {
+  constructor(options: BrowserStorage.Options)
+}
+
+export = BrowserStorage
