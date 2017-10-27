@@ -17,18 +17,23 @@ var DEFAULT_GROUP_NAME = '__default__:)'
 
 var typeConfig = {
   bool: {
+    label: 'boolean',
     needArgs: 0
   },
   str: {
+    label: 'string',
     needArgs: 1
   },
   num: {
+    label: 'number',
     needArgs: 1
   },
   arr: {
-    needArgs: Infinity
+    label: 'array',
+    needArgs: 1
   },
   count: {
+    label: 'count',
     needArgs: 0
   }
 }
@@ -500,7 +505,7 @@ Cli.prototype.help = function(returnStr) {
           ? format('  %c[ default: %s ]', 'gray', JSON.stringify(entry.defaultValue))
           : ''
         row.push(format('  %c%s', 'green', entry.alias.map(function(a) { return (a.length === 1 ? '-' : '--') + a }).join(', ')))
-        row.push(format('  %c%s  ', 'cyan', '<' + entry.type + '>'))
+        row.push(format('  %c%s  ', 'cyan', '<' + typeConfig[entry.type].label + '>'))
         row.push(format('%c%s', 'default', entry.desc + defaultValue))
         rows.push(row)
       })
@@ -557,7 +562,7 @@ function consumeKey(key, noNeedArgs) {
       else conf.value = 1
       break
     case 'arr':
-      conf.value = []
+      if (!conf.value) conf.value = []
       break
   }
 

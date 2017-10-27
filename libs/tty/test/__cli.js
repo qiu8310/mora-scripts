@@ -232,7 +232,7 @@ describe('libs/tty/cli', function() {
         a: '<arr>',
         b: '<array>'
       }
-      testOptions(opts, ['-a', '-b', '1', '2'], {a: [], b: ['1', '2']})
+      testOptions(opts, ['-a', '-b', '1', '-b', '2'], {a: [], b: ['1', '2']})
     })
     it('num', function() {
       var opts = {
