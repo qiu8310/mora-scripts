@@ -13,13 +13,15 @@ interface Interface {
    *
    * @example
    *
-   * table([
-   *   ['a', 'b', 'c'],
-   *   ['d', 'ee', 'f']
-   * ])
+   * ```
+   *   table([
+   *     ['a', 'b', 'c'],
+   *     ['d', 'ee', 'f']
+   *   ])
    *
-   * // ab c
-   * // deef
+   *   // ab c
+   *   // deef
+   * ```
    *
    * @see [tty-wrap@0.1.0]{@link https://github.com/qiu8310/tty-wrap/tree/0.1.0}
    * @since  2.0.0

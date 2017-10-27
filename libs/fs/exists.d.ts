@@ -23,10 +23,12 @@ interface Interface {
  *
  * @example
  *
- * exists('./some/path')                         // 判断是否是文件
- * exists('./some/path', 'File')                 // 判断是否是文件
- * exists('./some/path', 'Directory')            // 判断是否是文件夹
- * exists('./some/path', ['File', 'Directory'])  // 判断是文件或者文件侠，返回 false/'file'/'directory'
+ * ```
+ *   exists('./some/path')                         // 判断是否是文件
+ *   exists('./some/path', 'File')                 // 判断是否是文件
+ *   exists('./some/path', 'Directory')            // 判断是否是文件夹
+ *   exists('./some/path', ['File', 'Directory'])  // 判断是文件或者文件侠，返回 false/'file'/'directory'
+ * ```
  *
  *
  * @author    Zhongle Qiu

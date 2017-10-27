@@ -46,9 +46,11 @@ interface Interface {
    * F00, FF0000, #F00, #FF0000 ...                         | 十六进制颜色，支持三位，或六位，支持不带 "#"
    *
    * @example
+   * ```
    * // 下面两个输出的 "you" 是红字黄底，其它文字都是默认的颜色
    * clog('Are %cyou%c ok', 'fg.red.bg.yellow', 'reset')
    * clog('Are %s ok', clog.format('%cyou', 'red.bgYellow'))
+   * ```
    *
    * @param {String}  template         模板字符串，里面可以包含 %s, %d, %j, %c, %% 这些特殊格式
    * @param {...*}    [arg]            给模板用的参数

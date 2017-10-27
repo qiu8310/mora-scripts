@@ -7,22 +7,28 @@ declare namespace Events {
 
 /**
  * @example 直接使用
+ * ```
  * var e = new Events()
  * e.on('click.namespace', function () { ... })
  * e.emit('click.namespace', 1, 2, 3)
+ * ```
  *
  * @example 嫁接到函数或类上
+ * ```
  * function Foo() { ... }
  * Events.mixin(Foo)
  * var f = new Foo()
  * f.on('click', ...)
  * f.emit('click', ...)
+ * ```
  *
  * @example 嫁接到一个对象上
+ * ```
  * var obj = {a: 'aa'}
  * Events.mixin(obj)
  * obj.on('click', ...)
  * obj.emit('click', ...)
+ * ```
  */
 declare class Events {
   /**

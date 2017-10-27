@@ -1,20 +1,26 @@
 /**
  * @example
- * cli({
- *   usage: 'cli [options] <foo>'
- *   version: '1.0.0'
- * })
- * .options({
- *   'e | escape': '<bool> escape input string'
- * })
- * .parse(function (res) {
- *   if (res.escape) {
- *     // ...
- *   }
- * })
  *
- * @author Zhonglei Qiu
- * @since  2.0.0
+ * ```
+ *   cli({
+ *     usage: 'cli [options] <foo>',
+ *     version: '1.0.0'
+ *   })
+ *   .options({
+ *     'e | escape': '<bool> escape input string',
+ *     'm | modules': '<array> 指定模块，需要 -m mod1 -m mod2 这样用',
+ *     'o | other': {
+ *          type: 'string',
+ *          desc: 'xxxxxxxxx',
+ *          defaultValue: '...'
+ *      }
+ *   })
+ *   .parse(function (res) {
+ *     if (res.escape) {
+ *       // ...
+ *     }
+ *   })
+ * ```
  * @see    optimist, minimist, yargs, nomnom, nopt, commander
  */
 export class Cli {
@@ -49,14 +55,15 @@ export class Cli {
    * @return {Cli}
    *
    * @example
-   *
-   * cli.options({
-   *   'e | escape': '<boolean> enable escape',
-   *   'l | linefeed': {
-   *     type: 'boolean',
-   *     desc: 'append a system linefeed at end'
-   *   }
-   * })
+   * ```
+   *   cli.options({
+   *     'e | escape': '<boolean> enable escape',
+   *     'l | linefeed': {
+   *       type: 'boolean',
+   *       desc: 'append a system linefeed at end'
+   *     }
+   *   })
+   * ```
    *
    */
   options(groupName: string, opts: Cli.Options): Cli
@@ -84,13 +91,15 @@ export class Cli {
    *
    * @example
    *
-   * cli.options({
-   *   'e | escape': '<boolean> enable escape',
-   *   'l | linefeed': {
-   *     type: 'boolean',
-   *     desc: 'append a system linefeed at end'
-   *   }
-   * })
+   * ```
+   *   cli.options({
+   *     'e | escape': '<boolean> enable escape',
+   *     'l | linefeed': {
+   *       type: 'boolean',
+   *       desc: 'append a system linefeed at end'
+   *     }
+   *   })
+   * ```
    *
    */
   options(opts: Cli.Options): Cli
@@ -108,17 +117,19 @@ export class Cli {
    *
    * @example
    *
-   * cli.commands({
-   *   'r | run': function (res) {
-   *     // handle
-   *   },
-   *   second: {
-   *     desc: 'this is sub-command with description',
-   *     cmd: function (res) {
+   * ```
+   *   cli.commands({
+   *     'r | run': function (res) {
    *       // handle
+   *     },
+   *     second: {
+   *       desc: 'this is sub-command with description',
+   *       cmd: function (res) {
+   *         // handle
+   *       }
    *     }
-   *   }
-   * })
+   *   })
+   * ```
    *
    */
   commands(commands: Cli.Commands): Cli
@@ -137,11 +148,13 @@ export class Cli {
    *
    * @example
    *
-   * cli.parse(process.argv.slice(2), function (res) {
-   *   if (res.foo) {
-   *     // do something
-   *   }
-   * })
+   * ```
+   *   cli.parse(process.argv.slice(2), function (res) {
+   *     if (res.foo) {
+   *       // do something
+   *     }
+   *   })
+   * ```
    *
    */
   parse(args: string[], handle: (this: Cli, res: Cli.Response) => void): void
@@ -159,11 +172,13 @@ export class Cli {
    *
    * @example
    *
-   * cli.parse(process.argv.slice(2), function (res) {
-   *   if (res.foo) {
-   *     // do something
-   *   }
-   * })
+   * ```
+   *   cli.parse(process.argv.slice(2), function (res) {
+   *     if (res.foo) {
+   *       // do something
+   *     }
+   *   })
+   * ```
    *
    */
   parse(handle?: (this: Cli, res: Cli.Response) => void): void

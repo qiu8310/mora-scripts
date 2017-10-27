@@ -14,7 +14,9 @@ interface Interface {
    * @return    {Object}
    *
    * @example
+   * ```
    * assign({}, {a: '1', b: 2}, null, true, {a: 1})
+   * ```
    *
    * @see       [object-assign@4.1.0]{@link https://github.com/sindresorhus/object-assign/tree/v4.1.0}
    * @author    Zhongle Qiu
