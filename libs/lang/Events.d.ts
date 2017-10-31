@@ -38,7 +38,7 @@ declare class Events {
    */
   static mixin<T>(target: T): T & Events
 
-  _events: {[key: string]: Event}
+  _events: {[key: string]: Events}
   /**
    * 监听事件
    * @param {string} events 事件名称，类似于 jQuery，如果有多个要用空格隔开，也可以添加 namespace
@@ -83,7 +83,7 @@ declare class Events {
    * @param {string} events 事件名称，类似于 jQuery，如果有多个要用空格隔开，也可以添加 namespace
    * @param {...*} args 函数列表，将会传给 handler
    */
-  emit(events?: string, ...args: any[]): void
+  emit(events: string, ...args: any[]): void
 }
 
 export = Events

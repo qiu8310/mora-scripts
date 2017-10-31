@@ -18,14 +18,14 @@ interface Interface {
    * ```
    * bash 中可以这样写： (type 默认是 string，可以不写，另外支持 file，这时 key 对应的 value 是文件地址)
    *
-   *  \#\# INJECT_START {"type": "string", "key": "ignores"} \#\#
+   *  ## INJECT_START {"type": "string", "key": "ignores"} ##
    *
-   *  \#\# INJECT_END \#\#
+   *  ## INJECT_END ##
    *
    * 或
    *
-   *  \#\# INJECT_START ignores \#\#
-   *  \#\# INJECT_END \#\#
+   *  ## INJECT_START ignores ##
+   *  ## INJECT_END ##
    * ```
    *
    * @return {number}         返回注入成功的数量
