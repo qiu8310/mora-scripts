@@ -1,7 +1,7 @@
 import * as Storage from './Storage'
 
 declare namespace FileStorage {
-  interface Options {
+  interface Options extends Storage.Options {
     /**
      * 指定要存储到的文件
      */

@@ -13,7 +13,7 @@ declare namespace Storage {
 }
 
 declare class Storage {
-  static extend(storageLikeObject): Storage
+  static extend(storageLikeObject: any): Storage
 
   constructor(options?: Storage.Options)
 
@@ -42,7 +42,7 @@ declare class Storage {
   getSync(key: string): any
 
   set(key: string, value: any): Promise<void>
-  setSync(key: string, value: any)
+  setSync(key: string, value: any): void
 
   del(key: string): Promise<void>
   delSync(key: string): void

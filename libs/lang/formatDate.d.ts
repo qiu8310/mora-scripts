@@ -68,7 +68,7 @@ interface Interface {
    * @author Zhonglei Qiu
    * @since 2.0.0
    */
-  (format): string
+  (format: string): string
 }
 
 declare const instance: Interface

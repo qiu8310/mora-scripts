@@ -1,7 +1,7 @@
 import * as Storage from './Storage'
 
 declare namespace BrowserStorage {
-  interface Options {
+  interface Options extends Storage.Options {
     /**
      * 指定要存储到的 localStorage 的 key
      */

@@ -55,7 +55,7 @@ interface Interface {
    * @author Zhonglei Qiu
    * @since 2.0.0
    */
-  (regexp, fn?): (...args) => string
+  (regexp: any, fn?: any): (...args: any[]) => string
 }
 
 declare const instance: Interface

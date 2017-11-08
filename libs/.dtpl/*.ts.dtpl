@@ -1,6 +1,0 @@
-interface Interface {
-
-}
-
-declare const instance: Interface
-export = instance
