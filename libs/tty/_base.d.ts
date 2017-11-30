@@ -254,9 +254,9 @@ export namespace Cli {
     }
   }
   type Commands = {
-    [key: string]: ((this: Cli, res: Response) => void) | {
+    [key: string]: ((this: Cli, res: Response, cli: Cli) => void) | {
         desc: string
-        cmd: ((this: Cli, res: Response) => void)
+        cmd: ((this: Cli, res: Response, cli: Cli) => void)
     }
   }
 

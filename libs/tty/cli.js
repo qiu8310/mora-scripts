@@ -401,7 +401,7 @@ Cli.prototype.parse = function(args, handle) {
     console.log(this.version || '0.0.0')
   } else if (commander) {
     res._ = _.slice(1)
-    commander.cmd.call(null, res, this)
+    commander.cmd.call(this, res, this)
   } else if (typeof handle === 'function') {
     res._ = _
     handle.call(this, res)

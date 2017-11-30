@@ -16,7 +16,7 @@ var path = require('path')
  * @param  {String} file 要删除的文件的路径
  */
 function rm(file) {
-  var stat = fs.statSync(file)
+  var stat = fs.lstatSync(file)
 
   if (stat.isDirectory()) {
     rmDir(file)
