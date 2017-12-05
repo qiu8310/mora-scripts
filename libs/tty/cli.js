@@ -224,8 +224,14 @@ function init(isCommand, opts, group) {
         }
 
         desc = value.desc || ''
-        if (value.conf) {
-          var subCli = new Cli(value.conf)
+        if (value.conf || value.options || value.groups) {
+          /* istanbul ignore next */
+          var conf = value.conf || {}
+
+          /* istanbul ignore else */
+          if (!conf.desc) conf.desc = desc
+
+          var subCli = new Cli(conf)
           subCli.options(value.options)
           /* istanbul ignore else */
           if (value.groups) {
