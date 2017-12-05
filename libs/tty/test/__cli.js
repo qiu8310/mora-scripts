@@ -175,7 +175,37 @@ describe('libs/tty/cli', function() {
         assert.ok(message.indexOf('foo bar') > 0)
       })
     })
+    it('sub cli commands', function() {
+      var spy = sinon.spy(function(res) {
+        assert.deepEqual(res._, ['a', 'b'])
+        assert.equal(res.opt1, 'abc')
+        assert.equal(!!res.opt2, false)
+        assert.equal(res.opt3, 1)
+      })
+      Cli().commands({
+        sub: {
+          conf: {
+            usage: 'sub cli command',
+            version: '1.2.5'
+          },
+          options: {
+            opt1: '<string> options 1',
+            opt2: '<boolean> options 2'
+          },
+          groups: {
+            groupName: {
+              opt3: '<count> xxx'
+            },
+            empty: null
+          },
+          cmd: spy
+        }
+      }).parse(['sub', '--opt3', '--opt1', 'abc', 'a', 'b'])
+
+      assert.equal(spy.callCount, 1)
+    })
   })
+
   context('options', function() {
     it('bool', function() {
       var opts = {

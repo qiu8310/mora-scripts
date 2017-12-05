@@ -200,6 +200,7 @@ Cli.prototype.options = function(group, opts) {
     opts = group
     group = null
   }
+  if (!opts) return
   init.call(this, false, opts, group)
   return this
 }
@@ -218,10 +219,25 @@ function init(isCommand, opts, group) {
         desc = ''
       } else if (isPlainObject(value)) {
         cmd = value.cmd
-        desc = value.desc || ''
-
         if (typeof cmd !== 'function') {
           throw new Error('Command "' + origKey + '" should have a handle function.')
+        }
+
+        desc = value.desc || ''
+        if (value.conf) {
+          var subCli = new Cli(value.conf)
+          subCli.options(value.options)
+          /* istanbul ignore else */
+          if (value.groups) {
+            Object.keys(value.groups).forEach(function(k) {
+              subCli.options(k, value.groups[k])
+            })
+          }
+          cmd = function(res, cli) {
+            subCli.parse(res._, function(subres) {
+              value.cmd.call(subCli, subres, subCli)
+            })
+          }
         }
       } else {
         throw new Error('Command "' + origKey + '" is invalid')
@@ -404,7 +420,7 @@ Cli.prototype.parse = function(args, handle) {
     commander.cmd.call(this, res, this)
   } else if (typeof handle === 'function') {
     res._ = _
-    handle.call(this, res)
+    handle.call(this, res, this)
   }
 
   return this

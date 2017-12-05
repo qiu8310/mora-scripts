@@ -127,6 +127,14 @@ export class Cli {
    *       cmd: function (res) {
    *         // handle
    *       }
+   *     },
+   *     thrid: {
+   *       conf: {},
+   *       options: {},
+   *       groups: {},
+   *       cmd: function (res) {
+   *
+   *       }
    *     }
    *   })
    * ```
@@ -157,7 +165,7 @@ export class Cli {
    * ```
    *
    */
-  parse(args: string[], handle: (this: Cli, res: Cli.Response) => void): void
+  parse(args: string[], handle: (this: Cli, res: Cli.Response, cli: Cli) => void): void
 
   /**
    * 解析传入的参数
@@ -173,7 +181,7 @@ export class Cli {
    * @example
    *
    * ```
-   *   cli.parse(process.argv.slice(2), function (res) {
+   *   cli.parse(function (res) {
    *     if (res.foo) {
    *       // do something
    *     }
@@ -181,7 +189,7 @@ export class Cli {
    * ```
    *
    */
-  parse(handle?: (this: Cli, res: Cli.Response) => void): void
+  parse(handle?: (this: Cli, res: Cli.Response, cli: Cli) => void): void
 
   error(...args: string[]): void
   help(returnStr?: boolean): string | void
@@ -255,7 +263,10 @@ export namespace Cli {
   }
   type Commands = {
     [key: string]: ((this: Cli, res: Response, cli: Cli) => void) | {
-        desc: string
+        desc?: string
+        conf?: Cli.Conf
+        options?: Cli.Options
+        groups?: {[optionGroupName: string]: Cli.Options}
         cmd: ((this: Cli, res: Response, cli: Cli) => void)
     }
   }
