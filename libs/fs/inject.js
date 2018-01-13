@@ -13,7 +13,8 @@ var EOL = '\n'
 var TAGS_MAP = {
   hash: ['## ', ' ##', '## ', ' ##'],
   docs: ['/*# ', ' #*/', '/*# ', ' #*/'],
-  html: ['<!--# ', ' #-->', '<!--# ', ' #-->']
+  html: ['<!--# ', ' #-->', '<!--# ', ' #-->'],
+  loose: ['# ', ' #', '# ', ' #']   // 最宽松的模式
 }
 var TAGS_FILE_EXTENSIONS = {
   hash: ['gitignore', 'sh', 'bash'],
@@ -130,10 +131,10 @@ function checkJsonString(raw) {
 
 function buildRegExp(tags, startKeyword, endKeyword) {
   return new RegExp(
-    '(' + escapeRegExp(tags[0] + startKeyword) + '\\s*(.*)\\s*' + escapeRegExp(tags[1]) + ')'
+    '(\\S*' + escapeRegExp(tags[0] + startKeyword) + '\\s*(.*)\\s*' + escapeRegExp(tags[1]) + '\\S*)'
     + '([\\s\\S]*?)'
     // 保持前导的空格或 tab 一样多
-    + '(([   ]*)' + escapeRegExp(tags[2] + endKeyword + tags[3]) + ')',
+    + '(([   ]*)\\S*' + escapeRegExp(tags[2] + endKeyword + tags[3]) + '\\S*)',
     'g'
   )
 }

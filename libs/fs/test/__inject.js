@@ -14,6 +14,15 @@ describe('libs/fs/inject', function() {
     )
   })
 
+  it('loose inject to html', function() {
+    injectAndExpect(
+      'inject.html',
+      {html1: 'aaa', html2: 'bbb'},
+      '<!--# INJECT_START html1 #-->\naaa\n<!--# INJECT_END #-->\n\n<!--# INJECT_START {"key": "html2"} #-->\nbbb\n<!--# INJECT_END #-->\n',
+      {tags: 'loose'}
+    )
+  })
+
   it('inject custom string tags', function() {
     injectAndExpect(
       'inject.fakehash',

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+// http://danger.systems/js/
 // https://github.com/conventional-changelog/standard-version
 // https://github.com/semantic-release/semantic-release
 // https://github.com/sindresorhus/np

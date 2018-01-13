@@ -30,7 +30,7 @@ interface Interface {
    *
    * @return {number}         返回注入成功的数量
    */
-  (file: string, data: {[key: string]: any}, options?: {tags?: string[]}): number
+  (file: string, data: {[key: string]: any}, options?: {tags?: 'loose' | 'hash' | 'docs' | 'html' | string[]}): number
 }
 
 declare const instance: Interface
