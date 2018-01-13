@@ -56,6 +56,15 @@ describe('libs/fs/inject', function() {
     )
   })
 
+  it('inject append', function() {
+    injectAndExpect(
+      'inject.append',
+      {test: 'c'},
+      '  # INJECT_START {"key": "test", "append": true} #\n  a\n  b\n  c\n  # INJECT_END #\n',
+      {tags: 'loose'}
+    )
+  })
+
   it('inject file', function() {
     injectAndExpect(
       'inject.js',
@@ -113,10 +122,15 @@ describe('libs/fs/inject', function() {
 function injectAndExpect(name, data, expect, options) {
   var filepath = file(name)
   var content = fs.readFileSync(filepath).toString()
-  inject(filepath, data, options)
-  var newContent = fs.readFileSync(filepath).toString()
-  assert.equal(newContent, expect)
-  fs.writeFileSync(filepath, content)
+  try {
+    inject(filepath, data, options)
+    var newContent = fs.readFileSync(filepath).toString()
+    assert.equal(newContent, expect)
+    fs.writeFileSync(filepath, content)
+  } catch (e) {
+    fs.writeFileSync(filepath, content)
+    throw e
+  }
 }
 
 function file(name) {
