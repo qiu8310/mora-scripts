@@ -23,6 +23,14 @@ describe('libs/fs/inject', function() {
     )
   })
 
+  it('return content', function() {
+    var filepath = file('inject.html')
+    var content = fs.readFileSync(filepath).toString()
+    var newContent = inject(filepath, {html1: 'aaa', html2: 'bbb'}, {returnContent: true})
+    assert.equal(newContent, '<!--# INJECT_START html1 #-->\naaa\n<!--# INJECT_END #-->\n\n<!--# INJECT_START {"key": "html2"} #-->\nbbb\n<!--# INJECT_END #-->\n')
+    fs.writeFileSync(filepath, content)
+  })
+
   it('inject custom string tags', function() {
     injectAndExpect(
       'inject.fakehash',

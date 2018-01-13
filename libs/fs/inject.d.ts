@@ -14,6 +14,7 @@ interface Interface {
    * @param  {Object} [options] 选项
    * @param  {string|Array<string>} [options.tags]     [tagStartLeft, tagStartRight, tagEndLeft, tagEndRight]
    * @param  {boolean} [options.autoPrefixSpaces = true]  自动根据最后一个注释前的空格给每一行都添加相同的空格
+   * @param  {boolean} [options.returnContent = false]  返回注入的内容，而不是直接注入
    * @example
    * ```
    * bash 中可以这样写： (type 默认是 string，可以不写，另外支持 file，这时 key 对应的 value 是文件地址)
@@ -30,7 +31,11 @@ interface Interface {
    *
    * @return {number}         返回注入成功的数量
    */
-  (file: string, data: {[key: string]: any}, options?: {tags?: 'loose' | 'hash' | 'docs' | 'html' | string[]}): number
+  (file: string, data: {[key: string]: any}, options?: {
+    autoPrefixSpaces?: boolean
+    returnContent?: boolean,
+    tags?: 'loose' | 'hash' | 'docs' | 'html' | string[]
+  }): number | string
 }
 
 declare const instance: Interface
