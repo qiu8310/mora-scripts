@@ -7,19 +7,23 @@
 var dirname = require('path').dirname
 var root = dirname(dirname(__dirname))
 var cmd = __filename.replace(__dirname, '').substr(1)
+var pkg
 
 try {
+  pkg = require('../../package.json')
   if (!internalRequire()) {
     require('mora-scripts/hooks/scripts/runner')(root, cmd)
   }
 } catch (e) {
-  warnAboutGHooks()
+  if (pkg && pkg.config && pkg.config.hooks && Object.keys(pkg.config.hooks).length) {
+    warnAboutGHooks()
+  }
 }
 
 // for internal use
 function internalRequire() {
   try {
-    if (require('../../package.json').name === 'mora-scripts') {
+    if (pkg.name === 'mora-scripts') {
       require('../../hooks/scripts/runner')(root, cmd)
       return true
     }
