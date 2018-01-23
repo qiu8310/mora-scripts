@@ -43,7 +43,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "cross-spawn": "5.1.0",
+    "cross-spawn": "6.0.3",
     "semver-regex": "1.0.0"
   },
   "devDependencies": {
