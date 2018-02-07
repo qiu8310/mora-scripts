@@ -47,10 +47,10 @@ describe('libs/fs/config', function() {
     it('should warn on invalid json file', function(done) {
       var revert = config.__set__('warn', function(msg) {
         assert(msg.indexOf('Unexpected token') > 0)
+        revert()
         done()
       })
       config('warn', {nocache: true})
-      revert()
     })
   })
 

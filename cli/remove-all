@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+var cli = require('../libs/tty/cli')
+var rm = require('../libs/fs/rm')
+
+cli({
+  usage: 'remove-all <files...>'
+}).parse(function(res) {
+  res._.forEach(function(f) {
+    rm(f)
+  })
+})

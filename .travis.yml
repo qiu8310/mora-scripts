@@ -15,7 +15,7 @@ before_script:
   - npm --version
 script:
   - npm run lint
-  - npm test -- --check-coverage
+  - npm run test:check-coverage
 after_success:
   - npm run docs # then release it to gh-pages
 after_script:

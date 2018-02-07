@@ -6,12 +6,13 @@
     "postinstall": "node hooks/scripts/install",
     "postuninstall": "node hooks/scripts/install --reverse",
     "release": "cli/run npm version patch -m 'chore: bump patch version'",
-    "preversion": "npm run lint && npm test",
+    "preversion": "npm run lint && npm run test:check-coverage",
     "version": "cli/puts '%cyou can run build and add build file to git in here' cyan",
     "postversion": "git push --follow-tags && snpm publish && cli/run cnpm sync pkg.name",
-    "lint": "eslint libs/ hooks/",
+    "lint": "eslint libs/ hooks/ cli/puts cli/remove-all cli/run cli/commit-msg-help cli/createscript",
     "test:watch": "mocha -R dot --watch **/__*.js",
     "test": "nyc _mocha -R dot **/__*.js",
+    "test:check-coverage": "nyc _mocha -R dot **/__*.js && nyc check-coverage",
     "report": "nyc report --reporter html --report-dir externals/coverage && rm -rf coverage",
     "test:istanbul": "istanbul cover --report html --dir externals/coverage _mocha **/__*.js",
     "test:report": "npm run test && npm run report",
@@ -21,6 +22,7 @@
   "bin": {
     "run": "cli/run",
     "puts": "cli/puts",
+    "remove-all": "cli/remove-all",
     "hooks": "hooks/scripts/install.js",
     "commit-msg-help": "cli/commit-msg-help"
   },
@@ -28,7 +30,7 @@
     "hooks": {
       "commit-msg": true,
       "post-merge": true,
-      "pre-push": "npm run lint && npm test -- --check-coverage"
+      "pre-push": "npm run lint && npm run test:check-coverage"
     }
   },
   "keywords": [

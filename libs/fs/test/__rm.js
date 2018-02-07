@@ -2,9 +2,10 @@ var assert = require('assert')
 var fs = require('fs')
 var resolve = require('path').resolve
 
-var rm = require('../rm')
 var exists = require('../exists')
 var mkdirp = require('../mkdirp')
+
+var rm = require('rewire')('../rm')
 
 /* eslint-env mocha */
 
@@ -35,5 +36,16 @@ describe('libs/fs/rm', function() {
     assert.ok(exists(dir, 'Directory'))
     rm(dir)
     assert.ok(!exists(dir, 'Directory'))
+  })
+
+  it('should warn when remove not exists files', function(done) {
+    var dir = resolve(fixturesDir, 'xx3')
+    mkdirp(dir)
+    var revert = rm.__set__('warn', function(msg) {
+      assert(msg.indexOf(' not exists') > 0)
+      revert()
+      done()
+    })
+    rm(resolve(dir, 'a', 'b'))
   })
 })
