@@ -1,0 +1,7 @@
+exports.config = require('./config')
+exports.exists = require('./exists')
+exports.findup = require('./findup')
+exports.inject = require('./inject')
+exports.mkdirp = require('./mkdirp')
+exports.ospath = require('./ospath')
+exports.rm = require('./rm')
