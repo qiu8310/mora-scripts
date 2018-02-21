@@ -321,6 +321,19 @@ describe('libs/tty/cli', function() {
         assert.ok(left.indexOf('--alpha') < 0, 'not include alpha')
       })
     })
+
+    it('should parse string defaultValue', function() {
+      var opts = {
+        a: '<bool> asf {{}}',
+        b: '<bool> asf {{ab}}',
+        c: '<bool> j 中文 \n kajsf {{false}}',
+        d: '<str> default is string {{ "true" }}'
+      }
+
+      testOptions(opts, ['-c', '-d', 'ab'], {a: undefined, b: undefined, c: true, d: 'ab'})
+      testOptions(opts, ['-a', '-c'], {a: true, b: undefined, c: true, d: 'true'})
+      testOptions(opts, ['-a', '-b'], {a: true, b: true, c: false, d: 'true'})
+    })
   })
   context('exception', function() {
     it('throws when config needArgs less then 0', function() {

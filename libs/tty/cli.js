@@ -11,7 +11,7 @@ var table = require('./table')
 var assign = require('../lang/assign')
 var isPlainObject = require('../lang/isPlainObject')
 var reOptionType = /^(bool|str|num|arr|count)[a-z]*$/
-var reOption = /^\s*<(bool|str|num|arr|count)[a-z]*>\s*(.*)$/
+var reOption = /^\s*<(bool|str|num|arr|count)[a-z]*>\s*([\s\S]*?)(?:\{\{(.*)\}\})?$/
 var undef = void 0
 var DEFAULT_GROUP_NAME = '__default__:)'
 
@@ -58,7 +58,7 @@ var typeConfig = {
  *   version: '1.0.0'
  * })
  * .options({
- *   'e | escape': '<bool> escape input string'
+ *   'e | escape': '<bool> escape input string {{ defaultValue }}'
  * })
  * .parse(function (res) {
  *   if (res.escape) {
@@ -256,6 +256,15 @@ function init(isCommand, opts, group) {
         if (reOption.test(value)) {
           type = RegExp.$1
           desc = RegExp.$2
+          if (RegExp.$3) {
+            defaultValue = RegExp.$3
+            try {
+              defaultValue = JSON.parse(defaultValue.trim())
+            } catch (e) {
+              desc += '{{' + defaultValue + '}}'
+              defaultValue = undefined
+            }
+          }
         } else {
           throw new Error('Option "' + origKey + '" config "' + value + '" is invalid.')
         }
@@ -276,7 +285,6 @@ function init(isCommand, opts, group) {
       group = group || DEFAULT_GROUP_NAME
       target = { key: key, alias: alias, defaultValue: defaultValue, type: type, group: group, desc: desc }
       map = this.mapOptions
-
       if (this.groups.indexOf(group) < 0) {
         if (group === DEFAULT_GROUP_NAME) {
           this.groups.unshift(group)

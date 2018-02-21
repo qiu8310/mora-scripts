@@ -10,7 +10,7 @@ interface Interface {
  *     version: '1.0.0'
  *   })
  *   .options({
- *     'e | escape': '<bool> escape input string',
+ *     'e | escape': '<bool> escape input string ',
  *     'm | modules': '<array> 指定模块，需要 -m mod1 -m mod2 这样用',
  *     'o | other': {
  *          type: 'string',
