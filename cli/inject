@@ -1,0 +1,69 @@
+#!/usr/bin/env node
+
+var cli = require('../libs/tty/cli')
+var info = require('../libs/sys/info')
+var findup = require('../libs/fs/findup')
+var inject = require('../libs/fs/inject')
+var path = require('path')
+
+var configDesc = [
+  '',
+  '  Array<{',
+  '    file:    string',
+  '    data:    {[key: string]: string}',
+  '    tags?:    "hash" | "docs" | "html" | "loose" | string[]',
+  '    append?: boolean',
+  '  }>'
+]
+
+var sourceDesc = [
+  '',
+  '  /*# INJECT_START dataKey #*/',
+  '  /*# INJECT_END #*/',
+  ''
+]
+
+cli({
+  usage: 'inject <path/to/config.js or path/to/config.json>',
+  desc: [
+    '根据配置文件中的配置实现对其它文件注入内容。',
+    '配置文件需要返回一个这样的数据结构：',
+    configDesc.join('\r\n'),
+    '其中 `file` 中路径的开头可以使用 "~" 来表示当前项目的根目录',
+    '',
+    '',
+    '另外 file 所对应的文件就需要写这样的标签：',
+    sourceDesc.join('\r\n')
+  ]
+})
+.parse(function(res) {
+  if (res._.length !== 1) return this.error('请指定一个配置文件')
+  var configFile = path.resolve(res._[0])
+  var data = require(configFile)
+  if (typeof data.default === 'object') data = data.default
+  try {
+    validate(data)
+  } catch (e) {
+    return this.error(e.message)
+  }
+
+  var root = process.cwd()
+  try {
+    root = path.dirname(findup.pkg(path.resolve(configFile, '..')))
+  } catch (e) {}
+
+  data.forEach(function(it) {
+    if (it.file[0] === '~') it.file = root + it.file.substr(1)
+    var count = inject(it.file, it.data, {tags: it.tags, append: it.append})
+    info('文件 ' + it.file + ' 被注入 ' + count + ' 次')
+  })
+})
+
+function validate(data) {
+  if (!Array.isArray(data)) throw new Error('配置文件返回的数据不是数组')
+  return data.every(function(it) {
+    if (typeof it.file !== 'string') throw new Error('file 字段需要存在，且为 string')
+    if (typeof it.data !== 'object') throw new Error('data 字符需要存在，且为 object')
+    if (('append' in it) && typeof it.append !== 'boolean') throw new Error('append 字段需要是 boolean')
+  })
+}

@@ -35,6 +35,7 @@ interface Interface {
   (file: string, data: {[key: string]: any}, options?: {
     autoPrefixSpaces?: boolean
     returnContent?: boolean,
+    append?: boolean,
     tags?: 'loose' | 'hash' | 'docs' | 'html' | string[]
   }): number | string
 }
