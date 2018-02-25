@@ -1,4 +1,4 @@
-  # INJECT_START {"key": "test", "append": true} #
+  # INJECT_START {"key": "test"} #
   a
   b
   # INJECT_END #

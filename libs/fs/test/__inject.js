@@ -60,8 +60,8 @@ describe('libs/fs/inject', function() {
     injectAndExpect(
       'inject.append',
       {test: 'c'},
-      '  # INJECT_START {"key": "test", "append": true} #\n  a\n  b\n  c\n  # INJECT_END #\n',
-      {tags: 'loose'}
+      '  # INJECT_START {"key": "test"} #\n  a\n  b\n  c\n  # INJECT_END #\n',
+      {tags: 'loose', append: true}
     )
   })
 
@@ -83,10 +83,16 @@ describe('libs/fs/inject', function() {
     }, /Not supported inject type/)
   })
 
-  it('should throws when extension not support and tags not specified', function() {
-    assert.throws(function() {
-      inject(file('inject.notexists'), {})
-    }, /Can not judge the tags from current file extension/)
+  it('should use loose when extension not support and tags not specified', function() {
+    injectAndExpect(
+      'inject.loose',
+      {foo: '-------'},
+      [
+        'xx# INJECT_START foo #bb',
+        '-------',
+        'tt# INJECT_END #\n'
+      ].join('\n')
+    )
   })
 
   it('should throws when tags was not string or 4 items array', function() {

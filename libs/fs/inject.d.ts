@@ -8,6 +8,7 @@ interface Interface {
    * hash    |  gitignore, sh, bash                 | ['## ', ' ##', '## ', ' ##']
    * docs    |  js, jsx, css, sass, ts, tsx, json   | (多行注释后面加个 "#")
    * html    |  html, md                            | ['<!--# ', ' #-->', '<!--# ', ' #-->']
+   * loose   |  支持上面所有的后缀                     | ['# ', ' #', '# ', ' #']
    *
    * @param  {string} file      要注入的文件的文件路径
    * @param  {Object} data      要注入的内容
@@ -19,7 +20,7 @@ interface Interface {
    * ```
    * bash 中可以这样写： (type 默认是 string，可以不写，另外支持 file，这时 key 对应的 value 是文件地址)
    *
-   *  ## INJECT_START {"type": "string", "key": "ignores", "append": false} ##
+   *  ## INJECT_START {"type": "string", "key": "ignores"} ##
    *
    *  ## INJECT_END ##
    *

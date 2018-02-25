@@ -33,6 +33,7 @@ var TAG_END_KEYWORD = 'INJECT_END'
  * hash    |  gitignore, sh, bash                 | ['## ', ' ##', '## ', ' ##']
  * docs    |  js, jsx, css, sass, ts, tsx, json   | (文档注释加 "#")
  * html    |  html, md                            | ['<!--# ', ' #-->', '<!--# ', ' #-->']
+ * loose   |  支持上面所有的后缀                     | ['# ', ' #', '# ', ' #']
  *
  * @param  {string} file      要注入的文件的文件路径
  * @param  {Object} data      要注入的内容
@@ -40,10 +41,11 @@ var TAG_END_KEYWORD = 'INJECT_END'
  * @param  {string|Array<string>} [options.tags]     [tagStartLeft, tagStartRight, tagEndLeft, tagEndRight]
  * @param  {boolean} [options.autoPrefixSpaces = true]  自动根据最后一个注释前的空格给每一行都添加相同的空格
  * @param  {boolean} [options.returnContent = false]  返回注入的内容，而不是直接注入
+ * @param  {boolean} [options.append = false]  是否将内容 append 到原区块之后，而不是整体替换
  * @example
  * bash 中可以这样写： (type 默认是 string，可以不写，另外支持 file，这时 key 对应的 value 是文件地址)
  *
- *  ## INJECT_START {"type": "string", "key": "ignores", "append": false} ##
+ *  ## INJECT_START {"type": "string", "key": "ignores"} ##
  *  ## INJECT_END ##
  *
  * 或
@@ -61,7 +63,7 @@ module.exports = function inject(file, data, options) {
 
   var tags = getTags(file, options)
   var regexp = buildRegExp(tags, TAG_START_KEYWORD, TAG_END_KEYWORD)
-  var newContent = content.replace(regexp, replaceContent(data, counter, options.autoPrefixSpaces))
+  var newContent = content.replace(regexp, replaceContent(data, counter, options))
 
   if (options.returnContent) return newContent
   if (newContent !== content) fs.writeFileSync(file, newContent)
@@ -78,7 +80,8 @@ function getTags(file, options) {
       return TAGS_FILE_EXTENSIONS[key].indexOf(extension) >= 0
     })
 
-    if (!tagsKey) throw new Error('Can not judge the tags from current file extension')
+    // if (!tagsKey) throw new Error('Can not judge the tags from current file extension')
+    if (!tagsKey) tagsKey = 'loose' // 无法判断出就使用 loose 模式
   }
 
   if (typeof tagsKey === 'string') tags = TAGS_MAP[tagsKey]
@@ -87,7 +90,7 @@ function getTags(file, options) {
   return tags
 }
 
-function replaceContent(data, counter, autoPrefixSpaces) {
+function replaceContent(data, counter, options) {
   return function(raw, startLine, jsonString, oldValue, endLine, spaces) {
     var json = checkJsonString(jsonString)
     var type = json.type || 'string'
@@ -107,8 +110,8 @@ function replaceContent(data, counter, autoPrefixSpaces) {
 
     counter.count++
     return startLine.trim()
-      + (json.append ? oldValue : EOL)
-      + prefixSpaces(replaceValue, spaces, autoPrefixSpaces) + (replaceValue && EOL)
+      + (options.append ? oldValue : EOL)
+      + prefixSpaces(replaceValue, spaces, options.autoPrefixSpaces) + (replaceValue && EOL)
       + endLine
   }
 }
