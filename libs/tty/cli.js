@@ -414,9 +414,15 @@ Cli.prototype.parse = function(args, handle) {
     }
   }
 
-  var res = this.res = {}
+  var res = this.res = {
+    userDefined: {} // 记录所有的使用了用户定义的字段
+  }
   var opts = this.mapOptions
   Object.keys(opts).forEach(function(k) {
+    if ('value' in opts[k]) {
+      res.userDefined[k] = true
+    }
+
     res[k] = 'value' in opts[k] ? opts[k].value : opts[k].defaultValue
   })
 

@@ -334,6 +334,23 @@ describe('libs/tty/cli', function() {
       testOptions(opts, ['-a', '-c'], {a: true, b: undefined, c: true, d: 'true'})
       testOptions(opts, ['-a', '-b'], {a: true, b: true, c: false, d: 'true'})
     })
+
+    it('should have userDefined prop', function() {
+      Cli().options({a: '<bool> aa', b: '<str> bb'}).parse(['-c'], function(res) {
+        assert.equal(res.userDefined.a, undefined)
+        assert.equal(res.userDefined.b, undefined)
+      })
+
+      Cli().options({a: '<bool> aa', b: '<str> bb'}).parse(['-a'], function(res) {
+        assert.equal(res.userDefined.a, true)
+        assert.equal(res.userDefined.b, undefined)
+      })
+
+      Cli().options({a: '<bool> aa', b: '<str> bb'}).parse(['-b', 'b'], function(res) {
+        assert.equal(res.userDefined.a, undefined)
+        assert.equal(res.userDefined.b, true)
+      })
+    })
   })
   context('exception', function() {
     it('throws when config needArgs less then 0', function() {
