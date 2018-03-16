@@ -9,7 +9,7 @@
     "preversion": "npm run lint && npm run test:check-coverage",
     "version": "cli/puts '%cyou can run build and add build file to git in here' cyan",
     "postversion": "git push --follow-tags && snpm publish && cli/run cnpm sync pkg.name",
-    "lint": "eslint libs/ hooks/ cli/puts cli/remove-all cli/run cli/commit-msg-help cli/createscript cli/inject",
+    "lint": "eslint libs/ hooks/ cli/puts cli/remove-all cli/run cli/commit-msg-help cli/createscript cli/inject cli/sync_taobao",
     "test:watch": "mocha -R dot --watch **/__*.js",
     "test": "nyc _mocha -R dot **/__*.js",
     "test:check-coverage": "nyc _mocha -R dot **/__*.js && nyc check-coverage",

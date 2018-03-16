@@ -1,0 +1,44 @@
+#!/usr/bin/env node
+
+var https = require('https')
+var url = require('url')
+
+var cli = require('../libs/tty/cli')
+var sys = require('../libs/sys/')
+var findup = require('../libs/fs/findup')
+
+cli({
+  usage: 'sync_taobao [packages...]'
+}).parse(function(res) {
+  if (!res._.length) {
+    try {
+      sync(require(findup.pkg()).name)
+    } catch (e) {
+      this.error('请指定要同步的 npm 包的名字，或者在对应包的项目目录下运行')
+    }
+  } else {
+    res._.forEach(function(name) {
+      sync(name)
+    })
+  }
+})
+
+function sync(name) {
+  syncLink('https://cnpmjs.org/sync/' + name)
+    .then(function() {
+      return syncLink('https://npm.taobao.org/sync/' + name)
+    })
+    .catch(function(e) {
+      console.error(e)
+    })
+}
+
+function syncLink(link) {
+  sys.info('sync: ' + link)
+  return new Promise(function(resolve, reject) {
+    var req = https.request(url.parse(link))
+    req.on('error', reject)
+    req.on('finish', resolve)
+    req.end()
+  })
+}
