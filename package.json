@@ -23,6 +23,7 @@
     "inject": "cli/inject",
     "run": "cli/run",
     "puts": "cli/puts",
+    "sync-taobao": "cli/sync-taobao",
     "remove-all": "cli/remove-all",
     "hooks": "hooks/scripts/install.js",
     "commit-msg-help": "cli/commit-msg-help"
