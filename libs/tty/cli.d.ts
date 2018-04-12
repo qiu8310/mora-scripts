@@ -86,7 +86,7 @@ declare namespace cli {
     }
   }
 
-  type Constructor = typeof Cli
+  type Constructor = Cli
 }
 
 interface cli {
