@@ -85,6 +85,8 @@ declare namespace cli {
         cmd: ((this: Cli, res: Response, cli: Cli) => void)
     }
   }
+
+  type Constructor = typeof Cli
 }
 
 interface cli {
