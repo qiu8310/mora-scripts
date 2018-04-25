@@ -23,9 +23,11 @@ if (/reverse|uninstall/.test(args)) {
 function install() {
   try {
     var dotGitDir = findup.git()
-    console.log('Install hooks in ' + dotGitDir)
-    config.hooks.forEach(installHook.bind(null, resolve(dotGitDir, 'hooks')))
-    installGitMessage(dotGitDir)
+    if (resolve(process.cwd(), '..', '..') === path.dirname(dotGitDir)) {
+      console.log('Install hooks in ' + dotGitDir)
+      config.hooks.forEach(installHook.bind(null, resolve(dotGitDir, 'hooks')))
+      installGitMessage(dotGitDir)
+    }
   } catch (e) {
     warnAboutGit()
   }
