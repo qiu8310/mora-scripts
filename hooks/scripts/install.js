@@ -6,6 +6,7 @@ var resolve = require('path').resolve
 var findup = require('../../libs/fs/findup')
 // var warn = require('../../libs/sys/warn')
 var shell = require('../../libs/tty/shell')
+var exists = require('../../libs/fs/exists')
 
 var config = require('./config')
 var template = fs.readFileSync(resolve(__dirname, 'template.js'))
@@ -26,7 +27,9 @@ function install() {
     var dotGitDir = findup.git()
     if (ROOT === path.dirname(dotGitDir)) {
       console.log('Install hooks in ' + dotGitDir)
-      config.hooks.forEach(installHook.bind(null, resolve(dotGitDir, 'hooks')))
+      var hooksDir = resolve(dotGitDir, 'hooks')
+      if (!exists.directory(hooksDir)) fs.mkdirSync(hooksDir)
+      config.hooks.forEach(installHook.bind(null, hooksDir))
       installGitMessage(dotGitDir)
     }
   } catch (e) {
@@ -68,7 +71,7 @@ function uninstallHook(dir, file) {
 function installGitMessage(dotGitDir) {
   var messageFile = path.join(path.dirname(dotGitDir), '.gitmessage')
   // console.log('\n  set git commit.template')
-  if (!exists(messageFile)) {
+  if (!exists.file(messageFile)) {
     // 文件不存在，使用模板
     fs.writeFileSync(messageFile, fs.readFileSync(resolve(__dirname, '..', 'gitmessage')).toString())
   }
@@ -77,7 +80,7 @@ function installGitMessage(dotGitDir) {
 
 function uninstallGitMessage(messageFile) {
   shell('git config --local --unset commit.template')
-  // if (exists(messageFile)) {
+  // if (exists.file(messageFile)) {
   //   warn(
   //     '\ngit config commit.template has already unset.\n'
   //     + 'so file ' + messageFile + ' not in use.\n'
@@ -106,14 +109,6 @@ function warnAboutGit() {
   // )
 }
 
-function exists(filepath) {
-  try {
-    return fs.statSync(filepath).isFile()
-  } catch (e) {
-    return false
-  }
-}
-
 function backup(filepath) {
   rename(filepath, filepath + '.bkp')
 }
@@ -123,6 +118,6 @@ function restore(filepath) {
 }
 
 function rename(from, to) {
-  if (exists(to)) fs.unlinkSync(to)
-  if (exists(from)) fs.renameSync(from, to)
+  if (exists.file(to)) fs.unlinkSync(to)
+  if (exists.file(from)) fs.renameSync(from, to)
 }
