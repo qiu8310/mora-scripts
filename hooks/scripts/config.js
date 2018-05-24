@@ -1,3 +1,5 @@
+// https://git-scm.com/docs/githooks
+
 module.exports = {
   hooks: [
     'applypatch-msg',
@@ -15,7 +17,11 @@ module.exports = {
     'update',
     'post-receive',
     'post-update',
+    'push-to-checkout',
     'pre-auto-gc',
-    'post-rewrite'
+    'post-rewrite',
+    'rebase',
+    'sendemail-validate',
+    'fsmonitor-watchman'
   ]
 }

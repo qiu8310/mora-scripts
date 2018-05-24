@@ -1,6 +1,6 @@
 {
   "name": "mora-scripts",
-  "version": "1.6.33",
+  "version": "1.6.34",
   "description": "Some collection scripts by myself",
   "scripts": {
     "postinstall": "node hooks/scripts/install",
@@ -22,10 +22,10 @@
   "bin": {
     "inject": "cli/inject",
     "run": "cli/run",
+    "run-node": "hooks/scripts/run-node",
     "puts": "cli/puts",
     "sync-taobao": "cli/sync-taobao",
     "remove-all": "cli/remove-all",
-    "hooks": "hooks/scripts/install.js",
     "commit-msg-help": "cli/commit-msg-help"
   },
   "config": {

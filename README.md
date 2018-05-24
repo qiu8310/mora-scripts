@@ -62,7 +62,8 @@ puts '%cAre you ok' 'red'
 
 主要参考了下面这些组件的功能
 
-- [`ghooks`](https://github.com/gtramontina/ghooks)
+- [`ghooks`](https://github.com/gtramontina/ghooks) _已经废弃，请使用 husky_
+- [`husky`](https://github.com/typicode/husky)
 - [`validate-commit-msg`](https://github.com/kentcdodds/validate-commit-msg)
 
 
