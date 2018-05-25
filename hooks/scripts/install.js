@@ -32,14 +32,22 @@ function main() {
 
   var gitDir = findup.git()
   if (ROOT !== path.dirname(gitDir)) return
-
-  if (/reverse|uninstall/.test(args)) {
-    uninstall(gitDir)
-  } else {
-    install(gitDir)
+  var pkg = require(path.join(ROOT, 'package.json'))
+  if (
+    pkg.config && pkg.config.hooks && Object.keys(pkg.config.hooks).length
+    && (pkg.dependencies && pkg.dependencies['mora-scripts'] || pkg.devDependencies && pkg.devDependencies['mora-scripts'])
+  ) {
+    if (/reverse|uninstall/.test(args)) {
+      uninstall(gitDir)
+    } else {
+      install(gitDir)
+    }
   }
 }
-main()
+
+try {
+  main()
+} catch (e) {}
 
 function install(gitDir) {
   try {
