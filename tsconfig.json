@@ -6,7 +6,6 @@
     "noEmitHelpers": true,
     "declaration": true,
     "removeComments": false,
-    "noImplicitUseStrict": true,
     "noImplicitAny": true,
     "noUnusedParameters": false,
     "noImplicitThis": true,

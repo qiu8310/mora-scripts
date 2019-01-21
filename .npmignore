@@ -4,5 +4,6 @@ externals/
 .vscode/
 .DS_Store
 .idea/
+tsconfig.json
 
 **/test/**

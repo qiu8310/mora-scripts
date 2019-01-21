@@ -49,6 +49,7 @@ var consumers = {
 consumers.p = consumers.prefix
 
 var all = process.argv.slice(2)
+
 var i, arg, envKey, envVal
 
 for (i = 0; i < all.length; i++) {
@@ -72,7 +73,7 @@ for (i = 0; i < all.length; i++) {
         process.exit(1)
       }
     } else {
-      cmd = arg in bins ? bins[arg] : arg
+      cmd = arg
     }
   } else {
     args.push(arg[0] === '-' ? arg : recursiveRepalcePkgArgs(arg))
@@ -80,9 +81,13 @@ for (i = 0; i < all.length; i++) {
 }
 
 // 支持运行 package.json 中的 scripts 脚本
-if (cmd && !args.length && pkg.scripts && cmd in pkg.scripts) {
-  args = ['run', cmd].concat(args)
-  cmd = 'npm'
+if (cmd) {
+  if (bins.hasOwnProperty(cmd)) {
+    cmd = bins[arg]
+  } else if (pkg.scripts && pkg.scripts.hasOwnProperty(cmd)) {
+    args = ['run', cmd].concat(args)
+    cmd = 'npm'
+  }
 }
 
 // 输出当前运行的命令
