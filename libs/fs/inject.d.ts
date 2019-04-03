@@ -32,7 +32,7 @@ interface Interface {
    *
    * @return {number}         返回注入成功的数量
    */
-  (file: string, data: {[key: string]: any}, options?: {
+  (file: string, data: {[key: string]: string | ((oldValue: string) => string)}, options?: {
     autoPrefixSpaces?: boolean
     returnContent?: boolean,
     append?: boolean,

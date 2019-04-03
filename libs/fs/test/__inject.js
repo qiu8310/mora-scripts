@@ -65,6 +65,17 @@ describe('libs/fs/inject', function() {
     )
   })
 
+  it('inject replace', function() {
+    injectAndExpect(
+      'inject.replace',
+      {test: function(old) {
+        return old.trim() + '--'
+      }},
+      '  # INJECT_START {"key": "test"} #\n  a--\n  # INJECT_END #\n',
+      {tags: 'loose'}
+    )
+  })
+
   it('inject file', function() {
     injectAndExpect(
       'inject.js',
