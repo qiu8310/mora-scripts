@@ -17,7 +17,7 @@ var TAGS_MAP = {
   loose: ['# ', ' #', '# ', ' #']   // 最宽松的模式
 }
 var TAGS_FILE_EXTENSIONS = {
-  hash: ['gitignore', 'sh', 'bash'],
+  hash: ['gitignore', 'sh', 'bash', 'npmignore'],
   docs: ['js', 'jsx', 'css', 'sass', 'ts', 'tsx', 'json'],
   html: ['html', 'md']
 }
@@ -95,6 +95,10 @@ function replaceContent(data, counter, options) {
     var json = checkJsonString(jsonString)
     var type = json.type || 'string'
     var dataValue = data[json.key] || ''
+
+    if (typeof dataValue === 'function') {
+      dataValue = dataValue(oldValue)
+    }
 
     var replaceValue
     switch (type) {
