@@ -221,6 +221,16 @@ describe('libs/tty/cli', function() {
   })
 
   context('options', function() {
+    it('undefined', function() {
+      var opts = {
+        b: '<bool>',
+        s: '<string>'
+      }
+      Cli().options(opts).parse(['-b'], function(res) {
+        assert(('b' in res))
+        assert(!('s' in res))
+      })
+    })
     it('bool', function() {
       var opts = {
         a: '<bool>',

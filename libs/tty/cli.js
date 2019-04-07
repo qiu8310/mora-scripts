@@ -425,8 +425,10 @@ Cli.prototype.parse = function(args, handle) {
     if ('value' in opts[k]) {
       res.userDefined[k] = true
     }
-
-    res[k] = 'value' in opts[k] ? opts[k].value : opts[k].defaultValue
+    var value = 'value' in opts[k] ? opts[k].value : opts[k].defaultValue
+    if (value !== undefined) {
+      res[k] = value
+    }
   })
 
   res.rawArgs = args
