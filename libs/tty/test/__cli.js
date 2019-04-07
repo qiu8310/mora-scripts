@@ -138,7 +138,7 @@ describe('libs/tty/cli', function() {
     })
   })
   context('commands', function() {
-    it('function comamnd', function() {
+    it('function command', function() {
       var spy = sinon.spy(function(res) {
         assert.deepEqual(res._, ['a', 'b'])
       })
@@ -146,7 +146,7 @@ describe('libs/tty/cli', function() {
       assert.equal(spy.callCount, 1)
     })
 
-    it('comamnd function with desc', function() {
+    it('command function with desc', function() {
       var spy = sinon.spy(function(res) {
         assert.deepEqual(res._, ['a', 'b'])
       })
@@ -168,6 +168,20 @@ describe('libs/tty/cli', function() {
       })
 
       assert.equal(spy.callCount, 2)
+    })
+
+    it('general command', function() {
+      var count = 0
+      var $command = ''
+      var spy = function(res) {
+        count++
+        $command = res.$command
+      }
+      Cli().commands({'test:*': spy, 'abc': spy}).parse(['test'])
+      Cli().commands({'test:*': spy}).parse(['test:abc'])
+
+      assert.equal(count, 1)
+      assert.equal($command, 'test:abc')
     })
 
     it('output desc', function() {
@@ -371,11 +385,11 @@ describe('libs/tty/cli', function() {
       }, /Command "a" should have a handle function/)
     })
 
-    it('throws when cmd is dumplicated', function() {
+    it('throws when cmd is duplicated', function() {
       var fn = sinon.spy()
       assert.throws(function() {
         Cli().commands({'a | aa': fn, aa: fn})
-      }, /Command key "aa" is dumplicated/)
+      }, /Command key "aa" is duplicated/)
     })
 
     it('throws when option value is not a valid string', function() {
@@ -396,10 +410,10 @@ describe('libs/tty/cli', function() {
       }, /Option "a" type is invalid/)
     })
 
-    it('throws when option is dumplicated', function() {
+    it('throws when option is duplicated', function() {
       assert.throws(function() {
         Cli().options({'a | aa': '<bool>', aa: '<string>'})
-      }, /Option key "aa" is dumplicated/)
+      }, /Option key "aa" is duplicated/)
     })
 
     it('error when option type is number, but value is not number', function() {
@@ -475,4 +489,3 @@ function testError(opts, args, re) {
   cli.parse(args)
   assert.equal(spy.callCount, 1)
 }
-

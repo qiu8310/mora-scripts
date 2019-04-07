@@ -143,6 +143,9 @@ function Cli(conf) {
  * @example
  *
  * cli.commands({
+ *   'build:*': function (res) {
+ *      // 匹配所有 build: 开头的子命令
+ *    },
  *   'r | run': function (res) {
  *     // handle
  *   },
@@ -297,7 +300,7 @@ function init(isCommand, opts, group) {
     }
 
     alias.forEach(function(k) {
-      if (k in map) throw new Error((isCommand ? 'Command' : 'Option') + ' key "' + k + '" is dumplicated.')
+      if (k in map) throw new Error((isCommand ? 'Command' : 'Option') + ' key "' + k + '" is duplicated.')
       map[k] = target
     })
   }, this)
@@ -429,20 +432,34 @@ Cli.prototype.parse = function(args, handle) {
   res.rawArgs = args
 
   var _ = this._
-  var commander = _[0] && this.mapCommands[_[0]]
 
   if (res.help) {
     this.help()
   } else if (res.version) {
     console.log(this.version || '0.0.0')
-  } else if (commander) {
-    res._ = _.slice(1)
-    commander.cmd.call(this, res, this)
-  } else if (typeof handle === 'function') {
-    res._ = _
-    handle.call(this, res, this)
-  }
+  } else {
+    var commandKey = _[0]
+    var commanderMap = this.mapCommands
+    var commander = commandKey && commanderMap[commandKey]
+    if (commandKey && !commander) {
+      var newKey = Object.keys(commanderMap).find(function(k) {
+        if (k.includes('*')) {
+          return new RegExp('^' + k.replace(/\*/g, '.*') + '$').test(commandKey)
+        }
+        return false
+      })
+      commander = newKey && commanderMap[newKey]
+    }
 
+    if (commander) {
+      res.$command = _[0]
+      res._ = _.slice(1)
+      commander.cmd.call(this, res, this)
+    } else if (typeof handle === 'function') {
+      res._ = _
+      handle.call(this, res, this)
+    }
+  }
   return this
 }
 
