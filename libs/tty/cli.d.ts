@@ -12,25 +12,25 @@ declare namespace cli {
      * @example
      * cli [options] <foo>
      */
-    usage?: string
+    usage?: string | (() => string)
     /**
      * 命令行的描述
      */
-    desc?: string | string[]
+    desc?: string | string[] | (() => string)
     /**
      * 命令行的使用示例
      */
-    example?: string | string[]
+    example?: string | string[] | (() => string)
     /**
      * 放在 help 末尾的信息，一般可以放一些版权之类的说明
      */
-    epilog?: string
+    epilog?: string | (() => string)
     /**
      * 指定版本号， 如 1.0.0
      *
      * 如果设置为 false，就不会自动加上 "v | version" 选项
      */
-    version?: false | string
+    version?: false | string | (() => string)
     /**
      * 禁用自动添加的 "h | help" 选项
      */

@@ -81,6 +81,13 @@ describe('libs/tty/cli', function() {
       })
     })
 
+    it('usage function', function() {
+      testHelp(Cli({usage: function() { return 'are you' }}), function(message) {
+        assert.ok(message.indexOf('Usage:') > 0)
+        assert.ok(message.indexOf('are you') > 0)
+      })
+    })
+
     it('desc', function() {
       testHelp(Cli({desc: 'foo bar'}), function(message) {
         assert.ok(message.indexOf('foo bar') > 0)
@@ -88,6 +95,12 @@ describe('libs/tty/cli', function() {
       testHelp(Cli({desc: ['foo', 'bar']}), function(message) {
         assert.ok(message.indexOf('foo') > 0)
         assert.ok(message.indexOf('bar') > 0)
+      })
+    })
+
+    it('desc function', function() {
+      testHelp(Cli({desc: function() { return 'foo bar' }}), function(message) {
+        assert.ok(message.indexOf('foo bar') > 0)
       })
     })
 
@@ -102,9 +115,20 @@ describe('libs/tty/cli', function() {
         assert.ok(message.indexOf('bar') > 0)
       })
     })
+    it('example function', function() {
+      testHelp(Cli({example: function() { return 'foo bar' }}), function(message) {
+        assert.ok(message.indexOf('Example:') > 0)
+        assert.ok(message.indexOf('foo bar') > 0)
+      })
+    })
 
     it('epilog', function() {
       testHelp(Cli({epilog: 'are you'}), function(message) {
+        assert.ok(message.indexOf('are you') > 0)
+      })
+    })
+    it('epilog function', function() {
+      testHelp(Cli({epilog: function() { return 'are you' }}), function(message) {
         assert.ok(message.indexOf('are you') > 0)
       })
     })
@@ -136,9 +160,16 @@ describe('libs/tty/cli', function() {
         assert.ok(!('v' in res))
       })
     })
+
+    it('version function', function() {
+      var spy = sinon.stub(console, 'log')
+      Cli({version: function() { return '1.0.0' }}).parse(['-v'])
+      assert.ok(spy.calledOnce)
+      assert.ok(spy.calledWith('1.0.0'))
+    })
   })
   context('commands', function() {
-    it('function comamnd', function() {
+    it('function command', function() {
       var spy = sinon.spy(function(res) {
         assert.deepEqual(res._, ['a', 'b'])
       })
@@ -146,7 +177,7 @@ describe('libs/tty/cli', function() {
       assert.equal(spy.callCount, 1)
     })
 
-    it('comamnd function with desc', function() {
+    it('command function with desc', function() {
       var spy = sinon.spy(function(res) {
         assert.deepEqual(res._, ['a', 'b'])
       })
@@ -475,4 +506,3 @@ function testError(opts, args, re) {
   cli.parse(args)
   assert.equal(spy.callCount, 1)
 }
-

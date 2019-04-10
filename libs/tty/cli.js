@@ -41,12 +41,12 @@ var typeConfig = {
 /**
  * @class
  * @param {Object} conf  cli 程序的配置项
- * @param {String|Boolean} conf.help                String: 帮助描述              Boolean: 是否启用系统默认的帮助选项
- * @param {String|Boolean} conf.version             String: 版本号（默认为 0.0.0） Boolean: 是否启用系统默认的版本选项
- * @param {String} conf.usage                       简短的描述
- * @param {String|Array<String>} conf.desc          命令的一些介绍
- * @param {String|Array<String>} conf.example       使用命令的一些样例
- * @param {String} conf.epilog                      放在 help 结尾的一段话，一般用来声明版权，或者显示查看更多的链接
+ * @param {String|Boolean} conf.help                              String: 帮助描述              Boolean: 是否启用系统默认的帮助选项
+ * @param {String|Boolean|(() => String} conf.version             String: 版本号（默认为 0.0.0） Boolean: 是否启用系统默认的版本选项
+ * @param {String|(() => String} conf.usage                       简短的描述
+ * @param {String|Array<String>|(() => String} conf.desc          命令的一些介绍
+ * @param {String|Array<String>|(() => String} conf.example       使用命令的一些样例
+ * @param {String|(() => String} conf.epilog                      放在 help 结尾的一段话，一般用来声明版权，或者显示查看更多的链接
  *
  * @param {Boolean} conf.strict                     遇到无法解析的 option 是否要报错
  * @param {Boolean} conf.showHelpOnError            解析参数失败时不显示帮助信息
@@ -434,7 +434,7 @@ Cli.prototype.parse = function(args, handle) {
   if (res.help) {
     this.help()
   } else if (res.version) {
-    console.log(this.version || '0.0.0')
+    console.log(this.version ? strOrFunToString(this.version) : '0.0.0')
   } else if (commander) {
     res._ = _.slice(1)
     commander.cmd.call(this, res, this)
@@ -493,7 +493,7 @@ Cli.prototype.help = function(returnStr) {
   var EOL = require('os').EOL
   var puts = function() { buffer.push(format.apply(null, arguments)) }
   var putsHeader = function(header) { puts('%c%s:\n', 'white.bold', header) }
-  var putsComands = function(header, obj) {
+  var putsCommands = function(header, obj) {
     var cache = []
     var rows = []
     Object.keys(obj).forEach(function(key) {
@@ -513,19 +513,19 @@ Cli.prototype.help = function(returnStr) {
 
   puts()
   if (this.usage) {
-    puts('%cUsage:  %c%s\n', 'white.bold', 'green', this.usage)
+    puts('%cUsage:  %c%s\n', 'white.bold', 'green', strOrFunToString(this.usage))
   }
   if (this.desc) {
-    this.desc.forEach(function(row) { puts('  %c%s', 'gray', row) })
+    this.desc.forEach(function(row) { puts('  %c%s', 'gray', strOrFunToString(row)) })
     puts()
   }
   if (this.example) {
     putsHeader('Example')
-    this.example.forEach(function(row) { puts('  %c%s', 'red.bg.white', row) })
+    this.example.forEach(function(row) { puts('  %c%s', 'red.bg.white', strOrFunToString(row)) })
     puts()
   }
 
-  putsComands('Commands', this.mapCommands)
+  putsCommands('Commands', this.mapCommands)
 
   if (this.groups.length) {
     var rows = []
@@ -554,7 +554,7 @@ Cli.prototype.help = function(returnStr) {
     }
   }
 
-  if (this.epilog) puts('  %s\n', this.epilog)
+  if (this.epilog) puts('  %s\n', strOrFunToString(this.epilog))
 
   buffer = buffer.join(EOL)
   return returnStr ? buffer : /* istanbul ignore next */ console.log(buffer)
@@ -639,6 +639,10 @@ function parseNumber(val, ctx) {
   if (/\./.test(val)) val = parseFloat(val)
   else val = parseInt(val, 10)
   return val
+}
+
+function strOrFunToString(val) {
+  return typeof val === 'function' ? val() : val
 }
 
 module.exports = Cli
