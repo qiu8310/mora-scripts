@@ -59,6 +59,9 @@ declare namespace cli {
      */
     userDefined: {[key: string]: boolean}
 
+    /** 子命令名称，由于子命令支持通配符，所以需要通过此字段来获取子命令实际的值 */
+    $command: string
+
     /**
      * 解析完后剩下的给程序的参数
      */

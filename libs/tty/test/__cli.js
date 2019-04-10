@@ -201,6 +201,20 @@ describe('libs/tty/cli', function() {
       assert.equal(spy.callCount, 2)
     })
 
+    it('general command', function() {
+      var count = 0
+      var $command = ''
+      var spy = function(res) {
+        count++
+        $command = res.$command
+      }
+      Cli().commands({'test:*': spy, 'abc': spy}).parse(['test'])
+      Cli().commands({'test:*': spy}).parse(['test:abc'])
+
+      assert.equal(count, 1)
+      assert.equal($command, 'test:abc')
+    })
+
     it('output desc', function() {
       testHelp(Cli().commands({s: {cmd: function() {}, desc: 'foo bar'}}), function(message) {
         assert.ok(message.indexOf('foo bar') > 0)
@@ -238,6 +252,16 @@ describe('libs/tty/cli', function() {
   })
 
   context('options', function() {
+    it('undefined', function() {
+      var opts = {
+        b: '<bool>',
+        s: '<string>'
+      }
+      Cli().options(opts).parse(['-b'], function(res) {
+        assert(('b' in res))
+        assert(!('s' in res))
+      })
+    })
     it('bool', function() {
       var opts = {
         a: '<bool>',
@@ -402,11 +426,11 @@ describe('libs/tty/cli', function() {
       }, /Command "a" should have a handle function/)
     })
 
-    it('throws when cmd is dumplicated', function() {
+    it('throws when cmd is duplicated', function() {
       var fn = sinon.spy()
       assert.throws(function() {
         Cli().commands({'a | aa': fn, aa: fn})
-      }, /Command key "aa" is dumplicated/)
+      }, /Command key "aa" is duplicated/)
     })
 
     it('throws when option value is not a valid string', function() {
@@ -427,10 +451,10 @@ describe('libs/tty/cli', function() {
       }, /Option "a" type is invalid/)
     })
 
-    it('throws when option is dumplicated', function() {
+    it('throws when option is duplicated', function() {
       assert.throws(function() {
         Cli().options({'a | aa': '<bool>', aa: '<string>'})
-      }, /Option key "aa" is dumplicated/)
+      }, /Option key "aa" is duplicated/)
     })
 
     it('error when option type is number, but value is not number', function() {
