@@ -11,7 +11,7 @@
     "postversion": "git push --follow-tags && snpm publish && cli/run cnpm sync pkg.name",
     "lint": "eslint libs/ hooks/ cli/puts cli/remove-all cli/run cli/commit-msg-help cli/createscript cli/inject cli/sync-taobao",
     "test:watch": "mocha -R dot --watch **/__*.js",
-    "test": "nyc _mocha -R dot **/__*.js",
+    "test": "nyc -r html _mocha -R dot **/__*.js",
     "test:check-coverage": "nyc _mocha -R dot **/__*.js && nyc check-coverage",
     "report": "nyc report --reporter html --report-dir externals/coverage && rm -rf coverage",
     "test:istanbul": "istanbul cover --report html --dir externals/coverage _mocha **/__*.js",

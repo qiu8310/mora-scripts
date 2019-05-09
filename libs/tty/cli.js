@@ -18,7 +18,8 @@ var DEFAULT_GROUP_NAME = '__default__:)'
 var typeConfig = {
   bool: {
     label: 'boolean',
-    needArgs: 0
+    needArgs: 0,
+    needArgsWhenUseEqual: 1
   },
   str: {
     label: 'string',
@@ -328,6 +329,7 @@ function parse(args) {
 
   for (i = 0; i < args.length; i++) {
     rawArg = arg = args[i]
+
     if (stopped) {
       _.push(arg)
     } else if (_.length === 0 && arg in this.mapCommands) { // 运行子命令剩下的参数给子命令去解析
@@ -335,36 +337,50 @@ function parse(args) {
       _.push(arg)
     } else if (arg === '--') {
       stopped = true
-    } else if (arg.slice(0, 2) === '--') { // 长参数
-      if (arg.length === 3) { // --a 类的参数不是 option，需要当作 value
-        cv(arg)
-      } else {
-        ck(arg.slice(2))
-      }
-    } else if (arg[0] === '-' && arg.length === 2) { // 单个短参数
-      ck(arg[1])
-    } else if (arg[0] === '-') { // 多个短参数，或单个数字短参数
-      // 这里的参数被打散处理了，所以 consuem 前要先 check 整体参数是否 valid
-      if (/^-\w(\d+)$/.test(arg)) {
-        if (checkOpt.call(this, arg[1], rawArg)) {
-          ck(arg[1])
-          cv(arg.slice(2))
-        }
-      } else {
-        arg = arg.slice(1).split('')
-        if (checkOpt.call(this, arg, rawArg)) {
-          arg.forEach(function(k, i, ref) {
-            if (ref.length - 1 === i) {
-              ck(k)    // 最后一个 option 可以接任意个参数
-            } else {
-              ck(k, 'noNeedArgs') // 后面不能接参数
-            }
-          })
-        }
-      }
     } else {
-      // 处理非 option
-      cv(arg)
+      var equalValue
+      var equalIndex = arg.indexOf('=')
+      if (equalIndex >= 0) {
+        equalValue = arg.substr(equalIndex + 1)
+        arg = arg.substr(0, equalIndex)
+      }
+
+      if (arg.slice(0, 2) === '--') { // 长参数
+        if (arg.length === 3) { // --a 类的参数不是 option，需要当作 value
+          cv(rawArg)
+        } else {
+          ck(arg.slice(2), undefined, equalValue)
+          if (equalValue != null) cv(equalValue, true)
+        }
+      } else if (arg[0] === '-' && arg.length === 2) { // 单个短参数
+        ck(arg[1], undefined, equalValue)
+        if (equalValue != null) cv(equalValue, true)
+      } else if (arg[0] === '-' && arg.length >= 3) { // 多个短参数，或单个数字短参数
+        // 这里的参数被打散处理了，所以 consume 前要先 check 整体参数是否 valid
+        if (/^-\w(\d+)$/.test(arg)) {
+          if (checkOpt.call(this, arg[1], rawArg)) {
+            // 已经赋值，不应该再赋值
+            if (equalValue != null) throw new Error('Error: can not parse arg "' + rawArg + '"')
+            ck(arg[1])
+            cv(arg.slice(2))
+          }
+        } else {
+          arg = arg.slice(1).split('')
+          if (checkOpt.call(this, arg, rawArg)) {
+            arg.forEach(function(k, i, ref) {
+              if (ref.length - 1 === i) {
+                ck(k)    // 最后一个 option 可以接任意个参数
+                if (equalValue != null) cv(equalValue, true)
+              } else {
+                ck(k, 'noNeedArgs') // 后面不能接参数
+              }
+            })
+          }
+        }
+      } else {
+        // 处理非 option
+        cv(rawArg)
+      }
     }
 
     if (_.length && this.stopParseOnFirstNoOption) stopped = true
@@ -596,7 +612,7 @@ function invalidOpt(rawArg) {
   }
 }
 
-function consumeKey(key, noNeedArgs) {
+function consumeKey(key, noNeedArgs, equalValue) {
   var conf = this.getOptionConfig(key)
   if (!conf) return invalidOpt.call(this, this.formatOptionKey(key))
 
@@ -613,6 +629,7 @@ function consumeKey(key, noNeedArgs) {
       conf.value = true
       break
     case 'count':
+      if (equalValue != null) throw new Error('Error: "' + key + '" option do not need argument.')
       if ('value' in conf) conf.value++
       else conf.value = 1
       break
@@ -625,11 +642,14 @@ function consumeKey(key, noNeedArgs) {
   conf.consumedKey = key
 }
 
-function consumeVal(val) {
+function consumeVal(val, isEqualValue) {
   var conf = this.consumeTarget
-  if (!conf || conf.needArgs === conf.currentArgs) {
+  var needArgs = conf ? conf.needArgs : 0
+  if (isEqualValue && conf.needArgsWhenUseEqual) needArgs = conf.needArgsWhenUseEqual
+
+  if (!conf || needArgs === conf.currentArgs) {
     this._.push(val)
-  } else if (conf.needArgs > conf.currentArgs) {
+  } else if (needArgs > conf.currentArgs) {
     var consumedKey = this.formatOptionKey(conf.consumedKey)
     conf.currentArgs++
 
@@ -639,6 +659,9 @@ function consumeVal(val) {
         break
       case 'str':
         conf.value = val
+        break
+      case 'bool':
+        conf.value = val === 'yes' || val === 'true'
         break
       case 'num':
         conf.value = parseNumber(val)
