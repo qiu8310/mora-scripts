@@ -36,8 +36,9 @@ interface Interface {
     autoPrefixSpaces?: boolean
     returnContent?: boolean,
     append?: boolean,
-    tags?: 'loose' | 'hash' | 'docs' | 'html' | string[]
-  }): number | string
+    tags?: 'loose' | 'hash' | 'docs' | 'html' | string[],
+    eol?: '\n' | '\r\n' | string  
+}): number | string
 }
 
 declare const instance: Interface
