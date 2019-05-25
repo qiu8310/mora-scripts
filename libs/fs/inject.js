@@ -8,7 +8,7 @@
  */
 var fs = require('fs')
 var escapeRegExp = require('../lang/escapeRegExp')
-var EOL = '\n'
+var EOL = require('os').EOL
 
 var TAGS_MAP = {
   hash: ['## ', ' ##', '## ', ' ##'],
@@ -113,9 +113,10 @@ function replaceContent(data, counter, options) {
     }
 
     counter.count++
+    var eol = options.eol || EOL;
     return startLine.trim()
-      + (options.append ? oldValue : EOL)
-      + prefixSpaces(replaceValue, spaces, options.autoPrefixSpaces) + (replaceValue && EOL)
+      + (options.append ? oldValue : eol)
+      + prefixSpaces(replaceValue, spaces, options.autoPrefixSpaces) + (replaceValue && eol)
       + endLine
   }
 }
