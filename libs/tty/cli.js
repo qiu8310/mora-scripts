@@ -10,8 +10,8 @@ var format = require('../sys/clog').format
 var table = require('./table')
 var assign = require('../lang/assign')
 var isPlainObject = require('../lang/isPlainObject')
-var reOptionType = /^(bool|str|num|arr|count|b(?:oolean\/)?str|b(?:oolean\/)?num)[a-z]*$/
-var reOption = /^\s*<(bool|str|num|arr|count|b(?:oolean\/)?str|b(?:oolean\/)?num)[a-z]*>\s*([\s\S]*?)(?:\{\{(.*)\}\})?$/
+var reOptionType = /^(bool|str|num|arr|count|bstr|bnum)[a-z]*$/
+var reOption = /^\s*<(bool|str|num|arr|count|bstr|bnum)[a-z]*>\s*([\s\S]*?)(?:\{\{(.*)\}\})?$/
 var undef = void 0
 var DEFAULT_GROUP_NAME = '__default__:)'
 
@@ -27,7 +27,8 @@ var typeConfig = {
   },
   bstr: {
     label: 'boolean/string',
-    needArgs: 1
+    needArgs: 1,
+    boolean: true
   },
   num: {
     label: 'number',
@@ -35,7 +36,8 @@ var typeConfig = {
   },
   bnum: {
     label: 'boolean/number',
-    needArgs: 1
+    needArgs: 1,
+    boolean: true
   },
   arr: {
     label: 'array',
@@ -397,7 +399,7 @@ function parse(args) {
   }
 
   var ct = this.consumeTarget
-  if (ct && ct.needArgs > ct.currentArgs && ct.needArgs !== Infinity) {
+  if (ct && !ct.boolean && ct.needArgs > ct.currentArgs && ct.needArgs !== Infinity) {
     throw new Error('Error: ' + ct.type + ' option ' + this.formatOptionKey(ct.consumedKey) + ' need argument.')
   }
 }
@@ -637,9 +639,7 @@ function consumeKey(key, noNeedArgs, equalValue) {
   switch (conf.type) {
     case 'bool':
     case 'bstr':
-    case 'boolean/str':
     case 'bnum':
-    case 'boolean/num':
       conf.value = true
       break
     case 'count':
@@ -673,7 +673,6 @@ function consumeVal(val, isEqualValue) {
         break
       case 'str':
       case 'bstr':
-      case 'boolean/str':
         conf.value = val
         break
       case 'bool':
@@ -681,7 +680,6 @@ function consumeVal(val, isEqualValue) {
         break
       case 'num':
       case 'bnum':
-      case 'boolean/num':
         conf.value = parseNumber(val)
         if (isNaN(conf.value)) {
           throw new Error('Error: invalid number value "'

@@ -140,12 +140,12 @@ describe('libs/tty/cli', function() {
     it('bstr', function() {
       var opts = {
         a: '<bstr>',
-        b: '<boolean/string>',
+        b: '<bstring>',
         c: {
           type: 'bstr'
         },
         d: {
-          type: 'boolean/string'
+          type: 'bstring'
         }
       }
       testOptions(opts, ['-a', 'a', '-c', 'c'], {a: 'a', b: undefined, c: 'c', d: undefined})
@@ -154,12 +154,12 @@ describe('libs/tty/cli', function() {
     it('bnum', function() {
       var opts = {
         a: '<bnum>',
-        b: '<boolean/number>',
+        b: '<bnumber>',
         c: {
           type: 'bnum'
         },
         d: {
-          type: 'boolean/number'
+          type: 'bnumber'
         }
       }
       testOptions(opts, ['-a', '1', '-c', '2'], {a: 1, b: undefined, c: 2, d: undefined})
