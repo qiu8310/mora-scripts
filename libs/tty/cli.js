@@ -659,7 +659,7 @@ function consumeKey(key, noNeedArgs, equalValue) {
 function consumeVal(val, isEqualValue) {
   var conf = this.consumeTarget
   var needArgs = conf ? conf.needArgs : 0
-  if (isEqualValue && conf.needArgsWhenUseEqual) needArgs = conf.needArgsWhenUseEqual
+  if (isEqualValue && conf && conf.needArgsWhenUseEqual) needArgs = conf.needArgsWhenUseEqual
 
   if (!conf || needArgs === conf.currentArgs) {
     this._.push(val)
