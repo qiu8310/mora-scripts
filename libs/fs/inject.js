@@ -113,9 +113,10 @@ function replaceContent(data, counter, options) {
     }
 
     counter.count++
+    var eol = options.eol == null ? EOL : options.eol
     return startLine.trim()
-      + (options.append ? oldValue : EOL)
-      + prefixSpaces(replaceValue, spaces, options.autoPrefixSpaces) + (replaceValue && EOL)
+      + (options.append ? oldValue : eol)
+      + prefixSpaces(replaceValue, spaces, options.autoPrefixSpaces) + (replaceValue && eol)
       + endLine
   }
 }

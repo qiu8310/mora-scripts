@@ -14,6 +14,17 @@ describe('libs/fs/inject', function() {
     )
   })
 
+  it('custom eol', function() {
+    injectAndExpect(
+      'inject.html',
+      {html1: 'aaa', html2: 'bbb'},
+      '<!--# INJECT_START html1 #-->--aaa--<!--# INJECT_END #-->\n\n<!--# INJECT_START {"key": "html2"} #-->--bbb--<!--# INJECT_END #-->\n',
+      {
+        eol: '--'
+      }
+    )
+  })
+
   it('loose inject to html', function() {
     injectAndExpect(
       'inject.html',
