@@ -10,8 +10,8 @@ var format = require('../sys/clog').format
 var table = require('./table')
 var assign = require('../lang/assign')
 var isPlainObject = require('../lang/isPlainObject')
-var reOptionType = /^(bool|str|num|arr|count)[a-z]*$/
-var reOption = /^\s*<(bool|str|num|arr|count)[a-z]*>\s*([\s\S]*?)(?:\{\{(.*)\}\})?$/
+var reOptionType = /^(bool|str|num|arr|count|b(?:oolean\/)?str|b(?:oolean\/)?num)[a-z]*$/
+var reOption = /^\s*<(bool|str|num|arr|count|b(?:oolean\/)?str|b(?:oolean\/)?num)[a-z]*>\s*([\s\S]*?)(?:\{\{(.*)\}\})?$/
 var undef = void 0
 var DEFAULT_GROUP_NAME = '__default__:)'
 
@@ -25,8 +25,16 @@ var typeConfig = {
     label: 'string',
     needArgs: 1
   },
+  bstr: {
+    label: 'boolean/string',
+    needArgs: 1
+  },
   num: {
     label: 'number',
+    needArgs: 1
+  },
+  bnum: {
+    label: 'boolean/number',
     needArgs: 1
   },
   arr: {
@@ -185,6 +193,8 @@ Cli.prototype.commands = function(opts) {
  *     * number    num   不能为空
  *     * array     arr   可以为空
  *     * count
+ *     * boolean/number   bnum
+ *     * boolean/number   bstr
  *
  * @return {Cli}
  *
@@ -626,6 +636,10 @@ function consumeKey(key, noNeedArgs, equalValue) {
 
   switch (conf.type) {
     case 'bool':
+    case 'bstr':
+    case 'boolean/str':
+    case 'bnum':
+    case 'boolean/num':
       conf.value = true
       break
     case 'count':
@@ -658,12 +672,16 @@ function consumeVal(val, isEqualValue) {
         conf.value.push(val)
         break
       case 'str':
+      case 'bstr':
+      case 'boolean/str':
         conf.value = val
         break
       case 'bool':
         conf.value = val === 'yes' || val === 'true'
         break
       case 'num':
+      case 'bnum':
+      case 'boolean/num':
         conf.value = parseNumber(val)
         if (isNaN(conf.value)) {
           throw new Error('Error: invalid number value "'

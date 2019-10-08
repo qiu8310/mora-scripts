@@ -137,6 +137,34 @@ describe('libs/tty/cli', function() {
       testOptions(opts, ['-c', 'c', '-d', 'dd'], {b: undefined, c: 'c', cc: 'c', d: 'dd', e: 'e'})
       testOptions(opts, ['-c', 'c', '-e', 'ee'], {b: undefined, c: 'c', cc: 'c', d: 'd', e: 'ee'})
     })
+    it('bstr', function() {
+      var opts = {
+        a: '<bstr>',
+        b: '<boolean/string>',
+        c: {
+          type: 'bstr'
+        },
+        d: {
+          type: 'boolean/string'
+        }
+      }
+      testOptions(opts, ['-a', 'a', '-c', 'c'], {a: 'a', b: undefined, c: 'c', d: undefined})
+      testOptions(opts, ['-b', '-d'], {a: undefined, b: true, c: undefined, d: true})
+    })
+    it('bnum', function() {
+      var opts = {
+        a: '<bnum>',
+        b: '<boolean/number>',
+        c: {
+          type: 'bnum'
+        },
+        d: {
+          type: 'boolean/number'
+        }
+      }
+      testOptions(opts, ['-a', '1', '-c', '2'], {a: 1, b: undefined, c: 2, d: undefined})
+      testOptions(opts, ['-b', '-d'], {a: undefined, b: true, c: undefined, d: true})
+    })
     it('count', function() {
       var opts = {
         a: '<count>',

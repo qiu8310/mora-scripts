@@ -170,11 +170,13 @@ declare class Cli {
    *   1. str1 是一个 option，":" 后面的 str2 等等表示 str1 的别名
    *   2. desc 表示 option 的描述
    *   3. type 表示 option 的类型，支持的类型有
-   *     * boolean   bool
-   *     * string    str   不能为空
-   *     * number    num   不能为空
-   *     * array     arr   可以为空
+   *     * boolean          bool
+   *     * string           str   不能为空
+   *     * number           num   不能为空
+   *     * array            arr   可以为空
    *     * count
+   *     * boolean/number   bnum
+   *     * boolean/number   bstr
    *
    * @return {Cli}
    *
