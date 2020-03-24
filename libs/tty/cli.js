@@ -666,21 +666,25 @@ function consumeVal(val, isEqualValue) {
   } else if (needArgs > conf.currentArgs) {
     var consumedKey = this.formatOptionKey(conf.consumedKey)
     conf.currentArgs++
-
     switch (conf.type) {
       case 'arr':
         conf.value.push(val)
         break
       case 'str':
       case 'bstr':
-        conf.value = val
+        if (conf.type === 'bstr' && val === 'true') conf.value = true
+        else if (conf.type === 'bstr' && val === 'false') conf.value = false
+        else conf.value = val
         break
       case 'bool':
         conf.value = val === 'yes' || val === 'true'
         break
       case 'num':
       case 'bnum':
-        conf.value = parseNumber(val)
+        if (conf.type === 'bnum' && val === 'true') conf.value = true
+        else if (conf.type === 'bnum' && val === 'false') conf.value = false
+        else conf.value = parseNumber(val)
+
         if (isNaN(conf.value)) {
           throw new Error('Error: invalid number value "'
             + val + '" for option "'

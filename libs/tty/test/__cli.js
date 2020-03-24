@@ -151,6 +151,20 @@ describe('libs/tty/cli', function() {
       testOptions(opts, ['-a', 'a', '-c', 'c'], {a: 'a', b: undefined, c: 'c', d: undefined})
       testOptions(opts, ['-b', '-d'], {a: undefined, b: true, c: undefined, d: true})
     })
+    it('bstr with equal', function() {
+      var opts = {
+        a: '<bstr>',
+        aa: '<bstr>',
+        b: '<bstr>',
+        bb: '<bstr>'
+      }
+      Cli().options(opts).parse(['-a=true', '--aa=yes', '-b=no', '--bb=false'], function(res) {
+        assert(res.a === true)
+        assert(res.aa === 'yes')
+        assert(res.b === 'no')
+        assert(res.bb === false)
+      })
+    })
     it('bnum', function() {
       var opts = {
         a: '<bnum>',
@@ -164,6 +178,20 @@ describe('libs/tty/cli', function() {
       }
       testOptions(opts, ['-a', '1', '-c', '2'], {a: 1, b: undefined, c: 2, d: undefined})
       testOptions(opts, ['-b', '-d'], {a: undefined, b: true, c: undefined, d: true})
+    })
+    it('bnum with equal', function() {
+      var opts = {
+        a: '<bnum>',
+        aa: '<bnum>',
+        b: '<bnum>',
+        bb: '<bnum>'
+      }
+      Cli().options(opts).parse(['-a=true', '--aa=1', '-b=0', '--bb=false'], function(res) {
+        assert(res.a === true)
+        assert(res.aa === 1)
+        assert(res.b === 0)
+        assert(res.bb === false)
+      })
     })
     it('count', function() {
       var opts = {
