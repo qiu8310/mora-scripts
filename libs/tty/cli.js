@@ -350,7 +350,7 @@ function parse(args) {
     } else if (arg === '--') {
       stopped = true
     } else {
-      var equalValue
+      var equalValue = null
       var equalIndex = arg.indexOf('=')
       if (equalIndex >= 0) {
         equalValue = arg.substr(equalIndex + 1)

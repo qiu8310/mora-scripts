@@ -52,7 +52,6 @@ describe('libs/tty/cli', function() {
       assert.equal(count, 1)
       assert.equal($command, 'test:abc')
     })
-
     it('output desc', function() {
       testHelp(Cli().commands({s: {cmd: function() {}, desc: 'foo bar'}}), function(message) {
         assert.ok(message.indexOf('foo bar') > 0)
