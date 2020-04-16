@@ -1,6 +1,6 @@
 {
   "name": "mora-scripts",
-  "version": "1.6.47",
+  "version": "1.6.48",
   "description": "Some collection scripts by myself",
   "scripts": {
     "postinstall": "node hooks/scripts/install",
