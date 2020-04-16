@@ -7,4 +7,5 @@ import * as inject from './inject'
 import * as mkdirp from './mkdirp'
 import * as ospath from './ospath'
 import * as rm from './rm'
-export {config, exists, findup, inject, mkdirp, ospath, rm}
+import * as walk from './walk'
+export {config, exists, findup, inject, mkdirp, ospath, rm, walk}
