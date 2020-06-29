@@ -16,7 +16,7 @@
  *
  * @see {@link http://es6.ruanyifeng.com/#docs/promise#finally}
  */
-/* istanbul ignore else */
+/* istanbul ignore next */
 if (!Promise.prototype.finally) {
   /* eslint-disable no-extend-native */
   Promise.prototype.finally = function(callback) {
@@ -36,7 +36,7 @@ if (!Promise.prototype.finally) {
  *
  * @see [为什么要用它]{@link http://cryto.net/~joepie91/blog/2016/05/11/what-is-promise-try-and-why-does-it-matter/}
  */
-/* istanbul ignore else */
+/* istanbul ignore next */
 if (!Promise.try) {
   Promise.try = function(fn) {
     return new Promise(function(resolve, reject) {
