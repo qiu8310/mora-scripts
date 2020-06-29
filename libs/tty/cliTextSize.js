@@ -46,7 +46,8 @@ module.exports = function(str) {
 function getCodePointCliSize(cp) {
   // 特殊字符无法知道它的 size
   if ([9, 10, 11, 12, 13].indexOf(cp) >= 0) {
-    throw new Error('Code point ' + cp + ' not allowed, its size is not predictable.')
+    // throw new Error('Code point ' + cp + ' not allowed, its size is not predictable.')
+    return cp === 9 ? 6 : 0  // tab 在 Mac 的 iTerm 上占了 6 个字符
   }
 
   // window 对不支持的字符都使用了默认的占一个位置的字符替代

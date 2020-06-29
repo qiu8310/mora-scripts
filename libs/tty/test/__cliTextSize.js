@@ -19,13 +19,19 @@ describe('libs/tty/cliTextSize', function() {
     assert.equal(cliTextSize('\u001b[31ma\u001b[0m\u001b[0m'), 1)
   })
 
-  it('should throws when include any of \\t, \\r, \\v, \\f, \\n', function() {
-    assert.throws(function() { cliTextSize('\t') })
-    assert.throws(function() { cliTextSize('\r') })
-    assert.throws(function() { cliTextSize('\v') })
-    assert.throws(function() { cliTextSize('\f') })
-    assert.throws(function() { cliTextSize('\n') })
-    assert.doesNotThrow(function() { cliTextSize('abc') })
+  it('should return 0 when include any of \\t, \\r, \\v, \\f, \\n', function() {
+    assert.equal(cliTextSize('\t'), 6)
+    assert.equal(cliTextSize('\r'), 0)
+    assert.equal(cliTextSize('\v'), 0)
+    assert.equal(cliTextSize('\f'), 0)
+    assert.equal(cliTextSize('\n'), 0)
+
+    // assert.throws(function() { cliTextSize('\t') })
+    // assert.throws(function() { cliTextSize('\r') })
+    // assert.throws(function() { cliTextSize('\v') })
+    // assert.throws(function() { cliTextSize('\f') })
+    // assert.throws(function() { cliTextSize('\n') })
+    // assert.doesNotThrow(function() { cliTextSize('abc') })
   })
 
   it('when in windows', function() {

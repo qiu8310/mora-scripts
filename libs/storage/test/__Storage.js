@@ -17,10 +17,6 @@ describe('libs/storage/Storage', function() {
       s = new Storage(opts)
       assert.equal(s.data, null)
       assert.equal(s.opts, opts)
-
-      s = new Storage(123)
-      assert.equal(s.data, null)
-      assert.deepEqual(s.opts, {})
     })
     it('async', function(done) {
       var s = new Storage()
