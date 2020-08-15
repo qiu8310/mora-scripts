@@ -301,6 +301,62 @@ describe('libs/tty/cli', function() {
     })
   })
 
+  describe('env', function() {
+    it('bool', function() {
+      testEnv({a: '<bool>'}, {a: 'true'}, {a: true})
+      testEnv({a: '<boolean>'}, {a: 'yes'}, {a: true})
+      testEnv({a: '<bool>'}, {a: '1'}, {a: true})
+      testEnv({a: '<bool>'}, {a: 'false'}, {a: false})
+      testEnv({a: '<bool>'}, {a: 'no'}, {a: false})
+      testEnv({a: '<bool>'}, {a: '0'}, {a: false})
+    })
+    it('str', function() {
+      testEnv({a: '<str>'}, {a: 'true'}, {a: 'true'})
+      testEnv({a: '<string>'}, {a: 'yes'}, {a: 'yes'})
+      testEnv({a: '<str>'}, {a: '1'}, {a: '1'})
+      testEnv({a: '<str>'}, {a: 'false'}, {a: 'false'})
+      testEnv({a: '<str>'}, {a: 'no'}, {a: 'no'})
+      testEnv({a: '<str>'}, {a: '0'}, {a: '0'})
+    })
+    it('num', function() {
+      testEnv({a: '<num>'}, {a: '1'}, {a: 1})
+      testEnv({a: '<num>'}, {a: '100'}, {a: 100})
+      testEnv({a: '<num>'}, {a: '0'}, {a: 0})
+    })
+    it('bstr', function() {
+      testEnv({a: '<bstr>'}, {a: '1'}, {a: '1'})
+      testEnv({a: '<bstr>'}, {a: 'true'}, {a: true})
+      testEnv({a: '<bstr>'}, {a: 'false'}, {a: false})
+      testEnv({a: '<bstr>'}, {a: '0'}, {a: '0'})
+    })
+    it('bnum', function() {
+      testEnv({a: '<bnum>'}, {a: '1'}, {a: 1})
+      testEnv({a: '<bnum>'}, {a: 'true'}, {a: true})
+      testEnv({a: '<bnum>'}, {a: 'false'}, {a: false})
+      testEnv({a: '<bnum>'}, {a: '0'}, {a: 0})
+      testEnv({a: '<bnum>', b: '<bnumber>', c: '<bnum>'}, {a: '0', b: 'false'}, {a: 0, b: false})
+    })
+    it('count', function() {
+      assert.throws(function() {
+        process.env.a = '1'
+        Cli().env({a: '<count>'}).parse(function() {})
+        delete process.env.a
+      }, /Not supported env type/)
+    })
+    it('arr', function() {
+      assert.throws(function() {
+        process.env.a = '1'
+        Cli().env({a: '<arr>'}).parse(function() {})
+        delete process.env.a
+      }, /Not supported env type/)
+    })
+    it('duplicated', function() {
+      assert.throws(function() {
+        Cli().env({a: '<count>', 'b | a': '<str>'}).parse(function() {})
+      }, /duplicated/)
+    })
+  })
+
   describe('equal option', function() {
     it('bool', function() {
       var opts = {
@@ -584,6 +640,10 @@ describe('libs/tty/cli', function() {
       testHelp(Cli({help: 'foo bar'}), function(message) {
         assert.ok(message.indexOf('foo bar') > 0)
       })
+      testHelp(Cli({}).env({aaa: '<str>'}), function(message) {
+        assert.ok(message.indexOf('Env') > 0)
+        assert.ok(message.indexOf('aaa') > 0)
+      })
       Cli({help: false}).parse([], function(res) {
         assert.ok(!('help' in res))
         assert.ok(!('h' in res))
@@ -641,6 +701,27 @@ function testOptions(opts, args, expect) {
   })
   Cli().options(assign({}, opts))
     .parse(args, spy)
+  assert.equal(spy.callCount, 1)
+}
+
+function testEnv(envOpts, customEnv, expect) {
+  var spy = sinon.spy(function(res) {
+    for (var key in expect) {
+      assert.deepEqual(expect[key], res.env[key],
+        'expect "' + key + '" to be ' + JSON.stringify(expect[key])
+        + ', but got ' + JSON.stringify(res.env[key]))
+    }
+  })
+
+  Object.keys(customEnv).forEach(function(key) {
+    process.env[key] = customEnv[key]
+  })
+
+  Cli().env(assign({}, envOpts)).parse([], spy)
+
+  Object.keys(customEnv).forEach(function(key) {
+    delete process.env[key]
+  })
   assert.equal(spy.callCount, 1)
 }
 

@@ -58,6 +58,8 @@ declare namespace cli {
      * 记录所有用户自定义的选项
      */
     userDefined: {[key: string]: boolean}
+    userDefinedOptions: {[key: string]: boolean}
+    userDefinedEnv: {[key: string]: boolean}
 
     /** 子命令名称，由于子命令支持通配符，所以需要通过此字段来获取子命令实际的值 */
     $command: string
@@ -66,6 +68,12 @@ declare namespace cli {
      * 解析完后剩下的给程序的参数
      */
     _: string[]
+
+    /**
+     * 读取到的系统的环境变量
+     */
+    env: Record<string, any>
+
     /**
      * 其它 options 中指定的键值，如果没设置也会存在，且值为 undefined
      */
@@ -153,6 +161,8 @@ declare class Cli {
    * 解析完后剩下的给程序的参数
    */
   _: string[]
+
+
   constructor(conf: cli.Conf)
   /**
    * 设置 Cli 程序支持的选项
@@ -229,6 +239,11 @@ declare class Cli {
    *
    */
   options(opts: cli.Options): Cli
+
+  /** 设置环境变量参数，与 options 配置类似 */
+  env(groupName: string, opts: cli.Options): Cli
+  /** 设置环境变量参数，与 options 配置类似*/
+  env(opts: cli.Options): Cli
 
   /**
    * 设置 Cli 程序的子命令
