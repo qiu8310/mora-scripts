@@ -79,7 +79,7 @@ declare namespace cli {
      */
     [optionKey: string]: any
   }
-  type OptionType = 'boolean' | 'string' | 'number' | 'array' | 'count' | 'boolean/number' | 'boolean/string'
+  type OptionType = 'boolean' | 'string' | 'number' | 'array' | 'count' | 'bnum' | 'bstr'
   type Options = {
     [key: string]: string | {
         type: OptionType
