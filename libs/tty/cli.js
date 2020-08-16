@@ -360,7 +360,7 @@ function parse(args) {
 
     if (stopped) {
       _.push(arg)
-    } else if (_.length === 0 && arg in this.mapCommands) { // 运行子命令剩下的参数给子命令去解析
+    } else if (_.length === 0 && this.getCommanderByKey(arg)) { // 运行子命令剩下的参数给子命令去解析
       stopped = true
       _.push(arg)
     } else if (arg === '--') {
@@ -527,19 +527,7 @@ Cli.prototype.parse = function(args, handle) {
   } else if (res.version) {
     console.log(this.version ? strOrFunToString(this.version) : '0.0.0')
   } else {
-    var commandKey = _[0]
-    var commanderMap = this.mapCommands
-    var commander = commandKey && commanderMap[commandKey]
-    if (commandKey && !commander) {
-      var newKey = Object.keys(commanderMap).find(function(k) {
-        if (k.includes('*')) {
-          return new RegExp('^' + k.replace(/\*/g, '.*') + '$').test(commandKey)
-        }
-        return false
-      })
-      commander = newKey && commanderMap[newKey]
-    }
-
+    var commander = this.getCommanderByKey(_[0])
     if (commander) {
       res.$command = _[0]
       res._ = _.slice(1)
@@ -550,6 +538,21 @@ Cli.prototype.parse = function(args, handle) {
     }
   }
   return this
+}
+
+Cli.prototype.getCommanderByKey = function(key) {
+  var commanderMap = this.mapCommands
+  var commander = key && commanderMap[key]
+  if (key && !commander) {
+    var newKey = Object.keys(commanderMap).find(function(k) {
+      if (k.includes('*')) {
+        return new RegExp('^' + k.replace(/\*/g, '.*') + '$').test(key)
+      }
+      return false
+    })
+    commander = newKey && commanderMap[newKey]
+  }
+  return commander
 }
 
 /**
