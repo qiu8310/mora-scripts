@@ -34,5 +34,5 @@ module.exports = function() { console.log(format.apply(null, arguments)) }
  */
 module.exports.format = format
 
-/* istanbul ignore next */
-if (!module.parent) console.log(format.apply(null, process.argv.slice(2)))
+// /* istanbul ignore next */
+// if (!module.parent) console.log(format.apply(null, process.argv.slice(2)))
