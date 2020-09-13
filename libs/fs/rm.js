@@ -10,7 +10,6 @@
 
 var fs = require('fs')
 var path = require('path')
-var warn = require('../sys/warn')
 
 /**
  * 递归遍历删除指定的文件或文件夹
@@ -23,16 +22,16 @@ function rm(file) {
   } catch (e) {
     /* istanbul ignore else */
     if (e.message.indexOf('ENOENT') === 0) {
-      return warn('file<' + file + '> not exists')
+      return false
     }
     /* istanbul ignore next */
     throw e
   }
 
   if (stat.isDirectory()) {
-    rmDir(file)
+    return rmDir(file)
   } else {
-    rmFile(file)
+    return rmFile(file)
   }
 }
 

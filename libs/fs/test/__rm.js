@@ -38,14 +38,10 @@ describe('libs/fs/rm', function() {
     assert.ok(!exists(dir, 'Directory'))
   })
 
-  it('should warn when remove not exists files', function(done) {
+  it('should return false when remove not exists files', function() {
     var dir = resolve(fixturesDir, 'xx3')
     mkdirp(dir)
-    var revert = rm.__set__('warn', function(msg) {
-      assert(msg.indexOf(' not exists') > 0)
-      revert()
-      done()
-    })
-    rm(resolve(dir, 'a', 'b'))
+    var res = rm(resolve(dir, 'a', 'b'))
+    assert.ok(res === false)
   })
 })
