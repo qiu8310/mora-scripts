@@ -238,7 +238,7 @@ function init(isCommand, opts, group, isEnv) {
   Object.keys(opts).forEach(function(origKey) {
     var key, type, value, cmd, desc, alias, defaultValue, target, map
 
-    alias = origKey.trim().split(/\s*\|\s*/).sort()
+    alias = origKey.trim().split(/\s*\|\s*/)
     key = alias[0]
     value = opts[origKey]
 

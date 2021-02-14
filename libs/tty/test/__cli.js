@@ -89,6 +89,15 @@ describe('libs/tty/cli', function() {
   })
 
   describe('options', function() {
+    it('not sort options keys', function() {
+      var opts = {
+        'b | a | c': '<bool>'
+      }
+      var c = Cli().options(opts)
+      var str = c.help(true)
+      assert(str.includes('-b, -a, -c'))
+    })
+
     it('undefined', function() {
       var opts = {
         b: '<bool>',
