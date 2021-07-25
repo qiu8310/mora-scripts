@@ -8,7 +8,7 @@
     "release": "cli/run npm version patch -m 'chore: bump patch version'",
     "preversion": "npm run lint && npm run test:check-coverage",
     "version": "cli/puts '%cyou can run build and add build file to git in here' cyan",
-    "postversion": "git push --follow-tags && snpm publish && cli/run cnpm sync pkg.name",
+    "postversion": "git push --follow-tags && npm publish && cli/run cnpm sync pkg.name",
     "lint": "eslint libs/ hooks/ cli/puts cli/remove-all cli/run cli/commit-msg-help cli/createscript cli/inject cli/sync-taobao",
     "test:watch": "mocha -R dot --watch **/__*.js",
     "test": "nyc -r html _mocha -R dot **/__*.js",
@@ -27,6 +27,10 @@
     "sync-taobao": "cli/sync-taobao",
     "remove-all": "cli/remove-all",
     "commit-msg-help": "cli/commit-msg-help"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "config": {
     "hooks": {
