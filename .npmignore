@@ -4,6 +4,12 @@ externals/
 .vscode/
 .DS_Store
 .idea/
+.travis.yml
+appveyor.yml
+.istanbul.yml
+coverage/
 tsconfig.json
-
+jsdoc.json
+LEARN_JSDOC.md
+vendors/build.js
 **/test/**
