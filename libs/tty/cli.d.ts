@@ -84,12 +84,14 @@ declare namespace cli {
     [key: string]: string | {
         type: OptionType
         desc?: string
+        hideInHelp?: boolean
         defaultValue?: any
     }
   }
   type Commands = {
     [key: string]: ((this: Cli, res: Response, cli: Cli) => void) | {
         desc?: string
+        hideInHelp?: boolean
         conf?: Conf
         options?: Options
         groups?: {[optionGroupName: string]: Options}
@@ -173,8 +175,8 @@ declare class Cli {
    * @param  {Object} opts        此分组下的所有选项
    *
    * opts 是 key-value 对象，支持下面几种类型的配置
-   *   - str1:str2... => <type> desc
-   *   - str1:str2... => {type: '', desc: '', defaultValue: ''}
+   *   - str1:str2... => <type> desc  (注：如果 type 前面有 "!"，表示 hideInHelp)
+   *   - str1:str2... => {type: '', desc: '', defaultValue: '', hideInHelp: false}
    *
    * 说明：
    *   1. str1 是一个 option，":" 后面的 str2 等等表示 str1 的别名
@@ -193,8 +195,9 @@ declare class Cli {
    * @example
    * ```
    *   cli.options({
-   *     'e | escape': '<boolean> enable escape',
+   *     'e | escape': '!<boolean> enable escape',
    *     'l | linefeed': {
+   *       hideInHelp: true,
    *       type: 'boolean',
    *       desc: 'append a system linefeed at end'
    *     }
@@ -210,8 +213,8 @@ declare class Cli {
    * @param  {Object} opts        默认分组下的所有选项
    *
    * opts 是 key-value 对象，支持下面几种类型的配置
-   *   - str1:str2... => <type> desc
-   *   - str1:str2... => {type: '', desc: '', defaultValue: ''}
+   *   - str1:str2... => <type> desc   (注：如果 type 前面有 "!"，表示 hideInHelp)
+   *   - str1:str2... => {type: '', desc: '', defaultValue: '', hideInHelp: false}
    *
    * 说明：
    *   1. str1 是一个 option，":" 后面的 str2 等等表示 str1 的别名
@@ -229,8 +232,9 @@ declare class Cli {
    *
    * ```
    *   cli.options({
-   *     'e | escape': '<boolean> enable escape',
+   *     'e | escape': '!<boolean> enable escape',
    *     'l | linefeed': {
+   *       hideInHelp: false,
    *       type: 'boolean',
    *       desc: 'append a system linefeed at end'
    *     }
@@ -264,12 +268,14 @@ declare class Cli {
    *       // handle
    *     },
    *     second: {
+   *       hideInHelp: false,
    *       desc: 'this is sub-command with description',
    *       cmd: function (res) {
    *         // handle
    *       }
    *     },
-   *     thrid: {
+   *     third: {
+   *       hideInHelp: false,
    *       conf: {},
    *       options: {},
    *       groups: {},

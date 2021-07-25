@@ -57,6 +57,18 @@ describe('libs/tty/cli', function() {
         assert.ok(message.indexOf('foo bar') > 0)
       })
     })
+    it('hideInHelp', function() {
+      testHelp(
+        Cli().commands({
+          aaa: {hideInHelp: true, cmd: function() {}},
+          bbb: function() {}
+        }),
+        function(message) {
+          assert.ok(!message.includes('aaa'))
+          assert.ok(message.includes('bbb'))
+        }
+      )
+    })
     it('sub cli commands', function() {
       var spy = sinon.spy(function(res) {
         assert.deepEqual(res._, ['a', 'b'])
@@ -277,6 +289,21 @@ describe('libs/tty/cli', function() {
         .parse(['-a', '-b'], spy)
 
       assert.ok(spy.calledOnce)
+    })
+
+    it('hideInHelp', function() {
+      testHelp(
+        Cli()
+          .options({aaa: '!<bool>', bbb: '<bool>', eee: { hideInHelp: true, type: 'bool' }})
+          .options('xxx', {ccc: '!<bool>', ddd: '<boolean>'}),
+        function(message) {
+          assert.ok(message.includes('bbb'))
+          assert.ok(message.includes('ddd'))
+          assert.ok(!message.includes('aaa'))
+          assert.ok(!message.includes('ccc'))
+          assert.ok(!message.includes('eee'))
+        }
+      )
     })
 
     it('should output group header in help message', function() {

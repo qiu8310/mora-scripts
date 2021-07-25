@@ -11,7 +11,7 @@ var table = require('./table')
 var assign = require('../lang/assign')
 var isPlainObject = require('../lang/isPlainObject')
 var reOptionType = /^(bool|str|num|arr|count|bstr|bnum)[a-z]*$/
-var reOption = /^\s*<(bool|str|num|arr|count|bstr|bnum)[a-z]*>\s*([\s\S]*?)(?:\{\{(.*)\}\})?$/
+var reOption = /^\s*(!?)<(bool|str|num|arr|count|bstr|bnum)[a-z]*>\s*([\s\S]*?)(?:\{\{(.*)\}\})?$/
 var undef = void 0
 var DEFAULT_GROUP_NAME = '__default__:)'
 
@@ -236,7 +236,7 @@ Cli.prototype.env = function(group, opts) {
 
 function init(isCommand, opts, group, isEnv) {
   Object.keys(opts).forEach(function(origKey) {
-    var key, type, value, cmd, desc, alias, defaultValue, target, map
+    var key, type, value, cmd, desc, alias, defaultValue, target, map, hideInHelp
 
     alias = origKey.trim().split(/\s*\|\s*/)
     key = alias[0]
@@ -247,6 +247,7 @@ function init(isCommand, opts, group, isEnv) {
         cmd = value
         desc = ''
       } else if (isPlainObject(value)) {
+        hideInHelp = value.hideInHelp
         cmd = value.cmd
         if (typeof cmd !== 'function') {
           throw new Error('Command "' + origKey + '" should have a handle function.')
@@ -278,15 +279,16 @@ function init(isCommand, opts, group, isEnv) {
         throw new Error('Command "' + origKey + '" is invalid')
       }
 
-      target = { key: key, alias: alias, cmd: cmd, type: 'command', desc: desc }
+      target = { key: key, alias: alias, cmd: cmd, type: 'command', desc: desc, hideInHelp: hideInHelp }
       map = this.mapCommands
     } else {
       if (typeof value === 'string') {
         if (reOption.test(value)) {
-          type = RegExp.$1
-          desc = RegExp.$2
-          if (RegExp.$3) {
-            defaultValue = RegExp.$3
+          hideInHelp = RegExp.$1 === '!'
+          type = RegExp.$2
+          desc = RegExp.$3
+          if (RegExp.$4) {
+            defaultValue = RegExp.$4
             try {
               defaultValue = JSON.parse(defaultValue.trim())
             } catch (e) {
@@ -300,6 +302,7 @@ function init(isCommand, opts, group, isEnv) {
       } else if (isPlainObject(value)) {
         type = value.type
         desc = value.desc || ''
+        hideInHelp = value.hideInHelp
         defaultValue = value.defaultValue
 
         if (reOptionType.test(type)) {
@@ -316,7 +319,7 @@ function init(isCommand, opts, group, isEnv) {
       var groupsMap = isEnv ? this.envGroupsMap : this.groupsMap
       map = isEnv ? this.mapEnv : this.mapOptions
 
-      target = { key: key, alias: alias, defaultValue: defaultValue, type: type, group: group, desc: desc }
+      target = { key: key, alias: alias, defaultValue: defaultValue, hideInHelp: hideInHelp, type: type, group: group, desc: desc }
       if (groups.indexOf(group) < 0) {
         if (group === DEFAULT_GROUP_NAME) {
           groups.unshift(group)
@@ -611,6 +614,7 @@ Cli.prototype.help = function(returnStr) {
     var rows = []
     Object.keys(obj).forEach(function(key) {
       var entry = obj[key]
+      if (entry.hideInHelp) return
       if (cache.indexOf(entry) >= 0) return
       cache.push(entry)
       var row = []
@@ -650,6 +654,7 @@ Cli.prototype.help = function(returnStr) {
           rows.push(['', '', ''])
         }
         groupsMap[group].forEach(function(entry) {
+          if (entry.hideInHelp) return
           var row = []
           var defaultValue = entry.defaultValue !== undef
             ? format('  %c[ default: %s ]', 'gray', JSON.stringify(entry.defaultValue))
