@@ -86,6 +86,18 @@ describe('libs/tty/cli', function() {
 
       assert.equal(spy.callCount, 1)
     })
+
+    it('list commands', function() {
+      var log = sinon.stub(console, 'log')
+      Cli().commands({
+        sub1: function() {},
+        sub2: function() {}
+      }).parse(['---list-all-commands'])
+
+      assert.equal(log.callCount, 1)
+      log.alwaysCalledWith([['sub1', 'sub2']])
+      log.restore()
+    })
   })
 
   describe('options', function() {
@@ -239,6 +251,19 @@ describe('libs/tty/cli', function() {
 
       var cli = Cli().options(opts).parse(['-f20'])
       assert.deepEqual(cli._, ['-f20'])
+    })
+
+    it('list options', function() {
+      var log = sinon.stub(console, 'log')
+      var opts = {
+        a: '<number>',
+        b: '<num>'
+      }
+      Cli().options(opts).parse(['---list-all-options'])
+
+      assert.equal(log.callCount, 1)
+      log.alwaysCalledWith([['a', 'b']])
+      log.restore()
     })
 
     it('group options', function() {

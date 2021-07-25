@@ -532,6 +532,10 @@ Cli.prototype.parse = function(args, handle) {
       res.$command = _[0]
       res._ = _.slice(1)
       commander.cmd.call(this, res, this)
+    } else if (args[0] === '---list-all-commands') {
+      console.log(Object.keys(this.mapCommands))
+    } else if (args[0] === '---list-all-options') {
+      console.log(Object.keys(this.mapOptions))
     } else if (typeof handle === 'function') {
       res._ = _
       handle.call(this, res, this)
