@@ -9,11 +9,12 @@ var path = require('path')
 var util = require('util')
 
 var findup = require('../libs/fs/findup')
+var semverRegex = require('../vendors/semver-regex')
 
 // fixup! and squash! are part of Git, commits tagged with them are not intended to be merged, cf. https://git-scm.com/docs/git-commit
 var PATTERN = /^((fixup! |squash! )?(\w+)(?:\(([^)\s]+)\))?: (.+))(?:\n|$)/
 var MERGE_COMMIT_PATTERN = /^Merge .+/
-var IGNORED_PATTERN = new RegExp(util.format('(^WIP)|(^%s$)', require('semver-regex')().source))
+var IGNORED_PATTERN = new RegExp(util.format('(^WIP)|(^%s$)', semverRegex().source))
 
 var isPackageFileExists = false
 var config = {
@@ -182,4 +183,3 @@ function error() {
 
 module.exports = validate
 module.exports.help = outputHelp
-

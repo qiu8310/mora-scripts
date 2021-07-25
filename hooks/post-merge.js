@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var spawn = require('cross-spawn')
+var spawn = require('../vendors/cross-spawn')
 var isCommandExists = require('../libs/tty/isCommandExists')
 
 var git = spawn(

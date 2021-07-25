@@ -7,7 +7,7 @@
     "postuninstall": "node hooks/scripts/install --reverse",
     "release": "cli/run npm version patch -m 'chore: bump patch version'",
     "preversion": "npm run lint && npm run test:check-coverage",
-    "version": "cli/puts '%cyou can run build and add build file to git in here' cyan",
+    "version": "node vendors/build.js",
     "postversion": "git push --follow-tags && npm publish && cli/run cnpm sync pkg.name",
     "lint": "eslint libs/ hooks/ cli/puts cli/remove-all cli/run cli/commit-msg-help cli/createscript cli/inject cli/sync-taobao",
     "test:watch": "mocha -R dot --watch **/__*.js",
@@ -50,11 +50,10 @@
     "url": "https://github.com/qiu8310/mora-scripts"
   },
   "license": "MIT",
-  "dependencies": {
-    "cross-spawn": "5.1.0",
-    "semver-regex": "1.0.0"
-  },
   "devDependencies": {
+    "cross-spawn": "5.1.0",
+    "semver-regex": "1.0.0",
+    "@vercel/ncc": "^0.29.0",
     "codecov": "^2.0.0",
     "docdash": "web-build-hub/docdash",
     "eslint": "^3.16.1",

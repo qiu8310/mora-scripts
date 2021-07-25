@@ -1,3 +1,4 @@
 libs/db/*.js
 **/test/fixtures/**/*.js
 **/*.d.ts
+vendors/*

@@ -3,7 +3,7 @@
 // https://github.com/RyanZim/awesome-npm-scripts
 
 var path = require('path')
-var spawn = require('cross-spawn')
+var spawn = require('../vendors/cross-spawn')
 var assign = require('../libs/lang/assign')
 var findup = require('../libs/fs/findup')
 var dotPropGet = require('../libs/lang/DotProp').get
