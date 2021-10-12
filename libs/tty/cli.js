@@ -58,6 +58,7 @@ var typeConfig = {
  * @param {String|Array<String>|(() => String} conf.desc          命令的一些介绍
  * @param {String|Array<String>|(() => String} conf.example       使用命令的一些样例
  * @param {String|(() => String} conf.epilog                      放在 help 结尾的一段话，一般用来声明版权，或者显示查看更多的链接
+ * @param {(() => void} conf.bootstrap                            初始化操作，在命令后面添加 ---run-bootstrap 才会触发此函数执行
  *
  * @param {Boolean} conf.strict                     遇到无法解析的 option 是否要报错
  * @param {Boolean} conf.showHelpOnError            解析参数失败时不显示帮助信息
@@ -147,6 +148,7 @@ function Cli(conf) {
   if (conf.desc) this.desc = [].concat(conf.desc)
   if (conf.example) this.example = [].concat(conf.example)
   if (conf.epilog) this.epilog = conf.epilog
+  if (conf.bootstrap) this.bootstrap = conf.bootstrap
 }
 
 /**
@@ -539,6 +541,8 @@ Cli.prototype.parse = function(args, handle) {
       console.log(Object.keys(this.mapCommands))
     } else if (args[0] === '---list-all-options') {
       console.log(Object.keys(this.mapOptions))
+    } else if (args[0] === '---run-bootstrap') {
+      if (this.bootstrap) this.bootstrap()
     } else if (typeof handle === 'function') {
       res._ = _
       handle.call(this, res, this)

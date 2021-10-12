@@ -25,6 +25,11 @@ declare namespace cli {
      * 放在 help 末尾的信息，一般可以放一些版权之类的说明
      */
     epilog?: string | (() => string)
+
+    /**
+     * 初始化操作，在命令后面添加 ---run-bootstrap 才会触发此函数执行
+     */
+    bootstrap?: () => void
     /**
      * 指定版本号， 如 1.0.0
      *

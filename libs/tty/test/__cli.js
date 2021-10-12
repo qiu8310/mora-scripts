@@ -110,6 +110,19 @@ describe('libs/tty/cli', function() {
       log.alwaysCalledWith([['sub1', 'sub2']])
       log.restore()
     })
+    it('bootstrap', function() {
+      var fn = sinon.spy()
+      Cli({
+        bootstrap: fn
+      }).parse(['---run-bootstrap'])
+      assert.equal(fn.callCount, 1)
+    })
+    it('bootstrap noop', function() {
+      var fn = sinon.spy()
+      Cli({
+      }).parse(['---run-bootstrap'], fn)
+      assert.equal(fn.callCount, 0)
+    })
   })
 
   describe('options', function() {
