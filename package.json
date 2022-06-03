@@ -52,7 +52,7 @@
   "license": "MIT",
   "devDependencies": {
     "cross-spawn": "5.1.0",
-    "semver-regex": "1.0.0",
+    "semver-regex": "3.1.4",
     "@vercel/ncc": "^0.29.0",
     "codecov": "^2.0.0",
     "docdash": "web-build-hub/docdash",
