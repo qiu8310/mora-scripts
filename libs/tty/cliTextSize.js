@@ -4,6 +4,8 @@
  *
  * @copyright   Copyright (c) 2016 Zhonglei Qiu
  * @license     Licensed under the MIT license.
+ *
+ * 可以参考： eastasianwidth  string-width
  */
 
 var punycode = require('punycode')

@@ -19,7 +19,7 @@ var typeConfig = {
   bool: {
     label: 'boolean',
     needArgs: 0,
-    needArgsWhenUseEqual: 1
+    boolean: true // 表示也可以不接参数，或者后面接 true/false 参数
   },
   str: {
     label: 'string',
@@ -419,6 +419,7 @@ function parse(args) {
     if (_.length && this.stopParseOnFirstNoOption) stopped = true
   }
 
+  // 对最后一个 consumeTarget 判断其参数是否符合
   var ct = this.consumeTarget
   if (ct && !ct.boolean && ct.needArgs > ct.currentArgs && ct.needArgs !== Infinity) {
     throw new Error('Error: ' + ct.type + ' option ' + this.formatOptionKey(ct.consumedKey) + ' need argument.')
@@ -738,9 +739,14 @@ function consumeKey(key, noNeedArgs, equalValue) {
 }
 
 function consumeVal(val, isEqualValue) {
+  var lowerVal = val.toLowerCase()
   var conf = this.consumeTarget
   var needArgs = conf ? conf.needArgs : 0
-  if (isEqualValue && conf && conf.needArgsWhenUseEqual) needArgs = conf.needArgsWhenUseEqual
+
+  // boolean 相关的参数可以接受 boolean 值
+  if (!needArgs && conf && conf.boolean && (isEqualValue || (lowerVal === 'true' || lowerVal === 'false'))) {
+    needArgs = 1
+  }
 
   if (!conf || needArgs === conf.currentArgs) {
     this._.push(val)
@@ -753,17 +759,18 @@ function consumeVal(val, isEqualValue) {
         break
       case 'str':
       case 'bstr':
-        if (conf.type === 'bstr' && val === 'true') conf.value = true
-        else if (conf.type === 'bstr' && val === 'false') conf.value = false
+        if (conf.type === 'bstr' && lowerVal === 'true') conf.value = true
+        else if (conf.type === 'bstr' && lowerVal === 'false') conf.value = false
         else conf.value = val
         break
       case 'bool':
-        conf.value = val === 'yes' || val === 'true'
+        // 单独的 boolean 值在 --key=val 的模式下支持 val 配置成 "yes"
+        conf.value = lowerVal === 'true' || lowerVal === 'yes'
         break
       case 'num':
       case 'bnum':
-        if (conf.type === 'bnum' && val === 'true') conf.value = true
-        else if (conf.type === 'bnum' && val === 'false') conf.value = false
+        if (conf.type === 'bnum' && lowerVal === 'true') conf.value = true
+        else if (conf.type === 'bnum' && lowerVal === 'false') conf.value = false
         else conf.value = parseNumber(val)
 
         if (isNaN(conf.value)) {

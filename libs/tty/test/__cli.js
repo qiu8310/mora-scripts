@@ -48,7 +48,7 @@ describe('libs/tty/cli', function() {
       }
       Cli().commands({'test:*': spy, 'abc': spy}).parse(['test'])
       Cli().commands({'test:*': spy}).parse(['test:abc'])
-
+      debugger
       assert.equal(count, 1)
       assert.equal($command, 'test:abc')
     })
@@ -161,6 +161,7 @@ describe('libs/tty/cli', function() {
       }
 
       testOptions(opts, ['-a', '-b'], {a: true, b: true, c: undefined, cc: undefined, d: true, e: false})
+      testOptions(opts, ['-a', 'true', '-b', 'false'], {a: true, b: false, c: undefined, cc: undefined, d: true, e: false})
       testOptions(opts, ['-ab'], {a: true, b: true, c: undefined, cc: undefined, d: true, e: false})
       testOptions(opts, ['-abcd', '-e'], {a: true, b: true, c: true, cc: true, d: true, e: true})
     })
@@ -195,6 +196,8 @@ describe('libs/tty/cli', function() {
       }
       testOptions(opts, ['-a', 'a', '-c', 'c'], {a: 'a', b: undefined, c: 'c', d: undefined})
       testOptions(opts, ['-b', '-d'], {a: undefined, b: true, c: undefined, d: true})
+      testOptions(opts, ['-b', 'true', '-d'], {a: undefined, b: true, c: undefined, d: true})
+      testOptions(opts, ['-b', 'false', '-d'], {a: undefined, b: false, c: undefined, d: true})
     })
     it('bstr with equal', function() {
       var opts = {
@@ -223,6 +226,8 @@ describe('libs/tty/cli', function() {
       }
       testOptions(opts, ['-a', '1', '-c', '2'], {a: 1, b: undefined, c: 2, d: undefined})
       testOptions(opts, ['-b', '-d'], {a: undefined, b: true, c: undefined, d: true})
+      testOptions(opts, ['-b', 'true', '-d'], {a: undefined, b: true, c: undefined, d: true})
+      testOptions(opts, ['-b', 'false', '-d'], {a: undefined, b: false, c: undefined, d: true})
     })
     it('bnum with equal', function() {
       var opts = {
@@ -378,7 +383,7 @@ describe('libs/tty/cli', function() {
   describe('env', function() {
     it('bool', function() {
       testEnv({a: '<bool>'}, {a: 'true'}, {a: true})
-      testEnv({a: '<boolean>'}, {a: 'yes'}, {a: true})
+      testEnv({a: '<boolean>'}, {a: 'true'}, {a: true})
       testEnv({a: '<bool>'}, {a: '1'}, {a: true})
       testEnv({a: '<bool>'}, {a: 'false'}, {a: false})
       testEnv({a: '<bool>'}, {a: 'no'}, {a: false})
@@ -439,7 +444,7 @@ describe('libs/tty/cli', function() {
         c: '<bool>',
         cc: '<bool>'
       }
-      Cli().options(opts).parse(['-b=true', '--bb=yes', '-c=no', '--cc=false'], function(res) {
+      Cli().options(opts).parse(['-b=true', '--bb=true', '-c=no', '--cc=false'], function(res) {
         assert(res.b === true)
         assert(res.bb === true)
         assert(res.c === false)
