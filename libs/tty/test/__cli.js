@@ -128,8 +128,8 @@ describe('libs/tty/cli', function() {
         Cli().commands({
           a1: { cmd: function() {}, group: 'aa' },
           a2: { cmd: function() {}, group: 'aa' },
-          b1: { cmd: function() {}, group: 'bb' },
-          b2: { cmd: function() {}, group: 'bb' },
+          b1: { cmd: function() {}, group: 'bb', hideInHelp: true },
+          b2: { cmd: function() {}, group: 'bb', hideInHelp: true },
           c1: { cmd: function() {} },
           c2: { cmd: function() {} }
         }).options({
@@ -139,7 +139,11 @@ describe('libs/tty/cli', function() {
         function(message) {
           var keys = ['aa', 'a1', 'a2', 'bb', 'b1', 'b2', 'c1', 'c2', 'd1', 'd2', 'dd']
           keys.forEach(function(key) {
-            assert.ok(message.indexOf(key) >= 0)
+            if (key.startsWith('b')) {
+              assert.ok(message.indexOf(key) < 0)
+            } else {
+              assert.ok(message.indexOf(key) >= 0)
+            }
           })
         }
       )

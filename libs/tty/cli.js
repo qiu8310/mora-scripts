@@ -627,7 +627,7 @@ Cli.prototype.help = function(returnStr) {
     if (groups.length) {
       var rows = []
       groups.forEach(function(group) {
-        if (group !== DEFAULT_GROUP_NAME) {
+        if (group !== DEFAULT_GROUP_NAME && groupsMap[group].some(function(e) { return !e.hideInHelp })) {
           rows.push(['', '', ''])
           rows.push([format('  %c%s:', 'green.bold', group), '', ''])
           rows.push(['', '', ''])
