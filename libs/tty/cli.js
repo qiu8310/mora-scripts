@@ -121,26 +121,19 @@ function Cli(conf) {
    * @type {Object}
    */
   this.mapCommands = {}
-
-  /**
-   * 所有 options 的配置
-   * @type {Object}
-   */
   this.mapOptions = {}
-
   this.mapEnv = {}
 
   /**
-   * 所有的选项分组名称
+   * 所有的命令分组名称
    * @type {Array}
    */
-  this.groups = []
-  this.groupsMap = {}
+  this.commandGroups = []
+  this.commandGroupsMap = {}
 
-  /**
-   * 所有的环境变量分组名称
-   * @type {Array}
-   */
+  this.optionsGroups = []
+  this.optionsGroupsMap = {}
+
   this.envGroups = []
   this.envGroupsMap = {}
 
@@ -158,7 +151,7 @@ function Cli(conf) {
  *
  *   opts 是 key-value 对象，支持下面几种类型的配置
  *   - str1:str2... => function
- *   - str1:str2... => {desc: '', cmd: function}
+ *   - str1:str2... => {group: '', desc: '', cmd: function}
  *
  * @return {Cli}
  *
@@ -172,6 +165,7 @@ function Cli(conf) {
  *     // handle
  *   },
  *   second: {
+ *     group: 'category',
  *     desc: 'this is sub-command with description',
  *     cmd: function (res) {
  *       // handle
@@ -236,19 +230,25 @@ Cli.prototype.env = function(group, opts) {
   return this.options(group, opts, true)
 }
 
-function init(isCommand, opts, group, isEnv) {
+function init(isCommand, opts, customGroup, isEnv) {
   Object.keys(opts).forEach(function(origKey) {
-    var key, type, value, cmd, desc, alias, defaultValue, target, map, hideInHelp
+    var key, type, value, cmd, desc, alias, defaultValue, target, hideInHelp
+    var group = customGroup || DEFAULT_GROUP_NAME
 
     alias = origKey.trim().split(/\s*\|\s*/)
     key = alias[0]
     value = opts[origKey]
+
+    var groups = isCommand ? this.commandGroups : isEnv ? this.envGroups : this.optionsGroups
+    var groupsMap = isCommand ? this.commandGroupsMap : isEnv ? this.envGroupsMap : this.optionsGroupsMap
+    var map = isCommand ? this.mapCommands : isEnv ? this.mapEnv : this.mapOptions
 
     if (isCommand) {
       if (typeof value === 'function') {
         cmd = value
         desc = ''
       } else if (isPlainObject(value)) {
+        if (value.group) group = value.group
         hideInHelp = value.hideInHelp
         cmd = value.cmd
         if (typeof cmd !== 'function') {
@@ -281,8 +281,7 @@ function init(isCommand, opts, group, isEnv) {
         throw new Error('Command "' + origKey + '" is invalid')
       }
 
-      target = { key: key, alias: alias, cmd: cmd, type: 'command', desc: desc, hideInHelp: hideInHelp }
-      map = this.mapCommands
+      target = { key: key, alias: alias, cmd: cmd, type: 'command', group: group, desc: desc, hideInHelp: hideInHelp }
     } else {
       if (typeof value === 'string') {
         if (reOption.test(value)) {
@@ -306,6 +305,7 @@ function init(isCommand, opts, group, isEnv) {
         desc = value.desc || ''
         hideInHelp = value.hideInHelp
         defaultValue = value.defaultValue
+        if (value.group) group = value.group
 
         if (reOptionType.test(type)) {
           type = RegExp.$1
@@ -315,23 +315,17 @@ function init(isCommand, opts, group, isEnv) {
       } else {
         throw new Error('Option "' + origKey + '" is invalid.')
       }
-
-      group = group || DEFAULT_GROUP_NAME
-      var groups = isEnv ? this.envGroups : this.groups
-      var groupsMap = isEnv ? this.envGroupsMap : this.groupsMap
-      map = isEnv ? this.mapEnv : this.mapOptions
-
-      target = { key: key, alias: alias, defaultValue: defaultValue, hideInHelp: hideInHelp, type: type, group: group, desc: desc }
-      if (groups.indexOf(group) < 0) {
-        if (group === DEFAULT_GROUP_NAME) {
-          groups.unshift(group)
-        } else {
-          groups.push(group)
-        }
-        groupsMap[group] = []
-      }
-      groupsMap[group].push(target)
+      target = { key: key, alias: alias, defaultValue: defaultValue, type: type, group: group, desc: desc, hideInHelp: hideInHelp }
     }
+    if (groups.indexOf(group) < 0) {
+      if (group === DEFAULT_GROUP_NAME) {
+        groups.unshift(group)
+      } else {
+        groups.push(group)
+      }
+      groupsMap[group] = []
+    }
+    groupsMap[group].push(target)
 
     alias.forEach(function(k) {
       if (k in map) throw new Error((isCommand ? 'Command' : isEnv ? 'Env' : 'Option') + ' key "' + k + '" is duplicated.')
@@ -614,24 +608,6 @@ Cli.prototype.help = function(returnStr) {
   var EOL = require('os').EOL
   var puts = function() { buffer.push(format.apply(null, arguments)) }
   var putsHeader = function(header) { puts('%c%s:\n', 'white.bold', header) }
-  var putsCommands = function(header, obj) {
-    var cache = []
-    var rows = []
-    Object.keys(obj).forEach(function(key) {
-      var entry = obj[key]
-      if (entry.hideInHelp) return
-      if (cache.indexOf(entry) >= 0) return
-      cache.push(entry)
-      var row = []
-      row.push(format('  %c%s    ', 'green', entry.alias.join(', ')))
-      row.push(format('%c%s', 'default', entry.desc))
-      rows.push(row)
-    })
-    if (!rows.length) return
-    putsHeader(header)
-    puts(table(rows))
-    puts()
-  }
 
   puts()
   if (this.usage) {
@@ -647,9 +623,7 @@ Cli.prototype.help = function(returnStr) {
     puts()
   }
 
-  putsCommands('Commands', this.mapCommands)
-
-  var putsGroups = function(title, groups, groupsMap, isEnv) {
+  var putsGroups = function(title, groups, groupsMap) {
     if (groups.length) {
       var rows = []
       groups.forEach(function(group) {
@@ -661,16 +635,25 @@ Cli.prototype.help = function(returnStr) {
         groupsMap[group].forEach(function(entry) {
           if (entry.hideInHelp) return
           var row = []
-          var defaultValue = entry.defaultValue !== undef
-            ? format('  %c[ default: %s ]', 'gray', JSON.stringify(entry.defaultValue))
-            : ''
-          var alias = isEnv ? entry.alias : entry.alias.map(function(a) { return (a.length === 1 ? '-' : '--') + a })
-          row.push(format('  %c%s', 'green', alias.join(', ')))
-          row.push(format('  %c%s  ', 'cyan', '<' + typeConfig[entry.type].label + '>'))
-          row.push(format('%c%s', 'default', entry.desc + defaultValue))
+
+          if (title === 'Commands') {
+            row.push(format('  %c%s    ', 'green', entry.alias.join(', ')))
+            row.push(format('%c%s', 'default', entry.desc))
+            row.push('')
+          } else {
+            var defaultValue = entry.defaultValue !== undef
+              ? format('  %c[ default: %s ]', 'gray', JSON.stringify(entry.defaultValue))
+              : ''
+            var alias = title === 'Env' ? entry.alias : entry.alias.map(function(a) { return (a.length === 1 ? '-' : '--') + a })
+            row.push(format('  %c%s', 'green', alias.join(', ')))
+            row.push(format('  %c%s  ', 'cyan', '<' + typeConfig[entry.type].label + '>'))
+            row.push(format('%c%s', 'default', entry.desc + defaultValue))
+          }
+
           rows.push(row)
         })
       }, this)
+
       /* istanbul ignore else */
       if (rows.length) {
         putsHeader(title)
@@ -680,8 +663,9 @@ Cli.prototype.help = function(returnStr) {
     }
   }
 
-  putsGroups('Options', this.groups, this.groupsMap)
-  putsGroups('Env', this.envGroups, this.envGroupsMap, true)
+  putsGroups('Commands', this.commandGroups, this.commandGroupsMap)
+  putsGroups('Options', this.optionsGroups, this.optionsGroupsMap)
+  putsGroups('Env', this.envGroups, this.envGroupsMap)
 
   if (this.epilog) puts('  %s\n', strOrFunToString(this.epilog))
 

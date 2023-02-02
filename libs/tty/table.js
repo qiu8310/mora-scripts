@@ -241,4 +241,3 @@ function maxNumberIndex(arr) {
   }
   return res
 }
-

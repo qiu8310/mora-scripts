@@ -48,7 +48,6 @@ describe('libs/tty/cli', function() {
       }
       Cli().commands({'test:*': spy, 'abc': spy}).parse(['test'])
       Cli().commands({'test:*': spy}).parse(['test:abc'])
-      debugger
       assert.equal(count, 1)
       assert.equal($command, 'test:abc')
     })
@@ -122,6 +121,28 @@ describe('libs/tty/cli', function() {
       Cli({
       }).parse(['---run-bootstrap'], fn)
       assert.equal(fn.callCount, 0)
+    })
+
+    it('command and options group', function() {
+      testHelp(
+        Cli().commands({
+          a1: { cmd: function() {}, group: 'aa' },
+          a2: { cmd: function() {}, group: 'aa' },
+          b1: { cmd: function() {}, group: 'bb' },
+          b2: { cmd: function() {}, group: 'bb' },
+          c1: { cmd: function() {} },
+          c2: { cmd: function() {} }
+        }).options({
+          d1: { type: 'boolean', group: 'dd' },
+          d2: { type: 'boolean', group: 'dd' }
+        }),
+        function(message) {
+          var keys = ['aa', 'a1', 'a2', 'bb', 'b1', 'b2', 'c1', 'c2', 'd1', 'd2', 'dd']
+          keys.forEach(function(key) {
+            assert.ok(message.indexOf(key) >= 0)
+          })
+        }
+      )
     })
   })
 

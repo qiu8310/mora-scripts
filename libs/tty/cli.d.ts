@@ -88,6 +88,7 @@ declare namespace cli {
   type Options = {
     [key: string]: string | {
         type: OptionType
+        group?: string
         desc?: string
         hideInHelp?: boolean
         defaultValue?: any
@@ -98,7 +99,11 @@ declare namespace cli {
         desc?: string
         hideInHelp?: boolean
         conf?: Conf
+        /** 命令分组 */
+        group?: string
+        /** 当前命令的选项 */
         options?: Options
+        /** 当前命令的选项（分组模式） */
         groups?: {[optionGroupName: string]: Options}
         cmd: ((this: Cli, res: Response, cli: Cli) => void)
     }
@@ -219,7 +224,7 @@ declare class Cli {
    *
    * opts 是 key-value 对象，支持下面几种类型的配置
    *   - str1:str2... => <type> desc   (注：如果 type 前面有 "!"，表示 hideInHelp)
-   *   - str1:str2... => {type: '', desc: '', defaultValue: '', hideInHelp: false}
+   *   - str1:str2... => {type: '', desc: '', group: '', defaultValue: '', hideInHelp: false}
    *
    * 说明：
    *   1. str1 是一个 option，":" 后面的 str2 等等表示 str1 的别名
@@ -241,6 +246,7 @@ declare class Cli {
    *     'l | linefeed': {
    *       hideInHelp: false,
    *       type: 'boolean',
+   *       group: '',
    *       desc: 'append a system linefeed at end'
    *     }
    *   })
@@ -274,6 +280,7 @@ declare class Cli {
    *     },
    *     second: {
    *       hideInHelp: false,
+   *       group: '',
    *       desc: 'this is sub-command with description',
    *       cmd: function (res) {
    *         // handle
@@ -281,9 +288,10 @@ declare class Cli {
    *     },
    *     third: {
    *       hideInHelp: false,
+   *       group: '',
    *       conf: {},
    *       options: {},
-   *       groups: {},
+   *       groups: {}, // 此配置主要配置分组的 options
    *       cmd: function (res) {
    *
    *       }
