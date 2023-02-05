@@ -732,7 +732,8 @@ function consumeVal(val, isEqualValue) {
     needArgs = 1
   }
 
-  if (!conf || needArgs === conf.currentArgs) {
+  /* istanbul ignore else */
+  if (!conf || needArgs <= conf.currentArgs) {
     this._.push(val)
   } else if (needArgs > conf.currentArgs) {
     var consumedKey = this.formatOptionKey(conf.consumedKey)
@@ -764,8 +765,6 @@ function consumeVal(val, isEqualValue) {
         }
         break
     }
-  } else {
-    throw new SyntaxError('Parse error.')
   }
 }
 
