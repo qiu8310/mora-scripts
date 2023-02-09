@@ -98,29 +98,78 @@ describe('libs/tty/cli', function() {
       assert.equal(spy.callCount, 1)
     })
 
-    it('list commands', function() {
-      var log = sinon.stub(console, 'log')
-      Cli().commands({
-        sub1: function() {},
-        sub2: function() {}
-      }).parse(['---list-all-commands'])
-
-      assert.equal(log.callCount, 1)
-      log.alwaysCalledWith([['sub1', 'sub2']])
-      log.restore()
-    })
     it('bootstrap', function() {
       var fn = sinon.spy()
       Cli({
         bootstrap: fn
-      }).parse(['---run-bootstrap'])
+      }).parse(['---bootstrap'])
+      assert.equal(fn.callCount, 1)
+    })
+    it('bootstrap invalid', function() {
+      var fn = sinon.spy()
+      Cli({
+        bootstrap: fn
+      }).parse(['----bootstrap'])
+      assert.equal(fn.callCount, 0)
+    })
+    it('bootstrap no function', function() {
+      var fn = sinon.spy()
+      Cli({
+        bootstrap: {}
+      }).parse(['---bootstrap'], fn)
       assert.equal(fn.callCount, 1)
     })
     it('bootstrap noop', function() {
       var fn = sinon.spy()
       Cli({
-      }).parse(['---run-bootstrap'], fn)
-      assert.equal(fn.callCount, 0)
+      }).parse(['---bootstrap'], fn)
+      assert.equal(fn.callCount, 1)
+    })
+    it('bootstrap sub1', function() {
+      var fn1 = sinon.spy()
+      var fn2 = sinon.spy()
+      Cli({
+        bootstrap: fn1
+      }).commands({
+        sub: {
+          cmd: function() {},
+          bootstrap: fn2
+        }
+      }).parse(['---bootstrap'], fn1)
+      assert.equal(fn1.callCount, 1)
+      assert.equal(fn2.callCount, 0)
+    })
+    it('bootstrap sub2', function() {
+      var fn1 = sinon.spy()
+      var fn2 = sinon.spy()
+      Cli({
+        bootstrap: fn1
+      }).commands({
+        sub: {
+          cmd: function() {},
+          conf: {
+            bootstrap: fn2
+          }
+        }
+      }).parse(['sub', '---bootstrap'], fn1)
+      assert.equal(fn1.callCount, 0)
+      assert.equal(fn2.callCount, 1)
+    })
+    it('bootstrap sub3', function() {
+      var fn1 = sinon.spy()
+      var fn2 = sinon.spy()
+      Cli({
+        bootstrap: fn1
+      }).commands({
+        sub: {
+          cmd: function() {},
+          conf: {
+            bootstrap: fn2
+          }
+        }
+      }).parse(['---bootstrap', 'sub'], fn1)
+      assert.equal(fn1.callCount, 0)
+      assert.equal(fn2.callCount, 1)
     })
 
     it('command and options group', function() {
@@ -323,19 +372,6 @@ describe('libs/tty/cli', function() {
 
       var cli = Cli().options(opts).parse(['-f20'])
       assert.deepEqual(cli._, ['-f20'])
-    })
-
-    it('list options', function() {
-      var log = sinon.stub(console, 'log')
-      var opts = {
-        a: '<number>',
-        b: '<num>'
-      }
-      Cli().options(opts).parse(['---list-all-options'])
-
-      assert.equal(log.callCount, 1)
-      log.alwaysCalledWith([['a', 'b']])
-      log.restore()
     })
 
     it('group options', function() {

@@ -5,7 +5,7 @@ export = cli
 export as namespace cli
 
 declare namespace cli {
-  interface Conf {
+  type Conf = {
     /**
      * 指定命令行的用法
      *
@@ -26,10 +26,6 @@ declare namespace cli {
      */
     epilog?: string | (() => string)
 
-    /**
-     * 初始化操作，在命令后面添加 ---run-bootstrap 才会触发此函数执行
-     */
-    bootstrap?: () => void
     /**
      * 指定版本号， 如 1.0.0
      *
@@ -52,6 +48,17 @@ declare namespace cli {
      * 严格模式，遇到无法解析的 option 是就报错
      */
     strict?: boolean
+    /**
+     * 初始化操作，在命令后面添加 ---bootstrap 才会触发此函数执行
+     */
+    bootstrap?: () => void | Promise<void>
+    /**
+     * 获取补全项，在命令后面添加 ---completion 才会触发此函数执行
+     */
+    completion?: () => void | Promise<void>
+  } & {
+    /** 其它自定义项，可以通过在命令后面添加 ---<key> 来触发 */
+    [key: string]: () => void | Promise<void>
   }
   interface Response {
     /**
