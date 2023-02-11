@@ -222,7 +222,7 @@ describe('libs/tty/cli', function() {
         log.restore()
       }
       test(['---completion', 'c'], 'c')
-      test(['---completion', 'c', ''], '--c1\n--c2')
+      test(['---completion', 'c', ''], '')
       test(['---completion', 'c', '--'], '--c1\n--c2')
       test(['---completion', 'c', '--c'], '--c1\n--c2')
       test(['---completion', 'c', '--c1'], '--c1')

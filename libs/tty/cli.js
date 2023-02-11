@@ -558,7 +558,7 @@ Cli.prototype.parse = function(args, handle) {
       }
 
       if (!compKeys) {
-        compKeys = !compArg ? (cmdKeys.length ? cmdKeys : optKeys) : allKeys.filter(function(k) { return k.startsWith(compArg) })
+        compKeys = !compArg ? cmdKeys : allKeys.filter(function(k) { return k.startsWith(compArg) })
       }
 
       if (typeof tripeFunc === 'function') {
