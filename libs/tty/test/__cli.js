@@ -171,7 +171,97 @@ describe('libs/tty/cli', function() {
       assert.equal(fn1.callCount, 0)
       assert.equal(fn2.callCount, 1)
     })
+    it('completion top', function() {
+      function test(args, output) {
+        var cli = Cli({version: false, help: false})
+          .options({'a': '<str>', 'bb': '<bool>'})
+          .commands({ c: function() {}, dd: function() {} })
+        var log = sinon.stub(console, 'log')
+        cli.parse(args)
+        assert.deepStrictEqual(log.callCount, 1)
+        assert.ok(log.calledWith(output))
 
+        log.restore()
+      }
+      test(['---completion'], 'c\ndd')
+      test(['---completion'], 'c\ndd')
+      test(['---completion', 'c'], 'c')
+      test(['---completion', 'd'], 'dd')
+      test(['---completion', '-'], '-a\n--bb')
+      test(['---completion', '--'], '--bb')
+
+      test(['---completion', '-a', ''], '')
+      test(['---completion', '-a', 'd'], '')
+      test(['---completion', '--bb', ''], 'c\ndd')
+      test(['---completion', '--bb', 'd'], 'dd')
+
+      test(['---completion', '-a', 'ccc', ''], 'c\ndd')
+      test(['---completion', '-a', 'ddd', ''], 'c\ndd')
+      test(['---completion', '-a', 'a', '--', ''], 'c\ndd')
+      test(['---completion', '-a', '--b', ''], 'c\ndd')
+    })
+    it('completion sub', function() {
+      function test(args, output) {
+        var cli = Cli({version: false, help: false})
+          .commands({
+            c: function(res) {
+              Cli({ version: false, help: false })
+                .options({ 'c1': '<str>', 'c2': '<bool>' })
+                .parse(res._)
+            },
+            dd: function(res) {
+              Cli({ version: false, help: false })
+                .commands({ 'd1': function() {}, 'd2': function() {} })
+                .parse(res._)
+            }
+          })
+        var log = sinon.stub(console, 'log')
+        cli.parse(args)
+        assert.deepStrictEqual(log.callCount, 1)
+        assert.ok(log.calledWith(output))
+        log.restore()
+      }
+      test(['---completion', 'c'], 'c')
+      test(['---completion', 'c', ''], '--c1\n--c2')
+      test(['---completion', 'c', '--'], '--c1\n--c2')
+      test(['---completion', 'c', '--c'], '--c1\n--c2')
+      test(['---completion', 'c', '--c1'], '--c1')
+      test(['---completion', 'c', '--c12'], '')
+
+      test(['---completion', 'dd', ''], 'd1\nd2')
+      test(['---completion', 'dd', 'c'], '')
+      test(['---completion', 'dd', 'd'], 'd1\nd2')
+      test(['---completion', 'dd', 'd1'], 'd1')
+      test(['---completion', 'dd', 'd11'], '')
+    })
+    it('completion func', function() {
+      function test(args, output1, output2) {
+        var spy1 = sinon.spy(function(arg) {
+          assert.deepEqual(arg, output1)
+        })
+        var spy2 = sinon.spy(function(arg) {
+          assert.deepEqual(arg, output2)
+        })
+        var cli = Cli({version: false, help: false, completion: spy1 })
+          .commands({
+            c: function(res) {
+              Cli({ version: false, help: false, completion: spy2 })
+                .commands({ 'c1': function() {}, 'c2': function() {} })
+                .parse(res._)
+            }
+          })
+        cli.parse(args)
+        assert.deepStrictEqual(spy1.callCount, output1 ? 1 : 0)
+        assert.deepStrictEqual(spy2.callCount, output2 ? 1 : 0)
+      }
+
+      test(['---completion'], ['c'])
+      test(['---completion', 'c'], ['c'])
+      test(['---completion', 'c', ''], null, ['c1', 'c2'])
+      test(['---completion', 'c', 'c'], null, ['c1', 'c2'])
+      test(['---completion', 'c', 'c1'], null, ['c1'])
+      test(['---completion', 'c', 'c11'], null, [])
+    })
     it('command and options group', function() {
       testHelp(
         Cli().commands({

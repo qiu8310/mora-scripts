@@ -51,15 +51,13 @@ declare namespace cli {
     /**
      * 初始化操作，在命令后面添加 ---bootstrap 才会触发此函数执行
      */
-    bootstrap?: () => void | Promise<void>
+    bootstrap?: (res: Response) => void | Promise<void>
     /**
      * 获取补全项，在命令后面添加 ---completion 才会触发此函数执行
      */
-    completion?: () => void | Promise<void>
-  } & {
-    /** 其它自定义项，可以通过在命令后面添加 ---<key> 来触发 */
-    [key: string]: () => void | Promise<void>
+    completion?: (completionItems: string[], res: Response) => void | Promise<void>
   }
+
   interface Response {
     /**
      * 原始的未处理过的 args，默认是 process.argv.slice(2)

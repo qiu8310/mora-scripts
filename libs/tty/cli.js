@@ -490,12 +490,15 @@ Cli.prototype.parse = function(args, handle) {
   try {
     parse.call(this, args)
   } catch (e) {
-    /* istanbul ignore else */
-    if (/^Error: /.test(e.message)) {
-      this.error(e.message)
-      return this
-    } else {
-      throw e
+    // completion 模式不会运行命令，所以参数解析失败关系不大
+    if (tripe !== 'completion') {
+      /* istanbul ignore else */
+      if (/^Error: /.test(e.message)) {
+        this.error(e.message)
+        return this
+      } else {
+        throw e
+      }
     }
   }
 
@@ -533,13 +536,46 @@ Cli.prototype.parse = function(args, handle) {
     console.log(this.version ? strOrFunToString(this.version) : '0.0.0')
   } else {
     var commander = this.getCommanderByKey(_[0])
+    var tripeFunc = tripe && this.conf[tripe]
+
+    // 如果有子命令，需要在子命令中获取补全
+    // 没有子命令，或者当前要补全的参数刚好只有一个时
+    if (tripe === 'completion' && (!commander || _.length === 1)) {
+      var cmdKeys = Object.keys(this.mapCommands)
+      var optKeys = Object.keys(this.mapOptions).map(function(k) { return k.length > 1 ? '--' + k : '-' + k })
+      var allKeys = cmdKeys.concat(optKeys)
+      var compKeys
+
+      var compArg = args[args.length - 1] // 最后一个要补全的参数
+      var prevArg = args[args.length - 2]
+
+      if (!(compArg && compArg.startsWith('-')) && prevArg && prevArg.startsWith('-')) {
+        var prevKey = prevArg.replace(/^-{1,2}/, '')
+        var target = this.mapOptions[prevKey]
+        if (target && target.needArgs > 0) {
+          compKeys = [] // 后面是补全参数的值，不需要自动补全
+        }
+      }
+
+      if (!compKeys) {
+        compKeys = !compArg ? (cmdKeys.length ? cmdKeys : optKeys) : allKeys.filter(function(k) { return k.startsWith(compArg) })
+      }
+
+      if (typeof tripeFunc === 'function') {
+        tripeFunc(compKeys, res)
+      } else {
+        console.log(compKeys.join('\n'))
+      }
+      return
+    }
+
     if (commander) {
       res.$command = _[0]
       res._ = _.slice(1)
       if (tripe) res._.unshift('---' + tripe)
       commander.cmd.call(this, res, this)
-    } else if (tripe && typeof this.conf[tripe] === 'function') {
-      this.conf[tripe]()
+    } else if (typeof tripeFunc === 'function') {
+      tripeFunc.call(res)
     } else if (typeof handle === 'function') {
       res._ = _
       handle.call(this, res, this)
