@@ -562,10 +562,13 @@ Cli.prototype.parse = function(args, handle) {
       }
 
       if (typeof tripeFunc === 'function') {
-        tripeFunc(compKeys, res)
-      } else {
+        compKeys = tripeFunc(compKeys, res)
+      }
+
+      if (Array.isArray(compKeys)) {
         console.log(compKeys.join('\n'))
       }
+
       return
     }
 
