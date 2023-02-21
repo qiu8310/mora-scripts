@@ -55,7 +55,7 @@ declare namespace cli {
     /**
      * 获取补全项，在命令后面添加 ---completion 才会触发此函数执行
      */
-    completion?: (completionItems: string[], res: Response) => void | Promise<void>
+    completion?: (completionItems: string[], res: Response) => void | Promise<void> | string[] | Promise<string[]>
   }
 
   interface Response {
