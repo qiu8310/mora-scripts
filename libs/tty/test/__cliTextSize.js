@@ -13,6 +13,9 @@ describe('libs/tty/cliTextSize', function() {
     assert.equal(cliTextSize('1'), 1)
     assert.equal(cliTextSize('abc'), 3)
     assert.equal(cliTextSize('a34a'), 4)
+    assert.equal(cliTextSize('￦'), 2)
+    assert.equal(cliTextSize('뀀'), 2)
+    assert.equal(cliTextSize('①'), 2)
   })
 
   it('should return the size after strip ansi code', function() {
