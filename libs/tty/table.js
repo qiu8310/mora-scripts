@@ -6,13 +6,13 @@
  * @license     Licensed under the MIT license.
  */
 
-var punycode = require('punycode')
+var punycode = require('./_helper')
 var os = require('os')
 var cliTextSize = require('./cliTextSize')
 var greAnsi = require('./stripAnsi').gre
 
-var encode = punycode.ucs2.encode
-var decode = punycode.ucs2.decode
+var encode = punycode.ucs2encode
+var decode = punycode.ucs2decode
 
 // 获取当前屏幕的宽度
 var stream = process.stdout
