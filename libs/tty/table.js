@@ -131,7 +131,16 @@ function wrapStr(str, size) {
   // str 中可能包含 ansi 控制字符
   // 要先备份其位置
   str = str.replace(greAnsi, function(ansi, i) {
-    ansis.push([i, ansi])
+    // 需要减去之前 ansi 的长度
+    var index = i
+    for (var j = 0; j < ansis.length; j++) index -= ansis[j][1].length
+    // 如果和上一个对象的 index 相同，需要合并 （因为存在添加多个 ansi 前缀的可能）
+    var last = ansis[ansis.length - 1]
+    if (last && last[0] === index) {
+      last[1] += ansi
+    } else {
+      ansis.push([index, ansi])
+    }
     return ''
   })
 
