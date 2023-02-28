@@ -339,11 +339,11 @@ function parseInit() {
   var conf = this.conf
   var opts = {}
   if (conf.help !== false) {
-    opts['help | h'] = '<bool> ' + (typeof conf.help === 'string' ? conf.help : 'show help')
+    opts['help | h'] = '<bool> ' + (typeof conf.help === 'string' ? conf.help : 'Show help')
   }
   if (conf.version !== false) {
     this.version = conf.version
-    opts['version | v'] = '<bool> ' + 'show version'
+    opts['version | v'] = '<bool> ' + 'Show version'
   }
   init.call(this, false, opts)
 }

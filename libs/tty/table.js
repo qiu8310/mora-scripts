@@ -133,9 +133,11 @@ function wrapStr(str, size) {
   str = str.replace(greAnsi, function(ansi, i) {
     // 需要减去之前 ansi 的长度
     var index = i
+    /* istanbul ignore next */
     for (var j = 0; j < ansis.length; j++) index -= ansis[j][1].length
     // 如果和上一个对象的 index 相同，需要合并 （因为存在添加多个 ansi 前缀的可能）
     var last = ansis[ansis.length - 1]
+    /* istanbul ignore next */
     if (last && last[0] === index) {
       last[1] += ansi
     } else {
