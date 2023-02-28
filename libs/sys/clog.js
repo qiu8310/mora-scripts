@@ -7,6 +7,7 @@
  */
 
 var hasAnsiColorRegExp = require('../tty/stripAnsi').gre
+var supportColor = require('./supportColor')()
 
 var bgRE = /^(?:bg|background)(\w+)$/       // match:  bgRed, bgYellow ...
 var resetModifRE = /^(?:reset|r)(\w+)$/     // match:  resetDim, resetItalic ...
@@ -43,6 +44,8 @@ var reset = function() { ansiStack.length = 0; return RESET }
 var colorMatcher = {
   match: /%c/,
   handle: function(color) {
+    /* istanbul ignore if */
+    if (!supportColor) return ''
     var ansi = parseColor(color)
     var i = ansi.indexOf(RESET)
     if (i >= 0) {
@@ -53,12 +56,18 @@ var colorMatcher = {
     return ansi
   },
   onEnd: function() {
+    /* istanbul ignore if */
+    if (!supportColor) return ''
     return clog.autoResetAtEnd ? reset() : ''
   },
   onGroupEnd: function() {
+    /* istanbul ignore if */
+    if (!supportColor) return ''
     return clog.autoResetAtGroupEnd ? reset() : ''
   },
   onFormatEnd: function(arg) {
+    /* istanbul ignore if */
+    if (!supportColor) return ''
     if (this !== arg.matcher) {
       // format 的 value 自带颜色，需要保留它自带的所有样式
       if (arg.values.some(hasAnsi)) {

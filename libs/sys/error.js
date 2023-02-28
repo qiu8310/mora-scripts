@@ -7,9 +7,10 @@
  */
 
 var util = require('util')
+var data = require('./_data')
 
 function format() {
-  return '\x1b[31m' + util.format.apply(util, arguments) + '\x1b[0m'
+  return data.error + util.format.apply(util, arguments) + data.end
 }
 
 /**
