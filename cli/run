@@ -87,6 +87,11 @@ if (cmd) {
   } else if (pkg.scripts && pkg.scripts.hasOwnProperty(cmd)) {
     args = ['run', cmd].concat(args)
     cmd = 'npm'
+    try {
+      var cp = spawn.sync('git', 'config --local --get remote.origin.url'.split(' '), { stdio: 'pipe' })
+      var output = cp.stdout.toString()
+      if (output.includes('git@code.alipay.com')) cmd = 'tnpm'
+    } catch (e) {}
   }
 }
 
