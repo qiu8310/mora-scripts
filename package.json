@@ -3,21 +3,7 @@
   "version": "1.9.12",
   "description": "Some collection scripts by myself",
   "scripts": {
-    "postinstall": "node hooks/scripts/install",
-    "postuninstall": "node hooks/scripts/install --reverse",
-    "release": "cli/run npm version patch -m 'chore: bump patch version'",
-    "preversion": "npm run lint && npm run test:check-coverage",
-    "version": "node vendors/build.js",
-    "postversion": "git push --follow-tags && npm publish && cli/run cnpm sync pkg.name",
-    "lint": "eslint libs/ hooks/ cli/puts cli/remove-all cli/run cli/commit-msg-help cli/createscript cli/inject cli/sync-taobao",
-    "test:watch": "mocha -R dot --watch **/__*.js",
-    "test": "nyc -r html _mocha -R dot **/__*.js",
-    "test:check-coverage": "nyc _mocha -R dot **/__*.js && nyc check-coverage",
-    "report": "nyc report --reporter html --report-dir externals/coverage && rm -rf coverage",
-    "test:istanbul": "istanbul cover --report html --dir externals/coverage _mocha **/__*.js",
-    "test:report": "npm run test && npm run report",
-    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-    "docs": "jsdoc -c ./jsdoc.json"
+    "test": "mocha -R dot libs/**/__*.js"
   },
   "bin": {
     "inject": "cli/inject",
@@ -31,13 +17,6 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "config": {
-    "hooks": {
-      "commit-msg": true,
-      "post-merge": true,
-      "pre-push": "npm run lint && npm run test:check-coverage"
-    }
   },
   "keywords": [
     "mora",
@@ -54,8 +33,6 @@
     "cross-spawn": "5.1.0",
     "semver-regex": "1.0.0",
     "@vercel/ncc": "^0.29.0",
-    "codecov": "^2.0.0",
-    "docdash": "web-build-hub/docdash",
     "eslint": "^3.16.1",
     "mocha": "^3.2.0",
     "nyc": "^10.0.0",
@@ -63,21 +40,5 @@
     "rewire": "^2.5.2",
     "sinon": "^2.0.0",
     "standard": "^10.0.0"
-  },
-  "nyc": {
-    "check-coverage": false,
-    "lines": 100,
-    "functions": 100,
-    "branches": 100,
-    "include": [
-      "cli/*",
-      "hooks/**/*.js",
-      "libs/**/*.js"
-    ],
-    "exclude": [
-      "externals/**",
-      "**/__*.js",
-      "test/**/*.*"
-    ]
   }
 }
