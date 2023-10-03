@@ -895,6 +895,16 @@ describe('libs/tty/cli', function() {
         assert.ok(!('help' in res))
         assert.ok(!('h' in res))
       })
+
+      var handled = false
+      Cli({help: false})
+        .options({ 'h | help': '<str>' })
+        .parse(['-h', '123'], function(res) {
+          handled = true
+          assert.ok(res.help === '123')
+          assert.ok(res.h === '123')
+        })
+      assert.ok(handled)
     })
 
     it('version', function() {
@@ -913,6 +923,16 @@ describe('libs/tty/cli', function() {
         assert.ok(!('version' in res))
         assert.ok(!('v' in res))
       })
+
+      var handled = false
+      Cli({version: false})
+        .options({ 'v | version': '<str>' })
+        .parse(['-v', '123'], function(res) {
+          handled = true
+          assert.ok(res.version === '123')
+          assert.ok(res.v === '123')
+        })
+      assert.ok(handled)
     })
 
     it('version function', function() {

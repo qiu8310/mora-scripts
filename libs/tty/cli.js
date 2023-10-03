@@ -530,9 +530,9 @@ Cli.prototype.parse = function(args, handle) {
 
   var _ = this._
 
-  if (res.help) {
+  if (res.help && this.conf.help !== false) {
     this.help()
-  } else if (res.version) {
+  } else if (res.version && this.conf.version !== false) {
     console.log(this.version ? strOrFunToString(this.version) : '0.0.0')
   } else {
     var commander = this.getCommanderByKey(_[0])
