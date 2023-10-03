@@ -1,6 +1,6 @@
 {
   "name": "mora-scripts",
-  "version": "1.9.12",
+  "version": "1.9.13",
   "description": "Some collection scripts by myself",
   "scripts": {
     "test": "mocha -R dot libs/**/__*.js"
