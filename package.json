@@ -34,7 +34,7 @@
     "semver-regex": "1.0.0",
     "@vercel/ncc": "^0.29.0",
     "eslint": "^3.16.1",
-    "mocha": "^3.2.0",
+    "mocha": "^4.0.0",
     "nyc": "^10.0.0",
     "proxyquire": "1.8.0",
     "rewire": "^2.5.2",
