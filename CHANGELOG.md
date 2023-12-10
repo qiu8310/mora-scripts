@@ -1,3 +1,12 @@
+## [1.9.14](https://github.com/qiu8310/mora-scripts/compare/v1.9.13...v1.9.14) (2023-12-10)
+
+
+### Features
+
+* inject support vscode region tag ([66ecfd6](https://github.com/qiu8310/mora-scripts/commit/66ecfd60d0339a191b845f95e882591f7542231b))
+
+
+
 ## [1.9.13](https://github.com/qiu8310/mora-scripts/compare/v1.9.12...v1.9.13) (2023-10-03)
 
 
