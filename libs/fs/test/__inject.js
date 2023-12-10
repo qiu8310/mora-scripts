@@ -14,6 +14,14 @@ describe('libs/fs/inject', function() {
     )
   })
 
+  it('inject to html with region', function() {
+    injectAndExpect(
+      'inject.region.html',
+      {html1: 'aaa', html2: 'bbb'},
+      '<!--#region INJECT_START html1 #-->\naaa\n<!--#endregion INJECT_END #-->\n\n<!--# INJECT_START {"key": "html2"} #-->\nbbb\n<!--# INJECT_END #-->\n'
+    )
+  })
+
   it('custom eol', function() {
     injectAndExpect(
       'inject.html',
@@ -56,14 +64,14 @@ describe('libs/fs/inject', function() {
       'inject.array',
       {test: 'abc'},
       '  // INJECT_START {"type": "string", "key": "test"} //\n  abc\n  // INJECT_END //\n',
-      {tags: ['// ', ' //', '// ', ' //']}
+      {tags: ['//', '//', '//', '//']}
     )
 
     injectAndExpect(
       'inject.array',
       {test: 'abc'},
       '  // INJECT_START {"type": "string", "key": "test"} //\nabc\n  // INJECT_END //\n',
-      {tags: ['// ', ' //', '// ', ' //'], autoPrefixSpaces: false}
+      {tags: ['//', '//', '//', '//'], autoPrefixSpaces: false}
     )
   })
 

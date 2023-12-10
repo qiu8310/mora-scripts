@@ -11,10 +11,10 @@ var escapeRegExp = require('../lang/escapeRegExp')
 var EOL = '\n'
 
 var TAGS_MAP = {
-  hash: ['## ', ' ##', '## ', ' ##'],
-  docs: ['/*# ', ' #*/', '/*# ', ' #*/'],
-  html: ['<!--# ', ' #-->', '<!--# ', ' #-->'],
-  loose: ['# ', ' #', '# ', ' #']   // 最宽松的模式
+  hash: ['##', '##', '##', '##'],
+  docs: ['/*#', '#*/', '/*#', '#*/'],
+  html: ['<!--#', '#-->', '<!--#', '#-->'],
+  loose: ['#', '#', '#', '#']   // 最宽松的模式
 }
 var TAGS_FILE_EXTENSIONS = {
   hash: ['gitignore', 'sh', 'bash', 'npmignore'],
@@ -62,8 +62,11 @@ module.exports = function inject(file, data, options) {
   var counter = {count: 0}
 
   var tags = getTags(file, options)
-  var regexp = buildRegExp(tags, TAG_START_KEYWORD, TAG_END_KEYWORD)
-  var newContent = content.replace(regexp, replaceContent(data, counter, options))
+  var replace = replaceContent(data, counter, options)
+
+  var newContent = content
+    .replace(buildRegExp(tags, ' ' + TAG_START_KEYWORD + ' ', ' ' + TAG_END_KEYWORD + ' '), replace)
+    .replace(buildRegExp(tags, 'region ' + TAG_START_KEYWORD + ' ', 'endregion ' + TAG_END_KEYWORD + ' '), replace)
 
   if (options.returnContent) return newContent
   if (newContent !== content) fs.writeFileSync(file, newContent)
